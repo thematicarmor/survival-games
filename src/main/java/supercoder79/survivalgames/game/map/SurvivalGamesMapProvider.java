@@ -109,26 +109,28 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
 				// Generate trees in certain areas
+				int y = heightmap[((x + 256) * 512) + (z + 256)];
+				
 				if (treeGenMask.eval(x / 80.0, z / 80.0) > 0) {
 					if (random.nextInt(80 + (int) (treeDensity.eval(x / 45.0, z / 45.0) * 30)) == 0) {
 						double typeNoise = treeType.eval(x / 120.0, z / 120.0) * 2.5;
 						if (typeNoise > 1) {
-							new PoplarTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+							new PoplarTreeGen(mutable.set(x, y, z)).generate(builder);
 						} else if (typeNoise < 0) {
-							new AspenTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+							new AspenTreeGen(mutable.set(x, y, z)).generate(builder);
 						} else {
 							// Create tree gradient
 							if (random.nextDouble() < typeNoise) {
-								new PoplarTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+								new PoplarTreeGen(mutable.set(x, y, z)).generate(builder);
 							} else {
-								new AspenTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+								new AspenTreeGen(mutable.set(x, y, z)).generate(builder);
 							}
 						}
 					}
 				}
 
 				if (random.nextInt(12) == 0) {
-					new GrassGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+					new GrassGen(mutable.set(x, y, z)).generate(builder);
 				}
 			}
 		}
