@@ -2,7 +2,7 @@
   "type": "survivalgames:survivalgames",
   "map": {
     "dimension": "plasmid:void",
-    "origin": [0, 64, 0],
+    "origin": [0, 0, 0],
     "provider": {
       "type": "survivalgames:survivalgames"
     }

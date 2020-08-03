@@ -28,6 +28,9 @@ dependencies {
     // Plasmid
     modImplementation "net.gegy1000:plasmid:0.1.0+build.12"
 
+    implementation "kdotjpg:open-simplex:2.0"
+    include "kdotjpg:open-simplex:2.0"
+
     modRuntime ("com.github.SuperCoder7979:databreaker:0.2.5") {
         exclude module : "fabric-loader"
     }
