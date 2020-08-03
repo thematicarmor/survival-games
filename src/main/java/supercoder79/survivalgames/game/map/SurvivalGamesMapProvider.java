@@ -10,6 +10,7 @@ import net.gegy1000.plasmid.game.map.GameMapBuilder;
 import net.gegy1000.plasmid.game.map.provider.MapProvider;
 import net.gegy1000.plasmid.world.BlockBounds;
 import supercoder79.survivalgames.game.SurvivalGamesConfig;
+import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
 
@@ -104,11 +105,25 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		System.out.println("Generating features!");
 		OpenSimplexNoise treeGenMask = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise treeDensity = new OpenSimplexNoise(random.nextLong());
+		OpenSimplexNoise treeType = new OpenSimplexNoise(random.nextLong());
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
+				// Generate trees in certain areas
 				if (treeGenMask.eval(x / 80.0, z / 80.0) > 0) {
 					if (random.nextInt(80 + (int) (treeDensity.eval(x / 45.0, z / 45.0) * 30)) == 0) {
-						new PoplarTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+						double typeNoise = treeType.eval(x / 120.0, z / 120.0) * 2.5;
+						if (typeNoise > 1) {
+							new PoplarTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+						} else if (typeNoise < 0) {
+							new AspenTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+						} else {
+							// Create tree gradient
+							if (random.nextDouble() < typeNoise) {
+								new PoplarTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+							} else {
+								new AspenTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+							}
+						}
 					}
 				}
 
