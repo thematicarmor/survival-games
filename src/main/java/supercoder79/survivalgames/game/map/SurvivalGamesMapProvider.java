@@ -11,6 +11,7 @@ import net.gegy1000.plasmid.game.map.provider.MapProvider;
 import net.gegy1000.plasmid.world.BlockBounds;
 import supercoder79.survivalgames.game.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
+import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -48,6 +49,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 					builder.setBlockState(mutable.set(x, y, z), Blocks.AIR.getDefaultState(), false);
 				}
 			}
+
+			System.out.println((x + 280) / 540.0);
 		}
 
 		Random random = new Random();
@@ -99,8 +102,16 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		// Feature generation stack
 		System.out.println("Generating features!");
+		OpenSimplexNoise treeGenMask = new OpenSimplexNoise(random.nextLong());
+		OpenSimplexNoise treeDensity = new OpenSimplexNoise(random.nextLong());
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
+				if (treeGenMask.eval(x / 80.0, z / 80.0) > 0) {
+					if (random.nextInt(80 + (int) (treeDensity.eval(x / 45.0, z / 45.0) * 30)) == 0) {
+						new PoplarTreeGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
+					}
+				}
+
 				if (random.nextInt(12) == 0) {
 					new GrassGen(mutable.set(x, heightmap[((x + 256) * 512) + (z + 256)], z)).generate(builder);
 				}
