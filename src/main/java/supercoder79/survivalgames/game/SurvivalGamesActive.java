@@ -112,12 +112,7 @@ public class SurvivalGamesActive {
 		this.spawnLogic.resetPlayer(player, GameMode.ADVENTURE);
 		this.spawnLogic.spawnPlayer(player);
 
-		ItemStack shovel = ItemStackBuilder.of(Items.DIAMOND_SHOVEL)
-				.addEnchantment(Enchantments.EFFICIENCY, 2)
-				.addCanDestroy(Blocks.SNOW_BLOCK)
-				.build();
-
-		player.inventory.insertStack(shovel);
+		//TODO: kit customization
 	}
 
 	private void eliminatePlayer(Game game, ServerPlayerEntity player) {

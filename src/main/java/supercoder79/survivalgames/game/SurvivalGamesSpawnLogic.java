@@ -27,14 +27,6 @@ public final class SurvivalGamesSpawnLogic {
         player.getHungerManager().setFoodLevel(20);
         player.fallDistance = 0.0F;
         player.setGameMode(gameMode);
-
-        player.addStatusEffect(new StatusEffectInstance(
-                StatusEffects.NIGHT_VISION,
-                20 * 60 * 60,
-                1,
-                true,
-                false
-        ));
     }
 
     public void spawnPlayer(ServerPlayerEntity player) {
