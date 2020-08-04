@@ -16,6 +16,7 @@ import supercoder79.survivalgames.game.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
+import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
 import supercoder79.survivalgames.noise.WorleyNoise;
 
 import net.minecraft.block.BlockState;
@@ -56,7 +57,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				}
 			}
 
-//			System.out.println((x + 280) / 560.0);
+			System.out.println((x + 280) / 560.0);
 		}
 
 		Random random = new Random();
@@ -112,7 +113,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				}
 			}
 
-//			System.out.println((x + 256) / 512.0);
+			System.out.println((x + 256) / 512.0);
 		}
 
 		// Pre-process structure data
@@ -124,7 +125,6 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 						BlockPos local = pos.add(x, y, z);
 						if (structureStarts.contains(local)) {
-							System.out.println("Removing pos");
 							structureStarts.remove(pos.add(x, y, z));
 						}
 					}
@@ -134,9 +134,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		System.out.println("Generating structures!");
 		for (BlockPos pos : structureStarts) {
-			for (int y = 0; y < 20; y++) {
-				builder.setBlockState(pos.up(y), Blocks.GLOWSTONE.getDefaultState());
-			}
+			new HouseStructure(pos).generate(builder);
 		}
 
 		// Feature generation stack
