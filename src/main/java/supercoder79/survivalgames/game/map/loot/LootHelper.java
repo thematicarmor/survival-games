@@ -26,7 +26,7 @@ public final class LootHelper {
 		// Normalize and get final count
 		maxCount /= count;
 		minCount /= count;
-		int finalCount = random.nextInt(Math.max(maxCount - minCount, 0)) + minCount;
+		int finalCount = random.nextInt(Math.max(maxCount - minCount, 1)) + minCount;
 
 		// Get final stacks
 		List<ItemStack> stacks = new ArrayList<>();

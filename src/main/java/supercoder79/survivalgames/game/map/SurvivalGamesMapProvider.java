@@ -19,7 +19,9 @@ import supercoder79.survivalgames.game.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
+import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
+import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
@@ -153,10 +155,21 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		System.out.println("Generating structures!");
 		for (BlockPos pos : structureStarts) {
-			new HouseStructure(pos).generate(builder);
+			//TODO: weighted list
+			int chosenStructure = random.nextInt(2);
+			StructureGen structure;
+			if (chosenStructure == 0) {
+				structure = new HouseStructure(pos);
+			} else {
+				structure = new EnchantingTableStructure(pos);
+			}
+
+			structure.generate(builder);
+
+			LootProvider provider = structure.getLootProvider();
 			for (int x = -32; x <= 32; x++) {
 			    for (int z = -32; z <= 32; z++) {
-					structureLootRefs.put(BlockPos.asLong(pos.getX() + x, 0, pos.getZ() + z), LootProviders.HOUSE);
+					structureLootRefs.put(BlockPos.asLong(pos.getX() + x, 0, pos.getZ() + z), provider);
 			    }
 			}
 		}
@@ -182,8 +195,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			builder.setBlockState(pos, Blocks.CHEST.getDefaultState());
 			ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(pos);
 
-			for (int i = 0; i < stacks.size(); i++) {
-				be.setStack(random.nextInt(27), stacks.get(i));
+			for (ItemStack stack : stacks) {
+				be.setStack(random.nextInt(27), stack);
 			}
 		}
 
