@@ -1,12 +1,15 @@
 package supercoder79.survivalgames.game.map;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.gegy1000.plasmid.game.map.GameMap;
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
@@ -17,13 +20,18 @@ import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
+import supercoder79.survivalgames.game.map.loot.LootHelper;
+import supercoder79.survivalgames.game.map.loot.LootProvider;
+import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
+import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig> {
@@ -66,11 +74,13 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		OpenSimplexNoise upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise detailNoise = new OpenSimplexNoise(random.nextLong());
 		WorleyNoise structureNoise = new WorleyNoise(random.nextLong());
+		WorleyNoise chestNoise = new WorleyNoise(random.nextLong());
 
 		System.out.println("Generating terrain...");
 		long time = System.currentTimeMillis();
 
 		List<BlockPos> structureStarts = new CopyOnWriteArrayList<>();
+		List<BlockPos> lootChests = new CopyOnWriteArrayList<>();
 		int[] heightmap = new int[513 * 513];
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
@@ -93,7 +103,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				int height = 60 + (int)noise;
 				heightmap[((x + 256) * 512) + (z + 256)] = height;
 
-				double worleyAt = structureNoise.sample(x / 120.0, z / 120.0);
+				double structureExtent = structureNoise.sample(x / 120.0, z / 120.0);
+				double chestExtent = chestNoise.sample(x / 45.0, z / 45.0);
 
 				for (int y = 0; y <= height; y++) {
 					// Simple surface building
@@ -101,8 +112,13 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 					if (y == height) {
 						state = Blocks.GRASS_BLOCK.getDefaultState();
 
+						// Add a chest if the chest noise is low enough
+						if (chestExtent < 0.0085) {
+							lootChests.add(mutable.set(x, y + 1, z).toImmutable());
+						}
+
 						// If the structure start noise is low enough, place a structure
-						if (worleyAt < 0.005) {
+						if (structureExtent < 0.005) {
 							structureStarts.add(mutable.set(x, y, z).toImmutable());
 						}
 					} else if ((height - y) <= 3) {
@@ -132,9 +148,43 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			}
 		}
 
+		Long2ObjectOpenHashMap<LootProvider> structureLootRefs = new Long2ObjectOpenHashMap<>();
+		structureLootRefs.defaultReturnValue(LootProviders.GENERIC);
+
 		System.out.println("Generating structures!");
 		for (BlockPos pos : structureStarts) {
 			new HouseStructure(pos).generate(builder);
+			for (int x = -32; x <= 32; x++) {
+			    for (int z = -32; z <= 32; z++) {
+					structureLootRefs.put(BlockPos.asLong(pos.getX() + x, 0, pos.getZ() + z), LootProviders.HOUSE);
+			    }
+			}
+		}
+
+		System.out.println("Generating chests!");
+		for (BlockPos pos : lootChests) {
+			Map<LootProvider, Integer> providerCounts = new HashMap<>();
+
+			for (int x = -32; x <= 32; x++) {
+				for (int z = -32; z <= 32; z++) {
+					LootProvider provider = structureLootRefs.get(BlockPos.asLong(pos.getX() + x, 0, pos.getZ() + z));
+					int count = providerCounts.containsKey(provider) ? providerCounts.get(provider) + 1 : 1;
+					providerCounts.put(provider, count);
+				}
+			}
+
+			List<LootProviderEntry> entries = new ArrayList<>();
+			for (Map.Entry<LootProvider, Integer> entry : providerCounts.entrySet()) {
+				entries.add(new LootProviderEntry(entry.getKey(), entry.getValue()));
+			}
+
+			List<ItemStack> stacks = LootHelper.get(entries);
+			builder.setBlockState(pos, Blocks.CHEST.getDefaultState());
+			ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(pos);
+
+			for (int i = 0; i < stacks.size(); i++) {
+				be.setStack(random.nextInt(27), stacks.get(i));
+			}
 		}
 
 		// Feature generation stack

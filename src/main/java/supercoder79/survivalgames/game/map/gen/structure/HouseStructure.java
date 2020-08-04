@@ -30,7 +30,7 @@ public class HouseStructure implements MapGen {
 				builder.setBlockState(origin.add(x, 0, z), STATES.pickRandom(random));
 				builder.setBlockState(origin.add(x, 4, z), STATES.pickRandom(random));
 
-				for (int y = 0; y <= 3; y++) {
+				for (int y = 1; y <= 3; y++) {
 					if (Math.abs(x) == 2 || Math.abs(z) == 2) {
 						builder.setBlockState(origin.add(x, y, z), STATES.pickRandom(random));
 					} else {
@@ -46,7 +46,8 @@ public class HouseStructure implements MapGen {
 		builder.setBlockState(origin.add(2, 1, 0), Blocks.AIR.getDefaultState());
 		builder.setBlockState(origin.add(2, 2, 0), Blocks.AIR.getDefaultState());
 
-		builder.setBlockState(origin.add(-1, 1, -1), Blocks.CHEST.getDefaultState());
+		//TODO: chest provider rewrite
+//		builder.setBlockState(origin.add(-1, 1, -1), Blocks.CHEST.getDefaultState());
 		//TODO: loot provider
 	}
 }

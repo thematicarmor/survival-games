@@ -64,7 +64,7 @@ public final class SurvivalGamesWaiting {
 			return StartResult.notEnoughPlayers();
 		}
 
-		Game active = SurvivalGamesActive.open(this.map, this.config, game.getPlayers());
+		Game active = SurvivalGamesActive.open(this.map, this.config, game.getPlayerIds());
 		return StartResult.ok(active);
 	}
 

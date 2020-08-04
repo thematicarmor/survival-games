@@ -132,7 +132,7 @@ public class SurvivalGamesActive {
 
 	private void broadcastMessage(Game game, Text message) {
 		ServerWorld world = game.getWorld();
-		for (UUID playerId : game.getPlayers()) {
+		for (UUID playerId : game.getPlayerIds()) {
 			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
 			if (otherPlayer != null) {
 				otherPlayer.sendMessage(message, false);
@@ -142,7 +142,7 @@ public class SurvivalGamesActive {
 
 	private void broadcastSound(Game game, SoundEvent sound) {
 		ServerWorld world = game.getWorld();
-		for (UUID playerId : game.getPlayers()) {
+		for (UUID playerId : game.getPlayerIds()) {
 			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
 			if (otherPlayer != null) {
 				otherPlayer.playSound(sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
