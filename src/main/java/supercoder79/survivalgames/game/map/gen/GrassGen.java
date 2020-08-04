@@ -11,8 +11,9 @@ import net.minecraft.util.math.BlockPos;
 
 public class GrassGen implements MapGen {
 	private static final WeightedList<BlockState> STATES = new WeightedList<BlockState>()
-			.add(Blocks.GRASS.getDefaultState(), 16)
-			.add(Blocks.DANDELION.getDefaultState(), 1);
+			.add(Blocks.GRASS.getDefaultState(), 32)
+			.add(Blocks.DANDELION.getDefaultState(), 1)
+			.add(Blocks.POPPY.getDefaultState(), 1);
 
 	private final BlockPos origin;
 

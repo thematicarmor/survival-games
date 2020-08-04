@@ -1,7 +1,10 @@
 package supercoder79.survivalgames.game.map;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.mojang.serialization.Codec;
 import kdotjpg.opensimplex.OpenSimplexNoise;
@@ -13,11 +16,13 @@ import supercoder79.survivalgames.game.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
+import supercoder79.survivalgames.noise.WorleyNoise;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 
 public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig> {
@@ -51,7 +56,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				}
 			}
 
-			System.out.println((x + 280) / 540.0);
+//			System.out.println((x + 280) / 560.0);
 		}
 
 		Random random = new Random();
@@ -59,10 +64,12 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		OpenSimplexNoise lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise detailNoise = new OpenSimplexNoise(random.nextLong());
+		WorleyNoise structureNoise = new WorleyNoise(random.nextLong());
 
 		System.out.println("Generating terrain...");
 		long time = System.currentTimeMillis();
 
+		List<BlockPos> structureStarts = new CopyOnWriteArrayList<>();
 		int[] heightmap = new int[513 * 513];
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
@@ -85,11 +92,18 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				int height = 60 + (int)noise;
 				heightmap[((x + 256) * 512) + (z + 256)] = height;
 
+				double worleyAt = structureNoise.sample(x / 120.0, z / 120.0);
+
 				for (int y = 0; y <= height; y++) {
 					// Simple surface building
 					BlockState state = Blocks.STONE.getDefaultState();
 					if (y == height) {
 						state = Blocks.GRASS_BLOCK.getDefaultState();
+
+						// If the structure start noise is low enough, place a structure
+						if (worleyAt < 0.005) {
+							structureStarts.add(mutable.set(x, y, z).toImmutable());
+						}
 					} else if ((height - y) <= 3) {
 						state = Blocks.DIRT.getDefaultState();
 					}
@@ -98,7 +112,31 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				}
 			}
 
-			System.out.println((x + 256) / 512.0);
+//			System.out.println((x + 256) / 512.0);
+		}
+
+		// Pre-process structure data
+		for (BlockPos pos : structureStarts) {
+			for (int x = -1; x <= 1; x++) {
+				for (int z = -1; z <= 1; z++) {
+					for (int y = -1; y <= 1; y++) {
+						if (x == 0 && z == 0 && y == 0) continue;
+
+						BlockPos local = pos.add(x, y, z);
+						if (structureStarts.contains(local)) {
+							System.out.println("Removing pos");
+							structureStarts.remove(pos.add(x, y, z));
+						}
+					}
+				}
+			}
+		}
+
+		System.out.println("Generating structures!");
+		for (BlockPos pos : structureStarts) {
+			for (int y = 0; y < 20; y++) {
+				builder.setBlockState(pos.up(y), Blocks.GLOWSTONE.getDefaultState());
+			}
 		}
 
 		// Feature generation stack
@@ -110,7 +148,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			for (int z = -256; z <= 256; z++) {
 				// Generate trees in certain areas
 				int y = heightmap[((x + 256) * 512) + (z + 256)];
-				
+
 				if (treeGenMask.eval(x / 80.0, z / 80.0) > 0) {
 					if (random.nextInt(80 + (int) (treeDensity.eval(x / 45.0, z / 45.0) * 30)) == 0) {
 						double typeNoise = treeType.eval(x / 120.0, z / 120.0) * 2.5;

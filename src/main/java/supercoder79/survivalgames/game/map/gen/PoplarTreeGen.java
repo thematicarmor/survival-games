@@ -19,6 +19,10 @@ public class PoplarTreeGen implements MapGen {
 
 	@Override
 	public void generate(GameMapBuilder builder) {
+		if (builder.getBlockState(origin) != Blocks.GRASS_BLOCK.getDefaultState()) {
+			return;
+		}
+
 		Random random = new Random();
 
 		double maxRadius = 2.6 + ((random.nextDouble() - 0.5) * 0.2);
