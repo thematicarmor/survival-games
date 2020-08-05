@@ -30,18 +30,18 @@ public class TowerStructure implements StructureGen {
 		int height = random.nextInt(5) + 8;
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
-				builder.setBlockState(origin.add(x, 0, z), STATES.pickRandom(random));
+				builder.setBlockState(origin.add(x, 0, z), STATES.pickRandom(random), false);
 
 				for (int y = 1; y <= height; y++) {
 					if (Math.abs(x) == 1 || Math.abs(z) == 1) {
 						if (z == 1) {
 							// Make sure all the ladders have supporting blocks
-							builder.setBlockState(origin.add(x, y, z), Blocks.OAK_PLANKS.getDefaultState());
+							builder.setBlockState(origin.add(x, y, z), Blocks.OAK_PLANKS.getDefaultState(), false);
 						} else {
-							builder.setBlockState(origin.add(x, y, z), STATES.pickRandom(random));
+							builder.setBlockState(origin.add(x, y, z), STATES.pickRandom(random), false);
 						}
 					} else {
-						builder.setBlockState(origin.add(x, y, z), Blocks.LADDER.getDefaultState());
+						builder.setBlockState(origin.add(x, y, z), Blocks.LADDER.getDefaultState(), false);
 					}
 				}
 			}
@@ -53,15 +53,15 @@ public class TowerStructure implements StructureGen {
 					continue;
 				}
 
-				builder.setBlockState(origin.add(x, height, z), STATES.pickRandom(random));
+				builder.setBlockState(origin.add(x, height, z), STATES.pickRandom(random), false);
 				if (Math.abs(x) == 2 && Math.abs(z) == 2) {
-					builder.setBlockState(origin.add(x, height + 1, z), Blocks.OAK_FENCE.getDefaultState());
+					builder.setBlockState(origin.add(x, height + 1, z), Blocks.OAK_FENCE.getDefaultState(), false);
 				}
 			}
 		}
 
-		builder.setBlockState(origin.add(0, 1, -1), Blocks.AIR.getDefaultState());
-		builder.setBlockState(origin.add(0, 2, -1), Blocks.AIR.getDefaultState());
+		builder.setBlockState(origin.add(0, 1, -1), Blocks.AIR.getDefaultState(), false);
+		builder.setBlockState(origin.add(0, 2, -1), Blocks.AIR.getDefaultState(), false);
 	}
 
 	@Override

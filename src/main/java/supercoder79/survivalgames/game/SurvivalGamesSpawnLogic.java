@@ -3,9 +3,7 @@ package supercoder79.survivalgames.game;
 import java.util.Random;
 
 import net.gegy1000.plasmid.game.map.GameMap;
-import net.gegy1000.plasmid.world.BlockBounds;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;

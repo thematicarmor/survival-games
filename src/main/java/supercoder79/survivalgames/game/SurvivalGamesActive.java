@@ -15,13 +15,10 @@ import net.gegy1000.plasmid.game.event.PlayerRejoinListener;
 import net.gegy1000.plasmid.game.map.GameMap;
 import net.gegy1000.plasmid.game.rule.GameRule;
 import net.gegy1000.plasmid.game.rule.RuleResult;
-import net.gegy1000.plasmid.util.ItemStackBuilder;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.network.packet.s2c.play.WorldBorderS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -39,6 +36,8 @@ public class SurvivalGamesActive {
 	private final Set<UUID> participants;
 
 	private final SurvivalGamesSpawnLogic spawnLogic;
+	private long startTime;
+	private boolean borderShrinkStarted = false;
 
 	private SurvivalGamesActive(GameMap map, SurvivalGamesConfig config, Set<UUID> participants) {
 		this.map = map;
@@ -77,10 +76,21 @@ public class SurvivalGamesActive {
 
 	private void open(Game game) {
 		ServerWorld world = game.getWorld();
+
+		// World border stuff
+		world.getWorldBorder().setCenter(0, 0);
+		world.getWorldBorder().setSize(512);
+		world.getWorldBorder().setDamagePerBlock(0.1);
+		startTime = world.getTime();
+
 		for (UUID playerId : this.participants) {
 			ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
 			if (player != null) {
 				this.spawnParticipant(player);
+				player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.SET_CENTER));
+				player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.SET_SIZE));
+				//TODO: check if this works
+				player.setCustomName(new LiteralText(""));
 			}
 		}
 	}
@@ -96,6 +106,19 @@ public class SurvivalGamesActive {
 	}
 
 	private void tick(Game game) {
+		if (!this.borderShrinkStarted) {
+			ServerWorld world = game.getWorld();
+			if ((world.getTime() - startTime) > 120 * 20) {
+				borderShrinkStarted = true;
+				world.getWorldBorder().interpolateSize(512, 16, 1000 * 60 * 8);
+				for (UUID playerId : this.participants) {
+					ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
+					if (player != null) {
+						player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.LERP_SIZE));
+					}
+				}
+			}
+		}
 	}
 
 	private boolean onPlayerDamage(Game game, ServerPlayerEntity player, DamageSource source, float amount) {
@@ -109,7 +132,7 @@ public class SurvivalGamesActive {
 	}
 
 	private void spawnParticipant(ServerPlayerEntity player) {
-		this.spawnLogic.resetPlayer(player, GameMode.ADVENTURE);
+		this.spawnLogic.resetPlayer(player, GameMode.SURVIVAL);
 		this.spawnLogic.spawnPlayer(player);
 
 		for (ItemStack stack : config.getKit()) {

@@ -18,11 +18,11 @@ public class EnchantingTableStructure implements StructureGen {
 	public void generate(GameMapBuilder builder) {
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
-				builder.setBlockState(origin.add(x, 0, z), Blocks.OAK_PLANKS.getDefaultState());
+				builder.setBlockState(origin.add(x, 0, z), Blocks.OAK_PLANKS.getDefaultState(), false);
 			}
 		}
 
-		builder.setBlockState(origin.up(), Blocks.ENCHANTING_TABLE.getDefaultState());
+		builder.setBlockState(origin.up(), Blocks.ENCHANTING_TABLE.getDefaultState(), false);
 	}
 
 	@Override

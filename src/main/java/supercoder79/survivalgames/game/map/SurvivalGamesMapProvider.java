@@ -77,6 +77,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			}
 		}
 
+		// TODO: remove all item entities from map
+
 		Random random = new Random();
 		OpenSimplexNoise interpolationNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
@@ -132,6 +134,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 						}
 					} else if ((height - y) <= 3) {
 						state = Blocks.DIRT.getDefaultState();
+					} else if (y == 0) {
+						state = Blocks.BEDROCK.getDefaultState();
 					}
 
 					builder.setBlockState(mutable.set(x, y, z), state, false);
@@ -192,7 +196,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			}
 
 			List<ItemStack> stacks = LootHelper.get(entries);
-			builder.setBlockState(pos, Blocks.CHEST.getDefaultState());
+			builder.setBlockState(pos, Blocks.CHEST.getDefaultState(), false);
 			ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(pos);
 
 			for (ItemStack stack : stacks) {

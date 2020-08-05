@@ -3,7 +3,6 @@ package supercoder79.survivalgames.game.map.gen.structure;
 import java.util.Random;
 
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
-import supercoder79.survivalgames.game.map.gen.MapGen;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 
@@ -29,14 +28,14 @@ public class HouseStructure implements StructureGen {
 
 		for (int x = -2; x <= 2; x++) {
 			for (int z = -2; z <= 2; z++) {
-				builder.setBlockState(origin.add(x, 0, z), STATES.pickRandom(random));
-				builder.setBlockState(origin.add(x, 4, z), STATES.pickRandom(random));
+				builder.setBlockState(origin.add(x, 0, z), STATES.pickRandom(random), false);
+				builder.setBlockState(origin.add(x, 4, z), STATES.pickRandom(random), false);
 
 				for (int y = 1; y <= 3; y++) {
 					if (Math.abs(x) == 2 || Math.abs(z) == 2) {
-						builder.setBlockState(origin.add(x, y, z), STATES.pickRandom(random));
+						builder.setBlockState(origin.add(x, y, z), STATES.pickRandom(random), false);
 					} else {
-						builder.setBlockState(origin.add(x, y, z), Blocks.AIR.getDefaultState());
+						builder.setBlockState(origin.add(x, y, z), Blocks.AIR.getDefaultState(), false);
 					}
 				}
 			}
@@ -45,12 +44,11 @@ public class HouseStructure implements StructureGen {
 		//TODO: roof
 
 		// Door
-		builder.setBlockState(origin.add(2, 1, 0), Blocks.AIR.getDefaultState());
-		builder.setBlockState(origin.add(2, 2, 0), Blocks.AIR.getDefaultState());
+		builder.setBlockState(origin.add(2, 1, 0), Blocks.AIR.getDefaultState(), false);
+		builder.setBlockState(origin.add(2, 2, 0), Blocks.AIR.getDefaultState(), false);
 
 		//TODO: chest provider rewrite
 //		builder.setBlockState(origin.add(-1, 1, -1), Blocks.CHEST.getDefaultState());
-		//TODO: loot provider
 	}
 
 	@Override
