@@ -75,8 +75,6 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 					builder.setBlockState(mutable.set(x, y, z), Blocks.AIR.getDefaultState(), false);
 				}
 			}
-
-			System.out.println((x + 280) / 560.0);
 		}
 
 		Random random = new Random();
@@ -139,8 +137,6 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 					builder.setBlockState(mutable.set(x, y, z), state, false);
 				}
 			}
-
-			System.out.println((x + 256) / 512.0);
 		}
 
 		// Pre-process structure data

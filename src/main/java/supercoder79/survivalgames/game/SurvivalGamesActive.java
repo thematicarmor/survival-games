@@ -112,7 +112,9 @@ public class SurvivalGamesActive {
 		this.spawnLogic.resetPlayer(player, GameMode.ADVENTURE);
 		this.spawnLogic.spawnPlayer(player);
 
-		//TODO: kit customization
+		for (ItemStack stack : config.getKit()) {
+			player.inventory.insertStack(stack);
+		}
 	}
 
 	private void eliminatePlayer(Game game, ServerPlayerEntity player) {
