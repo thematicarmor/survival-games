@@ -15,11 +15,6 @@ public class EnchantingTableStructure implements StructureGen {
 	}
 
 	@Override
-	public LootProvider getLootProvider() {
-		return LootProviders.ENCHANTING_TABLE;
-	}
-
-	@Override
 	public void generate(GameMapBuilder builder) {
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
@@ -28,5 +23,10 @@ public class EnchantingTableStructure implements StructureGen {
 		}
 
 		builder.setBlockState(origin.up(), Blocks.ENCHANTING_TABLE.getDefaultState());
+	}
+
+	@Override
+	public LootProvider getLootProvider() {
+		return LootProviders.ENCHANTING_TABLE;
 	}
 }

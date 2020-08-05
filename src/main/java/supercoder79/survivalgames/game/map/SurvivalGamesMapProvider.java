@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -22,6 +23,7 @@ import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
 import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
+import supercoder79.survivalgames.game.map.gen.structure.TowerStructure;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
@@ -33,11 +35,18 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.collection.WeightedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig> {
+	public static final WeightedList<Function<BlockPos, StructureGen>> STRUCTURE_POOl = new WeightedList<Function<BlockPos, StructureGen>>()
+			.add(HouseStructure::new, 1)
+			.add(EnchantingTableStructure::new, 1)
+			.add(TowerStructure::new, 1);
+
 	public static final Codec<SurvivalGamesMapProvider> CODEC = Codec.unit(new SurvivalGamesMapProvider());
+
 	@Override
 	public CompletableFuture<GameMap> createAt(ServerWorld world, BlockPos origin, SurvivalGamesConfig config) {
 		BlockBounds bounds = new BlockBounds(
@@ -139,7 +148,9 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			for (int x = -1; x <= 1; x++) {
 				for (int z = -1; z <= 1; z++) {
 					for (int y = -1; y <= 1; y++) {
-						if (x == 0 && z == 0 && y == 0) continue;
+						if (x == 0 && z == 0 && y == 0) {
+							continue;
+						}
 
 						BlockPos local = pos.add(x, y, z);
 						if (structureStarts.contains(local)) {
@@ -155,20 +166,13 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		System.out.println("Generating structures!");
 		for (BlockPos pos : structureStarts) {
-			//TODO: weighted list
-			int chosenStructure = random.nextInt(2);
-			StructureGen structure;
-			if (chosenStructure == 0) {
-				structure = new HouseStructure(pos);
-			} else {
-				structure = new EnchantingTableStructure(pos);
-			}
+			StructureGen structure = STRUCTURE_POOl.pickRandom(random).apply(pos);
 
 			structure.generate(builder);
-
 			LootProvider provider = structure.getLootProvider();
-			for (int x = -32; x <= 32; x++) {
-			    for (int z = -32; z <= 32; z++) {
+
+			for (int x = -48; x <= 48; x++) {
+			    for (int z = -48; z <= 48; z++) {
 					structureLootRefs.put(BlockPos.asLong(pos.getX() + x, 0, pos.getZ() + z), provider);
 			    }
 			}
@@ -178,8 +182,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		for (BlockPos pos : lootChests) {
 			Map<LootProvider, Integer> providerCounts = new HashMap<>();
 
-			for (int x = -32; x <= 32; x++) {
-				for (int z = -32; z <= 32; z++) {
+			for (int x = -48; x <= 48; x++) {
+				for (int z = -48; z <= 48; z++) {
 					LootProvider provider = structureLootRefs.get(BlockPos.asLong(pos.getX() + x, 0, pos.getZ() + z));
 					int count = providerCounts.containsKey(provider) ? providerCounts.get(provider) + 1 : 1;
 					providerCounts.put(provider, count);
