@@ -54,4 +54,13 @@ public class LootProviders {
 			.add(new ItemStack(Items.IRON_LEGGINGS, 1), 6)
 			.add(new ItemStack(Items.IRON_BOOTS, 1), 6),
 			6, 11);
+
+	public static final LootProvider FARMLAND = new LootProvider(new WeightedList<ItemStack>()
+			.add(new ItemStack(Items.IRON_SWORD, 1), 6)
+			.add(new ItemStack(Items.SHIELD, 1), 6)
+			.add(new ItemStack(Items.GOLDEN_APPLE, 1), 1)
+			.add(new ItemStack(Items.BUCKET, 1), 4)
+			.add(new ItemStack(Items.WATER_BUCKET, 1), 3)
+			.add(new ItemStack(Items.NETHERITE_HOE, 1), 1),
+			8, 13);
 }

@@ -32,14 +32,14 @@ public class OrePileStructure implements StructureGen {
 		}
 
 		Random random = new Random();
-		int count = random.nextInt(5) + 2;
+		int count = random.nextInt(6) + 3;
 		for (int i = 0; i < count; i++) {
 			int slX = random.nextInt(12) - random.nextInt(12);
 			int slY = random.nextInt(3) - random.nextInt(3);
 			int slZ = random.nextInt(12) - random.nextInt(12);
 			BlockPos stackLocal = origin.add(slX, slY, slZ);
 			BlockState state = STATES.pickRandom(random);
-			for (int j = 0; j < 32; j++) {
+			for (int j = 0; j < 40; j++) {
 				int aX = random.nextInt(4) - random.nextInt(4);
 				int aY = random.nextInt(6) - random.nextInt(6);
 				int aZ = random.nextInt(4) - random.nextInt(4);

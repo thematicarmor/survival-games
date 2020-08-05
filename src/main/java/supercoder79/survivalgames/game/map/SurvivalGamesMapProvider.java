@@ -21,6 +21,7 @@ import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
+import supercoder79.survivalgames.game.map.gen.structure.FarmlandPatchStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
 import supercoder79.survivalgames.game.map.gen.structure.OrePileStructure;
 import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
@@ -45,7 +46,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 			.add(HouseStructure::new, 1)
 			.add(EnchantingTableStructure::new, 1)
 			.add(TowerStructure::new, 1)
-			.add(OrePileStructure::new, 1);
+			.add(OrePileStructure::new, 1)
+			.add(FarmlandPatchStructure::new, 1);
 
 	public static final Codec<SurvivalGamesMapProvider> CODEC = Codec.unit(new SurvivalGamesMapProvider());
 

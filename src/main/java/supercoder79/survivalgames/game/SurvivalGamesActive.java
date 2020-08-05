@@ -15,6 +15,7 @@ import net.gegy1000.plasmid.game.event.PlayerRejoinListener;
 import net.gegy1000.plasmid.game.map.GameMap;
 import net.gegy1000.plasmid.game.rule.GameRule;
 import net.gegy1000.plasmid.game.rule.RuleResult;
+import net.gegy1000.plasmid.util.PlayerRef;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
@@ -33,13 +34,13 @@ public class SurvivalGamesActive {
 	private final GameMap map;
 	private final SurvivalGamesConfig config;
 
-	private final Set<UUID> participants;
+	private final Set<PlayerRef> participants;
 
 	private final SurvivalGamesSpawnLogic spawnLogic;
 	private long startTime;
 	private boolean borderShrinkStarted = false;
 
-	private SurvivalGamesActive(GameMap map, SurvivalGamesConfig config, Set<UUID> participants) {
+	private SurvivalGamesActive(GameMap map, SurvivalGamesConfig config, Set<PlayerRef> participants) {
 		this.map = map;
 		this.config = config;
 		this.participants = participants;
@@ -47,7 +48,7 @@ public class SurvivalGamesActive {
 		this.spawnLogic = new SurvivalGamesSpawnLogic(map);
 	}
 
-	public static Game open(GameMap map, SurvivalGamesConfig config, Set<UUID> participants) {
+	public static Game open(GameMap map, SurvivalGamesConfig config, Set<PlayerRef> participants) {
 		SurvivalGamesActive active = new SurvivalGamesActive(map, config, participants);
 
 		Game.Builder builder = Game.builder();
@@ -83,8 +84,8 @@ public class SurvivalGamesActive {
 		world.getWorldBorder().setDamagePerBlock(0.1);
 		startTime = world.getTime();
 
-		for (UUID playerId : this.participants) {
-			ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
+		for (PlayerRef playerId : this.participants) {
+			ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
 			if (player != null) {
 				this.spawnParticipant(player);
 				player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.SET_CENTER));
@@ -111,8 +112,8 @@ public class SurvivalGamesActive {
 			if ((world.getTime() - startTime) > 120 * 20) {
 				borderShrinkStarted = true;
 				world.getWorldBorder().interpolateSize(512, 16, 1000 * 60 * 8);
-				for (UUID playerId : this.participants) {
-					ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
+				for (PlayerRef playerId : this.participants) {
+					ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
 					if (player != null) {
 						player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.LERP_SIZE));
 					}
@@ -157,8 +158,8 @@ public class SurvivalGamesActive {
 
 	private void broadcastMessage(Game game, Text message) {
 		ServerWorld world = game.getWorld();
-		for (UUID playerId : game.getPlayerIds()) {
-			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
+		for (PlayerRef playerId : game.getPlayers()) {
+			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
 			if (otherPlayer != null) {
 				otherPlayer.sendMessage(message, false);
 			}
@@ -167,8 +168,8 @@ public class SurvivalGamesActive {
 
 	private void broadcastSound(Game game, SoundEvent sound) {
 		ServerWorld world = game.getWorld();
-		for (UUID playerId : game.getPlayerIds()) {
-			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId);
+		for (PlayerRef playerId : game.getPlayers()) {
+			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
 			if (otherPlayer != null) {
 				otherPlayer.playSound(sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
 			}
