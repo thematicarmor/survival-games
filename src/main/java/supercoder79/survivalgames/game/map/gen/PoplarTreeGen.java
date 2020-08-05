@@ -19,7 +19,7 @@ public class PoplarTreeGen implements MapGen {
 
 	@Override
 	public void generate(GameMapBuilder builder) {
-		if (builder.getBlockState(origin) != Blocks.GRASS_BLOCK.getDefaultState()) {
+		if (builder.getBlockState(origin) != Blocks.GRASS_BLOCK.getDefaultState() || !builder.getBlockState(origin.up()).isAir()) {
 			return;
 		}
 

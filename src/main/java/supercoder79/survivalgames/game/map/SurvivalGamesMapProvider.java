@@ -22,6 +22,7 @@ import supercoder79.survivalgames.game.map.gen.GrassGen;
 import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
+import supercoder79.survivalgames.game.map.gen.structure.OrePileStructure;
 import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
 import supercoder79.survivalgames.game.map.gen.structure.TowerStructure;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
@@ -43,15 +44,16 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 	public static final WeightedList<Function<BlockPos, StructureGen>> STRUCTURE_POOl = new WeightedList<Function<BlockPos, StructureGen>>()
 			.add(HouseStructure::new, 1)
 			.add(EnchantingTableStructure::new, 1)
-			.add(TowerStructure::new, 1);
+			.add(TowerStructure::new, 1)
+			.add(OrePileStructure::new, 1);
 
 	public static final Codec<SurvivalGamesMapProvider> CODEC = Codec.unit(new SurvivalGamesMapProvider());
 
 	@Override
 	public CompletableFuture<GameMap> createAt(ServerWorld world, BlockPos origin, SurvivalGamesConfig config) {
 		BlockBounds bounds = new BlockBounds(
-				new BlockPos(-512, 0, -512),
-				new BlockPos(512, 120, 512)
+				new BlockPos(-256, 0, -256),
+				new BlockPos(256, 120, 256)
 		);
 
 		GameMapBuilder builder = GameMapBuilder.open(world, origin, bounds);

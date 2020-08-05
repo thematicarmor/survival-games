@@ -43,4 +43,15 @@ public class LootProviders {
 			.add(new ItemStack(Items.BOW, 1), 3)
 			.add(new ItemStack(Items.ARROW, 8), 4),
 			8, 13);
+
+	public static final LootProvider ORE_PILE = new LootProvider(new WeightedList<ItemStack>()
+			.add(new ItemStack(Items.IRON_SWORD, 1), 16)
+			.add(new ItemStack(Items.SHIELD, 1), 8)
+			.add(new ItemStack(Items.IRON_INGOT, 4), 8)
+			.add(new ItemStack(Items.BUCKET, 1), 4)
+			.add(new ItemStack(Items.IRON_HELMET, 1), 6)
+			.add(new ItemStack(Items.IRON_CHESTPLATE, 1), 6)
+			.add(new ItemStack(Items.IRON_LEGGINGS, 1), 6)
+			.add(new ItemStack(Items.IRON_BOOTS, 1), 6),
+			6, 11);
 }
