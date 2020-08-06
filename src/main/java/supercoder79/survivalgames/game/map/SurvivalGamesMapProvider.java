@@ -84,6 +84,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		// TODO: remove all item entities from map
 
 		Random random = new Random();
+		OpenSimplexNoise baseNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise interpolationNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
@@ -102,18 +103,18 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 				// A similar method to MC interpolation noise
 				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
-				double noise;
+				double noise = baseNoise.eval(x / 256.0, z / 256.0) * 16;
 				if (lerp > 1) {
-					noise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 12;
+					noise += upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 16;
 				} else if (lerp < 0) {
-					noise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * 8;
+					noise += lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * 10;
 				} else {
-					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 12;
-					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * 8;
-					noise = MathHelper.lerp(lerp, lowerNoise, upperNoise);
+					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 16;
+					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * 10;
+					noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 				}
 
-				noise += detailNoise.eval(x / 20.0, z / 20.0) * 3;
+				noise += detailNoise.eval(x / 20.0, z / 20.0) * 3.25;
 
 				int height = 60 + (int)noise;
 				heightmap[((x + 256) * 512) + (z + 256)] = height;
