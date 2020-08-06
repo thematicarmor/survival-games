@@ -11,9 +11,9 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    mavenLocal()
     maven { url = "https://jitpack.io/" }
     maven { url = "https://maven.gegy.dev/" }
-    mavenLocal()
 }
 
 dependencies {
@@ -26,7 +26,7 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // Plasmid
-    modImplementation "net.gegy1000:plasmid:0.1.0+build.26"
+    modImplementation "net.gegy1000:plasmid:0.1.0+build.27"
 
     implementation "kdotjpg:open-simplex:2.0"
     include "kdotjpg:open-simplex:2.0"

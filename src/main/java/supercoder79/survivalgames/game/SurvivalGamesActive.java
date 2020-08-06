@@ -68,7 +68,6 @@ public class SurvivalGamesActive {
 
 		builder.on(GameTickListener.EVENT, active::tick);
 
-		builder.on(PlayerDamageListener.EVENT, active::onPlayerDamage);
 		builder.on(PlayerDeathListener.EVENT, active::onPlayerDeath);
 		builder.on(PlayerRejoinListener.EVENT, active::rejoinPlayer);
 
@@ -81,7 +80,7 @@ public class SurvivalGamesActive {
 		// World border stuff
 		world.getWorldBorder().setCenter(0, 0);
 		world.getWorldBorder().setSize(512);
-		world.getWorldBorder().setDamagePerBlock(0.1);
+		world.getWorldBorder().setDamagePerBlock(0.5);
 		startTime = world.getTime();
 
 		for (PlayerRef playerId : this.participants) {
@@ -109,7 +108,7 @@ public class SurvivalGamesActive {
 	private void tick(Game game) {
 		if (!this.borderShrinkStarted) {
 			ServerWorld world = game.getWorld();
-			if ((world.getTime() - startTime) > 120 * 20) {
+			if ((world.getTime() - startTime) > 90 * 20) {
 				borderShrinkStarted = true;
 				world.getWorldBorder().interpolateSize(512, 16, 1000 * 60 * 8);
 				for (PlayerRef playerId : this.participants) {
@@ -120,11 +119,6 @@ public class SurvivalGamesActive {
 				}
 			}
 		}
-	}
-
-	private boolean onPlayerDamage(Game game, ServerPlayerEntity player, DamageSource source, float amount) {
-		//TODO: send chat events for damage
-		return true;
 	}
 
 	private boolean onPlayerDeath(Game game, ServerPlayerEntity player, DamageSource source) {

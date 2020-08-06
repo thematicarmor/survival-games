@@ -19,7 +19,7 @@ public final class LootHelper {
 		for (LootProviderEntry entry : entries) {
 			weights.add(entry.provider.stacks, entry.count);
 			maxCount += entry.provider.maxCount * entry.count;
-			minCount += entry.provider.minCount  * entry.count;
+			minCount += entry.provider.minCount * entry.count;
 			count += entry.count;
 		}
 

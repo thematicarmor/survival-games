@@ -1,13 +1,19 @@
 package supercoder79.survivalgames.game.map.gen.structure;
 
+import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.ImmutableList;
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
+import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.WeightedList;
 import net.minecraft.util.math.BlockPos;
 
@@ -47,8 +53,14 @@ public class HouseStructure implements StructureGen {
 		builder.setBlockState(origin.add(2, 1, 0), Blocks.AIR.getDefaultState(), false);
 		builder.setBlockState(origin.add(2, 2, 0), Blocks.AIR.getDefaultState(), false);
 
-		//TODO: chest provider rewrite
-//		builder.setBlockState(origin.add(-1, 1, -1), Blocks.CHEST.getDefaultState());
+
+		List<ItemStack> stacks = LootHelper.get(ImmutableList.of(new LootProviderEntry(LootProviders.HOUSE, 96 * 96)));
+		builder.setBlockState(origin.add(-1, 1, -1), Blocks.CHEST.getDefaultState());
+		ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(origin.add(-1, 1, -1));
+
+		for (ItemStack stack : stacks) {
+			be.setStack(random.nextInt(27), stack);
+		}
 	}
 
 	@Override

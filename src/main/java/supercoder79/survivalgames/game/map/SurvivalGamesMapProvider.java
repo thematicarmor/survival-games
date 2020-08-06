@@ -128,7 +128,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 						state = Blocks.GRASS_BLOCK.getDefaultState();
 
 						// Add a chest if the chest noise is low enough
-						if (chestExtent < 0.0085) {
+						if (chestExtent < 0.01) {
 							lootChests.add(mutable.set(x, y + 1, z).toImmutable());
 						}
 
