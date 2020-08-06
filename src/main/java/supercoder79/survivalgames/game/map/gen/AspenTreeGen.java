@@ -19,7 +19,7 @@ public class AspenTreeGen implements MapGen {
 
 	@Override
 	public void generate(GameMapBuilder builder) {
-		if (builder.getBlockState(origin) != Blocks.GRASS_BLOCK.getDefaultState() || !builder.getBlockState(origin.up()).isAir()) {
+		if (builder.getBlockState(origin.down()) != Blocks.GRASS_BLOCK.getDefaultState() || !builder.getBlockState(origin).isAir()) {
 			return;
 		}
 

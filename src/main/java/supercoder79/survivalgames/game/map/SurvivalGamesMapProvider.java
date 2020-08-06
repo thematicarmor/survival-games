@@ -101,9 +101,11 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
 
-				// A similar method to MC interpolation noise
-				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
+				// Create base terrain
 				double noise = baseNoise.eval(x / 256.0, z / 256.0) * 16;
+
+				// Add hills in a similar method to mc interpolation noise
+				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
 				if (lerp > 1) {
 					noise += upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 16;
 				} else if (lerp < 0) {
@@ -114,28 +116,38 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 					noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 				}
 
+				// Add small details to make the terrain less rounded
 				noise += detailNoise.eval(x / 20.0, z / 20.0) * 3.25;
 
 				int height = 60 + (int)noise;
 				heightmap[((x + 256) * 512) + (z + 256)] = height;
 
+				// Get extent data from voronoi noises
 				double structureExtent = structureNoise.sample(x / 120.0, z / 120.0);
 				double chestExtent = chestNoise.sample(x / 45.0, z / 45.0);
 
-				for (int y = 0; y <= height; y++) {
+				// Generation height ensures that the generator interates up to at least the water level.
+				int genHeight = Math.max(height, 48);
+				for (int y = 0; y <= genHeight; y++) {
 					// Simple surface building
 					BlockState state = Blocks.STONE.getDefaultState();
 					if (y == height) {
-						state = Blocks.GRASS_BLOCK.getDefaultState();
+						// If the height and the generation height are the same, it means that we're on land
+						if (height == genHeight) {
+							state = Blocks.GRASS_BLOCK.getDefaultState();
 
-						// Add a chest if the chest noise is low enough
-						if (chestExtent < 0.01) {
-							lootChests.add(mutable.set(x, y + 1, z).toImmutable());
-						}
+							// Add a chest if the chest noise is low enough
+							if (chestExtent < 0.01) {
+								lootChests.add(mutable.set(x, y + 1, z).toImmutable());
+							}
 
-						// If the structure start noise is low enough, place a structure
-						if (structureExtent < 0.005) {
-							structureStarts.add(mutable.set(x, y, z).toImmutable());
+							// If the structure start noise is low enough, place a structure
+							if (structureExtent < 0.005) {
+								structureStarts.add(mutable.set(x, y, z).toImmutable());
+							}
+						} else {
+							// height and genHeight are different, so we're under water. Place dirt instead of grass.
+							state = Blocks.DIRT.getDefaultState();
 						}
 					} else if ((height - y) <= 3) {
 						state = Blocks.DIRT.getDefaultState();
@@ -143,6 +155,12 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 						state = Blocks.BEDROCK.getDefaultState();
 					}
 
+					// If the y is higher than the land height, then we must place water
+					if (y > height) {
+						state = Blocks.WATER.getDefaultState();
+					}
+
+					// Set the state here
 					builder.setBlockState(mutable.set(x, y, z), state, false);
 				}
 			}
@@ -217,7 +235,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
 				// Generate trees in certain areas
-				int y = heightmap[((x + 256) * 512) + (z + 256)];
+				int y = heightmap[((x + 256) * 512) + (z + 256)] + 1;
 
 				if (treeGenMask.eval(x / 80.0, z / 80.0) > 0) {
 					if (random.nextInt(80 + (int) (treeDensity.eval(x / 45.0, z / 45.0) * 30)) == 0) {
@@ -238,7 +256,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				}
 
 				if (random.nextInt(12) == 0) {
-					new GrassGen(mutable.set(x, y, z)).generate(builder);
+					new GrassGen(mutable.set(x, y - 1, z)).generate(builder);
 				}
 			}
 		}
