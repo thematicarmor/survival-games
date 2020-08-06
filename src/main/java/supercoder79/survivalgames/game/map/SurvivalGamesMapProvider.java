@@ -17,9 +17,13 @@ import net.gegy1000.plasmid.game.map.GameMapBuilder;
 import net.gegy1000.plasmid.game.map.provider.MapProvider;
 import net.gegy1000.plasmid.world.BlockBounds;
 import supercoder79.survivalgames.game.SurvivalGamesConfig;
-import supercoder79.survivalgames.game.map.gen.AspenTreeGen;
-import supercoder79.survivalgames.game.map.gen.GrassGen;
-import supercoder79.survivalgames.game.map.gen.PoplarTreeGen;
+import supercoder79.survivalgames.game.map.gen.biome.BiomeGen;
+import supercoder79.survivalgames.game.map.gen.biome.BiomeProvider;
+import supercoder79.survivalgames.game.map.gen.biome.Biomes;
+import supercoder79.survivalgames.game.map.gen.biome.DefaultBiomeProvider;
+import supercoder79.survivalgames.game.map.gen.feature.AspenTreeGen;
+import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
+import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
 import supercoder79.survivalgames.game.map.gen.structure.FarmlandPatchStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
@@ -70,6 +74,16 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 	}
 
 	private void buildMap(GameMapBuilder builder) {
+		Random random = new Random();
+
+		//TODO: codec to choose
+		BiomeProvider biomeProvider = new DefaultBiomeProvider();
+		biomeProvider.initialize(random);
+
+		for (BiomeGen biome : Biomes.BIOMES) {
+			biome.setupSeed(random);
+		}
+
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		// TODO: config option for this
 		// Clean up map for testing purposes, faster than waiting for TACS >:(
@@ -83,7 +97,6 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		// TODO: remove all item entities from map
 
-		Random random = new Random();
 		OpenSimplexNoise baseNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise interpolationNoise = new OpenSimplexNoise(random.nextLong());
 		OpenSimplexNoise lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
@@ -100,26 +113,47 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		int[] heightmap = new int[513 * 513];
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
+				double baseFactor = 0;
+				double lowerFactor = 0;
+				double upperFactor = 0;
+				double weight = 0;
+
+				BiomeGen center = biomeProvider.get(x, z);
+
+				// Interpolate biome data
+				for (int bX = -2; bX <= 2; bX++) {
+				    for (int bZ = -2; bZ <= 2; bZ++) {
+				    	BiomeGen biome = biomeProvider.get(x + bX, z + bZ);
+				    	baseFactor += biome.baseHeightFactor();
+						lowerFactor += biome.lowerHeightFactor();
+						upperFactor += biome.upperHeightFactor();
+
+						weight++;
+				    }
+				}
+				baseFactor /= weight;
+				lowerFactor /= weight;
+				upperFactor /= weight;
 
 				// Create base terrain
-				double noise = baseNoise.eval(x / 256.0, z / 256.0) * 16;
+				double noise = baseNoise.eval(x / 256.0, z / 256.0) * baseFactor;
 
 				// Add hills in a similar method to mc interpolation noise
 				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
 				if (lerp > 1) {
-					noise += upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 16;
+					noise += upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * upperFactor;
 				} else if (lerp < 0) {
-					noise += lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * 10;
+					noise += lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * lowerFactor;
 				} else {
-					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * 16;
-					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * 10;
+					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * upperFactor;
+					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * lowerFactor;
 					noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 				}
 
 				// Add small details to make the terrain less rounded
 				noise += detailNoise.eval(x / 20.0, z / 20.0) * 3.25;
 
-				int height = 60 + (int)noise;
+				int height = (int) (56 + noise);
 				heightmap[((x + 256) * 512) + (z + 256)] = height;
 
 				// Get extent data from voronoi noises
@@ -134,7 +168,7 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 					if (y == height) {
 						// If the height and the generation height are the same, it means that we're on land
 						if (height == genHeight) {
-							state = Blocks.GRASS_BLOCK.getDefaultState();
+							state = center.topState(x, z, random);
 
 							// Add a chest if the chest noise is low enough
 							if (chestExtent < 0.01) {
@@ -147,10 +181,10 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 							}
 						} else {
 							// height and genHeight are different, so we're under water. Place dirt instead of grass.
-							state = Blocks.DIRT.getDefaultState();
+							state = center.underwaterState(x, z, random);
 						}
-					} else if ((height - y) <= 3) {
-						state = Blocks.DIRT.getDefaultState();
+					} else if ((height - y) <= 3) { //TODO: biome controls under depth
+						state = center.underState(x, z, random);
 					} else if (y == 0) {
 						state = Blocks.BEDROCK.getDefaultState();
 					}
@@ -229,37 +263,23 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		// Feature generation stack
 		System.out.println("Generating features!");
-		OpenSimplexNoise treeGenMask = new OpenSimplexNoise(random.nextLong());
-		OpenSimplexNoise treeDensity = new OpenSimplexNoise(random.nextLong());
-		OpenSimplexNoise treeType = new OpenSimplexNoise(random.nextLong());
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
-				// Generate trees in certain areas
+				BiomeGen biome = biomeProvider.get(x, z);
 				int y = heightmap[((x + 256) * 512) + (z + 256)] + 1;
 
-				if (treeGenMask.eval(x / 80.0, z / 80.0) > 0) {
-					if (random.nextInt(80 + (int) (treeDensity.eval(x / 45.0, z / 45.0) * 30)) == 0) {
-						double typeNoise = treeType.eval(x / 120.0, z / 120.0) * 2.5;
-						if (typeNoise > 1) {
-							new PoplarTreeGen(mutable.set(x, y, z)).generate(builder);
-						} else if (typeNoise < 0) {
-							new AspenTreeGen(mutable.set(x, y, z)).generate(builder);
-						} else {
-							// Create tree gradient
-							if (random.nextDouble() < typeNoise) {
-								new PoplarTreeGen(mutable.set(x, y, z)).generate(builder);
-							} else {
-								new AspenTreeGen(mutable.set(x, y, z)).generate(builder);
-							}
-						}
-					}
-				}
-
-				if (random.nextInt(12) == 0) {
-					new GrassGen(mutable.set(x, y - 1, z)).generate(builder);
-				}
+				biome.treeAt(mutable.set(x, y, z), random).generate(builder);
+				biome.grassAt(mutable.set(x, y - 1, z), random).generate(builder);
 			}
 		}
+
+		System.out.println("Propagating lighting!");
+		for (int x = -16; x < 16; x++) {
+		    for (int z = -16; z < 16; z++) {
+				builder.getWorld().setBlockState(new BlockPos(x * 16, 255, z * 16), Blocks.AIR.getDefaultState());
+		    }
+		}
+
 		System.out.println("Generated world in " + (System.currentTimeMillis() - time));
 	}
 }

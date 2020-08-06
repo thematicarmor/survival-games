@@ -1,4 +1,4 @@
-package supercoder79.survivalgames.game.map.gen;
+package supercoder79.survivalgames.game.map.gen.feature;
 
 import java.util.Random;
 

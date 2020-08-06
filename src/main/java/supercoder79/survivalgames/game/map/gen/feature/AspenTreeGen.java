@@ -1,4 +1,4 @@
-package supercoder79.survivalgames.game.map.gen;
+package supercoder79.survivalgames.game.map.gen.feature;
 
 import java.util.Random;
 import java.util.function.Consumer;
@@ -44,7 +44,7 @@ public class AspenTreeGen implements MapGen {
 		mutable.move(Direction.UP, leafDistance);
 
 		for (int y = 0; y < 8; y++) {
-			circle(mutable.mutableCopy(), maxRadius * radius(y / 7.f), leafPos -> {
+			GenerationHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 7.f), leafPos -> {
 				if (builder.getBlockState(leafPos).isAir()) {
 					builder.setBlockState(leafPos, Blocks.BIRCH_LEAVES.getDefaultState(), false);
 				}
@@ -67,26 +67,5 @@ public class AspenTreeGen implements MapGen {
 		} else {
 			return random.nextBoolean() ? Direction.NORTH : Direction.SOUTH;
 		}
-	}
-
-	// Code used from Terraform
-	public static void circle(BlockPos.Mutable origin, double radius, Consumer<BlockPos.Mutable> consumer) {
-		int x = origin.getX();
-		int z = origin.getZ();
-		double radiusSq = radius * radius;
-		int radiusCeil = (int)Math.ceil(radius);
-
-		for(int dz = -radiusCeil; dz <= radiusCeil; ++dz) {
-			int dzSq = dz * dz;
-
-			for(int dx = -radiusCeil; dx <= radiusCeil; ++dx) {
-				int dxSq = dx * dx;
-				if ((double)(dzSq + dxSq) <= radiusSq) {
-					origin.set(x + dx, origin.getY(), z + dz);
-					consumer.accept(origin);
-				}
-			}
-		}
-
 	}
 }
