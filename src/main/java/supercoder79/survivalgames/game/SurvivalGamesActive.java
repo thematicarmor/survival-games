@@ -96,7 +96,7 @@ public class SurvivalGamesActive {
 	}
 
 	private void addPlayer(Game game, ServerPlayerEntity player) {
-		if (!this.participants.contains(player.getUuid())) {
+		if (!this.participants.contains(PlayerRef.of(player))) {
 			this.spawnSpectator(player);
 		}
 	}
