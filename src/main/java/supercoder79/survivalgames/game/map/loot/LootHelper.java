@@ -4,8 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.ImmutableList;
+import net.gegy1000.plasmid.game.map.GameMapBuilder;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.WeightedList;
+import net.minecraft.util.math.BlockPos;
 
 public final class LootHelper {
 	public static List<ItemStack> get(List<LootProviderEntry> entries) {
@@ -35,5 +41,17 @@ public final class LootHelper {
 		}
 
 		return stacks;
+	}
+
+	public static void placeProviderChest(GameMapBuilder builder, BlockPos pos, LootProvider provider) {
+		Random random = new Random();
+
+		List<ItemStack> stacks = LootHelper.get(ImmutableList.of(new LootProviderEntry(provider, 96 * 96)));
+		builder.setBlockState(pos, Blocks.CHEST.getDefaultState());
+		ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(pos);
+
+		for (ItemStack stack : stacks) {
+			be.setStack(random.nextInt(27), stack);
+		}
 	}
 }

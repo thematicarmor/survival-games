@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 
 public class TowerStructure implements StructureGen {
 	private static final WeightedList<BlockState> STATES = new WeightedList<BlockState>()
-			.add(Blocks.OAK_PLANKS.getDefaultState(), 32)
+			.add(Blocks.OAK_PLANKS.getDefaultState(), 28)
 			.add(Blocks.COBWEB.getDefaultState(), 2)
 			.add(Blocks.AIR.getDefaultState(), 1);
 
@@ -33,7 +33,7 @@ public class TowerStructure implements StructureGen {
 	public void generate(GameMapBuilder builder) {
 		Random random = new Random();
 
-		int height = random.nextInt(5) + 8;
+		int height = random.nextInt(9) + 14;
 		for (int x = -1; x <= 1; x++) {
 			for (int z = -1; z <= 1; z++) {
 				builder.setBlockState(origin.add(x, 0, z), STATES.pickRandom(random), false);
@@ -69,13 +69,7 @@ public class TowerStructure implements StructureGen {
 		builder.setBlockState(origin.add(0, 1, -1), Blocks.AIR.getDefaultState(), false);
 		builder.setBlockState(origin.add(0, 2, -1), Blocks.AIR.getDefaultState(), false);
 
-		List<ItemStack> stacks = LootHelper.get(ImmutableList.of(new LootProviderEntry(LootProviders.TOWER, 96 * 96)));
-		builder.setBlockState(origin.add(0, height + 1, 2), Blocks.CHEST.getDefaultState());
-		ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(origin.add(0, height + 1, 2));
-
-		for (ItemStack stack : stacks) {
-			be.setStack(random.nextInt(27), stack);
-		}
+		LootHelper.placeProviderChest(builder, origin.add(0, height + 1, 2), LootProviders.TOWER);
 	}
 
 	@Override

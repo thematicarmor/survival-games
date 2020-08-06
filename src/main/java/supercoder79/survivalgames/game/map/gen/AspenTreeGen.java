@@ -32,7 +32,7 @@ public class AspenTreeGen implements MapGen {
 		for (int y = 0; y < 8; y++) {
 			builder.setBlockState(mutable, Blocks.BIRCH_LOG.getDefaultState(), false);
 			//add branch blocks
-			if (maxRadius * radius(y / 7.f) > 2.1) {
+			if (maxRadius * radius(y / 7.f) > 2.3) {
 				Direction.Axis axis = getAxis(random);
 				builder.setBlockState(mutable.offset(getDirection(axis, random)).up(leafDistance), Blocks.BIRCH_LOG.getDefaultState().with(Properties.AXIS, axis), false);
 			}

@@ -53,14 +53,7 @@ public class HouseStructure implements StructureGen {
 		builder.setBlockState(origin.add(2, 1, 0), Blocks.AIR.getDefaultState(), false);
 		builder.setBlockState(origin.add(2, 2, 0), Blocks.AIR.getDefaultState(), false);
 
-
-		List<ItemStack> stacks = LootHelper.get(ImmutableList.of(new LootProviderEntry(LootProviders.HOUSE, 96 * 96)));
-		builder.setBlockState(origin.add(-1, 1, -1), Blocks.CHEST.getDefaultState());
-		ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(origin.add(-1, 1, -1));
-
-		for (ItemStack stack : stacks) {
-			be.setStack(random.nextInt(27), stack);
-		}
+		LootHelper.placeProviderChest(builder, origin.add(-1, 1, -1), LootProviders.HOUSE);
 	}
 
 	@Override

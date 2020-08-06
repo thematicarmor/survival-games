@@ -1,13 +1,19 @@
 package supercoder79.survivalgames.game.map.gen.structure;
 
+import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.ImmutableList;
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
+import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.WeightedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,6 +37,8 @@ public class OrePileStructure implements StructureGen {
 			builder.setBlockState(origin.up().offset(direction), Blocks.STONE_BRICKS.getDefaultState(), false);
 		}
 
+		boolean chestPlaced = false;
+
 		Random random = new Random();
 		int count = random.nextInt(6) + 3;
 		for (int i = 0; i < count; i++) {
@@ -45,8 +53,14 @@ public class OrePileStructure implements StructureGen {
 				int aZ = random.nextInt(4) - random.nextInt(4);
 				BlockPos local = stackLocal.add(aX, aY, aZ);
 
-				if (builder.getBlockState(local.down()).isOpaque() && builder.getBlockState(local).isAir()) {
-					builder.setBlockState(local, state, false);
+				if (builder.getBlockState(local.down()).isOpaque() && builder.getBlockState(local).isAir() && !builder.getBlockState(local.down()).isOf(Blocks.CHEST)) {
+					if (!chestPlaced) {
+						chestPlaced = true;
+
+						LootHelper.placeProviderChest(builder, local, LootProviders.ORE_PILE);
+					} else {
+						builder.setBlockState(local, state, false);
+					}
 				}
 			}
 		}

@@ -1,12 +1,18 @@
 package supercoder79.survivalgames.game.map.gen.structure;
 
+import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.ImmutableList;
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
+import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 
 import net.minecraft.block.Blocks;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -23,6 +29,7 @@ public class FarmlandPatchStructure implements StructureGen {
 	@Override
 	public void generate(GameMapBuilder builder) {
 		Random random = new Random();
+		boolean chestPlaced = false;
 		for (int i = 0; i < 196; i++) {
 			int aX = random.nextInt(16) - random.nextInt(16);
 			int aY = random.nextInt(4) - random.nextInt(4);
@@ -44,11 +51,16 @@ public class FarmlandPatchStructure implements StructureGen {
 				}
 
 				if (canSpawn) {
-					if (random.nextInt(3) == 0) {
-						builder.setBlockState(local, Blocks.WATER.getDefaultState(), false);
+					if (!chestPlaced) {
+						chestPlaced = true;
+						LootHelper.placeProviderChest(builder, local.up(), LootProviders.FARMLAND);
 					} else {
-						builder.setBlockState(local, Blocks.FARMLAND.getDefaultState().with(Properties.MOISTURE, 7), false);
-						builder.setBlockState(local.up(), Blocks.WHEAT.getDefaultState().with(Properties.AGE_7, random.nextInt(8)), false);
+						if (random.nextInt(3) == 0) {
+							builder.setBlockState(local, Blocks.WATER.getDefaultState(), false);
+						} else {
+							builder.setBlockState(local, Blocks.FARMLAND.getDefaultState().with(Properties.MOISTURE, 7), false);
+							builder.setBlockState(local.up(), Blocks.WHEAT.getDefaultState().with(Properties.AGE_7, random.nextInt(8)), false);
+						}
 					}
 				}
 			}
