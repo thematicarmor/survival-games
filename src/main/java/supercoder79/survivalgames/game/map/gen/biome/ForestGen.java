@@ -24,17 +24,32 @@ public class ForestGen implements BiomeGen {
 	}
 
 	@Override
-	public double baseHeightFactor() {
+	public double baseHeightFactorHigh() {
 		return 18;
 	}
 
 	@Override
-	public double lowerHeightFactor() {
+	public double baseHeightFactorLow() {
+		return 12;
+	}
+
+	@Override
+	public double lowerHeightFactorHigh() {
 		return 10;
 	}
 
 	@Override
-	public double upperHeightFactor() {
+	public double lowerHeightFactorLow() {
+		return 10;
+	}
+
+	@Override
+	public double upperHeightFactorHigh() {
+		return 10;
+	}
+
+	@Override
+	public double upperHeightFactorLow() {
 		return 10;
 	}
 

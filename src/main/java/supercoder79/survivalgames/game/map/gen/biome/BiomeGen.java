@@ -10,11 +10,17 @@ import net.minecraft.util.math.BlockPos;
 public interface BiomeGen {
 	void setupSeed(Random random);
 
-	double baseHeightFactor();
+	double baseHeightFactorHigh();
 
-	double lowerHeightFactor();
+	double baseHeightFactorLow();
 
-	double upperHeightFactor();
+	double lowerHeightFactorHigh();
+
+	double lowerHeightFactorLow();
+
+	double upperHeightFactorHigh();
+
+	double upperHeightFactorLow();
 
 	BlockState underState(int x, int z, Random random);
 

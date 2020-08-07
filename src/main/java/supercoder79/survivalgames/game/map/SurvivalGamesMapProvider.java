@@ -110,9 +110,12 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 		int[] heightmap = new int[513 * 513];
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
-				double baseFactor = 0;
-				double lowerFactor = 0;
-				double upperFactor = 0;
+				double baseFactorHigh = 0;
+				double baseFactorLow = 0;
+				double lowerFactorHigh = 0;
+				double lowerFactorLow = 0;
+				double upperFactorHigh = 0;
+				double upperFactorLow = 0;
 				double weight = 0;
 
 				BiomeGen center = biomeProvider.get(x, z);
@@ -121,29 +124,44 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				for (int bX = -5; bX <= 5; bX++) {
 				    for (int bZ = -5; bZ <= 5; bZ++) {
 				    	BiomeGen biome = biomeProvider.get(x + bX, z + bZ);
-				    	baseFactor += biome.baseHeightFactor();
-						lowerFactor += biome.lowerHeightFactor();
-						upperFactor += biome.upperHeightFactor();
+						baseFactorHigh += biome.baseHeightFactorHigh();
+						baseFactorLow += biome.baseHeightFactorLow();
+						lowerFactorHigh += biome.lowerHeightFactorHigh();
+						lowerFactorLow += biome.lowerHeightFactorLow();
+						upperFactorHigh += biome.upperHeightFactorHigh();
+						upperFactorLow += biome.upperHeightFactorLow();
 
 						weight++;
 				    }
 				}
-				baseFactor /= weight;
-				lowerFactor /= weight;
-				upperFactor /= weight;
+				baseFactorHigh /= weight;
+				baseFactorLow /= weight;
+				lowerFactorHigh /= weight;
+				lowerFactorLow /= weight;
+				upperFactorHigh /= weight;
+				upperFactorLow /= weight;
 
 				// Create base terrain
-				double noise = baseNoise.eval(x / 256.0, z / 256.0) * baseFactor;
+				double noise = baseNoise.eval(x / 256.0, z / 256.0);
+				noise *= noise > 0 ? baseFactorHigh : baseFactorLow;
 
 				// Add hills in a similar method to mc interpolation noise
 				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
 				if (lerp > 1) {
-					noise += upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * upperFactor;
+					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
+					upperNoise *= upperNoise > 0 ? upperFactorHigh : upperFactorLow;
+					noise += upperNoise;
 				} else if (lerp < 0) {
-					noise += lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * lowerFactor;
+					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
+					lowerNoise *= lowerNoise > 0 ? lowerFactorHigh : lowerFactorLow;
+					noise += lowerNoise;
 				} else {
-					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0) * upperFactor;
-					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0) * lowerFactor;
+					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
+					upperNoise *= upperNoise > 0 ? upperFactorHigh : upperFactorLow;
+
+					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
+					lowerNoise *= lowerNoise > 0 ? lowerFactorHigh : lowerFactorLow;
+
 					noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 				}
 

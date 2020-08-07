@@ -21,18 +21,33 @@ public class MountainsGen implements BiomeGen {
 	}
 
 	@Override
-	public double baseHeightFactor() {
-		return 32;
+	public double baseHeightFactorHigh() {
+		return 40;
 	}
 
 	@Override
-	public double lowerHeightFactor() {
+	public double baseHeightFactorLow() {
+		return 20;
+	}
+
+	@Override
+	public double lowerHeightFactorHigh() {
 		return 24;
 	}
 
 	@Override
-	public double upperHeightFactor() {
+	public double lowerHeightFactorLow() {
+		return 4;
+	}
+
+	@Override
+	public double upperHeightFactorHigh() {
 		return 16;
+	}
+
+	@Override
+	public double upperHeightFactorLow() {
+		return 4;
 	}
 
 	@Override

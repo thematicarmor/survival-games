@@ -23,18 +23,33 @@ public class ScrublandGen implements BiomeGen {
 	}
 
 	@Override
-	public double baseHeightFactor() {
+	public double baseHeightFactorHigh() {
 		return 22;
 	}
 
 	@Override
-	public double lowerHeightFactor() {
+	public double baseHeightFactorLow() {
+		return 2;
+	}
+
+	@Override
+	public double lowerHeightFactorHigh() {
 		return 6;
 	}
 
 	@Override
-	public double upperHeightFactor() {
+	public double lowerHeightFactorLow() {
+		return 2;
+	}
+
+	@Override
+	public double upperHeightFactorHigh() {
 		return 6;
+	}
+
+	@Override
+	public double upperHeightFactorLow() {
+		return 2;
 	}
 
 	@Override

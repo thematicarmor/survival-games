@@ -18,17 +18,32 @@ public class TaigaGen implements BiomeGen {
 	}
 
 	@Override
-	public double baseHeightFactor() {
+	public double baseHeightFactorHigh() {
 		return 12;
 	}
 
 	@Override
-	public double lowerHeightFactor() {
+	public double baseHeightFactorLow() {
+		return 4;
+	}
+
+	@Override
+	public double lowerHeightFactorHigh() {
 		return 8;
 	}
 
 	@Override
-	public double upperHeightFactor() {
+	public double lowerHeightFactorLow() {
+		return 8;
+	}
+
+	@Override
+	public double upperHeightFactorHigh() {
+		return 8;
+	}
+
+	@Override
+	public double upperHeightFactorLow() {
 		return 8;
 	}
 

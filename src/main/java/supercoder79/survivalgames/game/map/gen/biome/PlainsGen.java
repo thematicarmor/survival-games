@@ -18,17 +18,32 @@ public class PlainsGen implements BiomeGen {
 	}
 
 	@Override
-	public double baseHeightFactor() {
+	public double baseHeightFactorHigh() {
 		return 18;
 	}
 
 	@Override
-	public double lowerHeightFactor() {
+	public double baseHeightFactorLow() {
+		return 18;
+	}
+
+	@Override
+	public double lowerHeightFactorHigh() {
 		return 10;
 	}
 
 	@Override
-	public double upperHeightFactor() {
+	public double lowerHeightFactorLow() {
+		return 10;
+	}
+
+	@Override
+	public double upperHeightFactorHigh() {
+		return 16;
+	}
+
+	@Override
+	public double upperHeightFactorLow() {
 		return 16;
 	}
 
