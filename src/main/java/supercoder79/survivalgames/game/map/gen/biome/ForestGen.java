@@ -3,11 +3,11 @@ package supercoder79.survivalgames.game.map.gen.biome;
 import java.util.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
-import supercoder79.survivalgames.game.map.gen.feature.AspenTreeGen;
+import supercoder79.survivalgames.game.map.gen.feature.tree.AspenTreeGen;
 import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
 import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 import supercoder79.survivalgames.game.map.gen.feature.NoGen;
-import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
+import supercoder79.survivalgames.game.map.gen.feature.tree.PoplarTreeGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

@@ -7,7 +7,6 @@ import supercoder79.survivalgames.game.map.gen.feature.CactusGen;
 import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
 import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 import supercoder79.survivalgames.game.map.gen.feature.NoGen;
-import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -58,6 +57,6 @@ public class ScrublandGen implements BiomeGen {
 
 	@Override
 	public MapGen grassAt(BlockPos pos, Random random) {
-		return random.nextInt(32) == 0 ? new GrassGen(pos) : random.nextInt(18) == 0 ? new CactusGen(pos) : new NoGen();
+		return random.nextInt(32) == 0 ? new GrassGen(pos) : random.nextInt(32) == 0 ? new CactusGen(pos) : new NoGen();
 	}
 }

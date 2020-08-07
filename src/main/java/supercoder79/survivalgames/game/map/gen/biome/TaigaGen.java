@@ -5,8 +5,7 @@ import java.util.Random;
 import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
 import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 import supercoder79.survivalgames.game.map.gen.feature.NoGen;
-import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
-import supercoder79.survivalgames.game.map.gen.feature.SpruceTreeGen;
+import supercoder79.survivalgames.game.map.gen.feature.tree.SpruceTreeGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

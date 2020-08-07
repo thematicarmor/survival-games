@@ -1,14 +1,19 @@
-package supercoder79.survivalgames.game.map.gen.feature;
+package supercoder79.survivalgames.game.map.gen.feature.tree;
 
 import java.util.Random;
 
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.gen.feature.GenerationHelper;
+import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class SpruceTreeGen implements MapGen {
+	private static final BlockState LEAVES = Blocks.SPRUCE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1);
 	private final BlockPos origin;
 
 	public SpruceTreeGen(BlockPos origin) {
@@ -39,7 +44,7 @@ public class SpruceTreeGen implements MapGen {
 		for (int y = 0; y < 9; y++) {
 			GenerationHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 10.f), leafPos -> {
 				if (builder.getBlockState(leafPos).isAir()) {
-					builder.setBlockState(leafPos, Blocks.SPRUCE_LEAVES.getDefaultState(), false);
+					builder.setBlockState(leafPos, LEAVES, false);
 				}
 			});
 			mutable.move(Direction.UP);

@@ -25,12 +25,16 @@ public class DefaultBiomeProvider implements BiomeProvider {
 			return Biomes.SCRUBLAND;
 		}
 
-		if (rain > 0.4) {
+		if (rain > 0.25) {
 			return Biomes.FOREST;
 		}
 
 		if (temp < 0.4) {
-			return Biomes.TAIGA;
+			if (rain > 0.1) {
+				return Biomes.TAIGA;
+			} else {
+				return Biomes.MOUNTAINS;
+			}
 		}
 
 		return Biomes.PLAINS;

@@ -21,9 +21,6 @@ import supercoder79.survivalgames.game.map.gen.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.biome.BiomeProvider;
 import supercoder79.survivalgames.game.map.gen.biome.Biomes;
 import supercoder79.survivalgames.game.map.gen.biome.DefaultBiomeProvider;
-import supercoder79.survivalgames.game.map.gen.feature.AspenTreeGen;
-import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
-import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
 import supercoder79.survivalgames.game.map.gen.structure.FarmlandPatchStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
@@ -121,8 +118,8 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 				BiomeGen center = biomeProvider.get(x, z);
 
 				// Interpolate biome data
-				for (int bX = -2; bX <= 2; bX++) {
-				    for (int bZ = -2; bZ <= 2; bZ++) {
+				for (int bX = -5; bX <= 5; bX++) {
+				    for (int bZ = -5; bZ <= 5; bZ++) {
 				    	BiomeGen biome = biomeProvider.get(x + bX, z + bZ);
 				    	baseFactor += biome.baseHeightFactor();
 						lowerFactor += biome.lowerHeightFactor();

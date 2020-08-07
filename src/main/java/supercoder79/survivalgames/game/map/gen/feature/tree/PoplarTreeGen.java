@@ -1,19 +1,22 @@
-package supercoder79.survivalgames.game.map.gen.feature;
+package supercoder79.survivalgames.game.map.gen.feature.tree;
 
 import java.util.Random;
-import java.util.function.Consumer;
 
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.gen.feature.GenerationHelper;
+import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class AspenTreeGen implements MapGen {
+public class PoplarTreeGen implements MapGen {
+	private static final BlockState LEAVES = Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1);
 	private final BlockPos origin;
 
-	public AspenTreeGen(BlockPos origin) {
+	public PoplarTreeGen(BlockPos origin) {
 		this.origin = origin;
 	}
 
@@ -25,16 +28,16 @@ public class AspenTreeGen implements MapGen {
 
 		Random random = new Random();
 
-		double maxRadius = 2 + ((random.nextDouble() - 0.5) * 0.2);
-		int leafDistance = random.nextInt(4) + 3;
+		double maxRadius = 2.6 + ((random.nextDouble() - 0.5) * 0.2);
+		int leafDistance = random.nextInt(3) + 2;
 
 		BlockPos.Mutable mutable = origin.mutableCopy();
-		for (int y = 0; y < 8; y++) {
-			builder.setBlockState(mutable, Blocks.BIRCH_LOG.getDefaultState(), false);
+		for (int y = 0; y < 12; y++) {
+			builder.setBlockState(mutable, Blocks.OAK_LOG.getDefaultState(), false);
 			//add branch blocks
-			if (maxRadius * radius(y / 7.f) > 2.3) {
+			if (maxRadius * radius(y / 11.f) > 2.3) {
 				Direction.Axis axis = getAxis(random);
-				builder.setBlockState(mutable.offset(getDirection(axis, random)).up(leafDistance), Blocks.BIRCH_LOG.getDefaultState().with(Properties.AXIS, axis), false);
+				builder.setBlockState(mutable.offset(getDirection(axis, random)).up(leafDistance), Blocks.OAK_LOG.getDefaultState().with(Properties.AXIS, axis), false);
 			}
 
 			mutable.move(Direction.UP);
@@ -43,10 +46,10 @@ public class AspenTreeGen implements MapGen {
 		mutable = origin.mutableCopy();
 		mutable.move(Direction.UP, leafDistance);
 
-		for (int y = 0; y < 8; y++) {
-			GenerationHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 7.f), leafPos -> {
+		for (int y = 0; y < 12; y++) {
+			GenerationHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 11.f), leafPos -> {
 				if (builder.getBlockState(leafPos).isAir()) {
-					builder.setBlockState(leafPos, Blocks.BIRCH_LEAVES.getDefaultState(), false);
+					builder.setBlockState(leafPos, LEAVES, false);
 				}
 			});
 			mutable.move(Direction.UP);
@@ -54,7 +57,7 @@ public class AspenTreeGen implements MapGen {
 	}
 
 	private double radius(double x) {
-		return -Math.pow(((1.4 * x) - 0.3), 2) + 1.2;
+		return (-2 * (x * x * x)) + (1.9 * x) + 0.2;
 	}
 
 	private Direction.Axis getAxis(Random random) {
