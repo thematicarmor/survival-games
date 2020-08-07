@@ -47,7 +47,7 @@ public final class LootHelper {
 		Random random = new Random();
 
 		List<ItemStack> stacks = LootHelper.get(ImmutableList.of(new LootProviderEntry(provider, 96 * 96)));
-		builder.setBlockState(pos, Blocks.CHEST.getDefaultState());
+		builder.setBlockState(pos, Blocks.CHEST.getDefaultState(), false);
 		ChestBlockEntity be = (ChestBlockEntity) builder.getBlockEntity(pos);
 
 		for (ItemStack stack : stacks) {

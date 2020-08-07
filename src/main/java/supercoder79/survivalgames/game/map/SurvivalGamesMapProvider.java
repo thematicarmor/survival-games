@@ -21,6 +21,7 @@ import supercoder79.survivalgames.game.map.gen.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.biome.BiomeProvider;
 import supercoder79.survivalgames.game.map.gen.biome.Biomes;
 import supercoder79.survivalgames.game.map.gen.biome.DefaultBiomeProvider;
+import supercoder79.survivalgames.game.map.gen.feature.DiskGen;
 import supercoder79.survivalgames.game.map.gen.structure.EnchantingTableStructure;
 import supercoder79.survivalgames.game.map.gen.structure.FarmlandPatchStructure;
 import supercoder79.survivalgames.game.map.gen.structure.HouseStructure;
@@ -107,6 +108,9 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		List<BlockPos> structureStarts = new CopyOnWriteArrayList<>();
 		List<BlockPos> lootChests = new CopyOnWriteArrayList<>();
+
+		List<BlockPos> diskGens = new CopyOnWriteArrayList<>();
+
 		int[] heightmap = new int[513 * 513];
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
@@ -197,6 +201,10 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 						} else {
 							// height and genHeight are different, so we're under water. Place dirt instead of grass.
 							state = center.underwaterState(x, z, random);
+
+							if (random.nextInt(50) == 0) {
+								diskGens.add(mutable.set(x, y, z).toImmutable());
+							}
 						}
 					} else if ((height - y) <= 3) { //TODO: biome controls under depth
 						state = center.underState(x, z, random);
@@ -278,6 +286,11 @@ public class SurvivalGamesMapProvider implements MapProvider<SurvivalGamesConfig
 
 		// Feature generation stack
 		System.out.println("Generating features!");
+
+		for (BlockPos pos : diskGens) {
+			new DiskGen(pos).generate(builder);
+		}
+
 		for (int x = -256; x <= 256; x++) {
 			for (int z = -256; z <= 256; z++) {
 				BiomeGen biome = biomeProvider.get(x, z);
