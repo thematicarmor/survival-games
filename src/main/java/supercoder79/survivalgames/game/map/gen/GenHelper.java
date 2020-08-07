@@ -1,10 +1,12 @@
-package supercoder79.survivalgames.game.map.gen.feature;
+package supercoder79.survivalgames.game.map.gen;
 
 import java.util.function.Consumer;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
-public class GenerationHelper {
+public class GenHelper {
+	public static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
 	// Code used from Terraform
 	public static void circle(BlockPos.Mutable origin, double radius, Consumer<BlockPos.Mutable> consumer) {
 		int x = origin.getX();

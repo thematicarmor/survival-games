@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.google.common.collect.ImmutableList;
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.gen.GenHelper;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
@@ -19,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class OrePileStructure implements StructureGen {
-	private static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
 	private static final WeightedList<BlockState> STATES = new WeightedList<BlockState>()
 			.add(Blocks.IRON_ORE.getDefaultState(), 1)
 			.add(Blocks.COAL_ORE.getDefaultState(), 1);
@@ -33,7 +33,7 @@ public class OrePileStructure implements StructureGen {
 	public void generate(GameMapBuilder builder) {
 		builder.setBlockState(origin, Blocks.STONE_BRICKS.getDefaultState(), false);
 		builder.setBlockState(origin.up(), Blocks.LAVA.getDefaultState(), false);
-		for (Direction direction : HORIZONTALS) {
+		for (Direction direction : GenHelper.HORIZONTALS) {
 			builder.setBlockState(origin.up().offset(direction), Blocks.STONE_BRICKS.getDefaultState(), false);
 		}
 

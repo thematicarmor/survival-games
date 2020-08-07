@@ -3,7 +3,7 @@ package supercoder79.survivalgames.game.map.gen.feature.tree;
 import java.util.Random;
 
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
-import supercoder79.survivalgames.game.map.gen.feature.GenerationHelper;
+import supercoder79.survivalgames.game.map.gen.GenHelper;
 import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 
 import net.minecraft.block.BlockState;
@@ -47,7 +47,7 @@ public class PoplarTreeGen implements MapGen {
 		mutable.move(Direction.UP, leafDistance);
 
 		for (int y = 0; y < 12; y++) {
-			GenerationHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 11.f), leafPos -> {
+			GenHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 11.f), leafPos -> {
 				if (builder.getBlockState(leafPos).isAir()) {
 					builder.setBlockState(leafPos, LEAVES, false);
 				}

@@ -1,24 +1,19 @@
 package supercoder79.survivalgames.game.map.gen.structure;
 
-import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.ImmutableList;
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
+import supercoder79.survivalgames.game.map.gen.GenHelper;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
-import supercoder79.survivalgames.game.map.loot.LootProviderEntry;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class FarmlandPatchStructure implements StructureGen {
-	private static final Direction[] HORIZONTALS = new Direction[]{Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
 
 	private final BlockPos origin;
 
@@ -39,7 +34,7 @@ public class FarmlandPatchStructure implements StructureGen {
 			if (builder.getBlockState(local) == Blocks.GRASS_BLOCK.getDefaultState()) {
 				boolean canSpawn = true;
 
-				for (Direction direction : HORIZONTALS) {
+				for (Direction direction : GenHelper.HORIZONTALS) {
 					BlockPos dLocal = local.offset(direction);
 					if (!builder.getBlockState(dLocal).isOpaque()) {
 						if (!builder.getBlockState(dLocal).isOf(Blocks.WATER)) {

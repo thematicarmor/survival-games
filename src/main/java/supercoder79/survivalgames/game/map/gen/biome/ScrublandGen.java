@@ -14,10 +14,12 @@ import net.minecraft.util.math.BlockPos;
 
 public class ScrublandGen implements BiomeGen {
 	private OpenSimplexNoise desertNoise;
+	private OpenSimplexNoise desertRoughNoise;
 
 	@Override
 	public void setupSeed(Random random) {
 		desertNoise = new OpenSimplexNoise(random.nextLong());
+		desertRoughNoise = new OpenSimplexNoise(random.nextLong());
 	}
 
 	@Override
@@ -37,17 +39,17 @@ public class ScrublandGen implements BiomeGen {
 
 	@Override
 	public BlockState underState(int x, int z, Random random) {
-		return desertNoise.eval(x / 32.0, z / 32.0) > 0.0 ? Blocks.SANDSTONE.getDefaultState() : Blocks.DIRT.getDefaultState();
+		return noiseAt(x, z) > 0.0 ? Blocks.SANDSTONE.getDefaultState() : Blocks.DIRT.getDefaultState();
 	}
 
 	@Override
 	public BlockState topState(int x, int z, Random random) {
-		return desertNoise.eval(x / 32.0, z / 32.0) > 0.0 ? Blocks.SAND.getDefaultState() : Blocks.GRASS_BLOCK.getDefaultState();
+		return noiseAt(x, z) > 0.0 ? Blocks.SAND.getDefaultState() : Blocks.GRASS_BLOCK.getDefaultState();
 	}
 
 	@Override
 	public BlockState underwaterState(int x, int z, Random random) {
-		return desertNoise.eval(x / 32.0, z / 32.0) > 0.0 ? Blocks.SAND.getDefaultState() : Blocks.DIRT.getDefaultState();
+		return noiseAt(x, z) > 0.0 ? Blocks.SAND.getDefaultState() : Blocks.DIRT.getDefaultState();
 	}
 
 	@Override
@@ -58,5 +60,9 @@ public class ScrublandGen implements BiomeGen {
 	@Override
 	public MapGen grassAt(BlockPos pos, Random random) {
 		return random.nextInt(32) == 0 ? new GrassGen(pos) : random.nextInt(32) == 0 ? new CactusGen(pos) : new NoGen();
+	}
+
+	private double noiseAt(int x, int z) {
+		return (desertNoise.eval(x / 24.0, z / 24.0) * 0.6) + (desertRoughNoise.eval(x / 16.0, z / 16.0) * 0.4);
 	}
 }

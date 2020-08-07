@@ -28,6 +28,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.world.GameMode;
 
 public class SurvivalGamesActive {
@@ -141,6 +142,8 @@ public class SurvivalGamesActive {
 
 		this.broadcastMessage(game, message);
 		this.broadcastSound(game, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP);
+
+		ItemScatterer.spawn(game.getWorld(), player.getBlockPos(), player.inventory);
 
 		this.spawnSpectator(player);
 	}

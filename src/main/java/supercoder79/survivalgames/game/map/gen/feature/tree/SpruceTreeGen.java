@@ -3,7 +3,7 @@ package supercoder79.survivalgames.game.map.gen.feature.tree;
 import java.util.Random;
 
 import net.gegy1000.plasmid.game.map.GameMapBuilder;
-import supercoder79.survivalgames.game.map.gen.feature.GenerationHelper;
+import supercoder79.survivalgames.game.map.gen.GenHelper;
 import supercoder79.survivalgames.game.map.gen.feature.MapGen;
 
 import net.minecraft.block.BlockState;
@@ -42,7 +42,7 @@ public class SpruceTreeGen implements MapGen {
 		mutable.move(Direction.UP, 1 + heightAddition);
 
 		for (int y = 0; y < 9; y++) {
-			GenerationHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 10.f), leafPos -> {
+			GenHelper.circle(mutable.mutableCopy(), maxRadius * radius(y / 10.f), leafPos -> {
 				if (builder.getBlockState(leafPos).isAir()) {
 					builder.setBlockState(leafPos, LEAVES, false);
 				}
