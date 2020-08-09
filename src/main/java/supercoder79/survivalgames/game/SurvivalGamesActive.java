@@ -1,10 +1,8 @@
 package supercoder79.survivalgames.game;
 
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-import net.gegy1000.plasmid.game.Game;
 import net.gegy1000.plasmid.game.GameWorld;
 import net.gegy1000.plasmid.game.event.GameOpenListener;
 import net.gegy1000.plasmid.game.event.GameTickListener;

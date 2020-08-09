@@ -2,11 +2,9 @@ package supercoder79.survivalgames.game;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.gegy1000.plasmid.game.Game;
 import net.gegy1000.plasmid.game.GameWorld;
 import net.gegy1000.plasmid.game.GameWorldState;
 import net.gegy1000.plasmid.game.StartResult;
-import net.gegy1000.plasmid.game.config.PlayerConfig;
 import net.gegy1000.plasmid.game.event.AttackEntityListener;
 import net.gegy1000.plasmid.game.event.OfferPlayerListener;
 import net.gegy1000.plasmid.game.event.PlayerAddListener;
@@ -17,7 +15,6 @@ import net.gegy1000.plasmid.game.event.UseItemListener;
 import net.gegy1000.plasmid.game.player.JoinResult;
 import net.gegy1000.plasmid.game.rule.GameRule;
 import net.gegy1000.plasmid.game.rule.RuleResult;
-import supercoder79.survivalgames.game.map.SurvivalGamesChunkGenerator;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
 import supercoder79.survivalgames.game.map.SurvivalGamesMapGenerator;
 
