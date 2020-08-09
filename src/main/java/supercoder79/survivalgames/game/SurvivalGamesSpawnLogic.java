@@ -47,6 +47,7 @@ public final class SurvivalGamesSpawnLogic {
         world.getChunkManager().addTicket(ChunkTicketType.field_19347, chunkPos, 1, player.getEntityId());
 
         // Get the y position by using this amazing hack
+        // TODO: fix
         BlockPos.Mutable mutable = pos.mutableCopy();
         mutable.setY(256);
         for (int y = 256; y > 0; y--) {
