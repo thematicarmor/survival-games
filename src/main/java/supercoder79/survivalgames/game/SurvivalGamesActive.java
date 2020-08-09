@@ -2,20 +2,20 @@ package supercoder79.survivalgames.game;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import net.gegy1000.plasmid.game.Game;
-import net.gegy1000.plasmid.game.JoinResult;
+import net.gegy1000.plasmid.game.GameWorld;
 import net.gegy1000.plasmid.game.event.GameOpenListener;
 import net.gegy1000.plasmid.game.event.GameTickListener;
 import net.gegy1000.plasmid.game.event.OfferPlayerListener;
 import net.gegy1000.plasmid.game.event.PlayerAddListener;
-import net.gegy1000.plasmid.game.event.PlayerDamageListener;
 import net.gegy1000.plasmid.game.event.PlayerDeathListener;
-import net.gegy1000.plasmid.game.event.PlayerRejoinListener;
-import net.gegy1000.plasmid.game.map.GameMap;
+import net.gegy1000.plasmid.game.player.JoinResult;
 import net.gegy1000.plasmid.game.rule.GameRule;
 import net.gegy1000.plasmid.game.rule.RuleResult;
 import net.gegy1000.plasmid.util.PlayerRef;
+import supercoder79.survivalgames.game.map.SurvivalGamesMap;
 
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,8 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.world.GameMode;
 
 public class SurvivalGamesActive {
-	private final GameMap map;
+	private final GameWorld world;
+	private final SurvivalGamesMap map;
 	private final SurvivalGamesConfig config;
 
 	private final Set<PlayerRef> participants;
@@ -41,42 +42,43 @@ public class SurvivalGamesActive {
 	private long startTime;
 	private boolean borderShrinkStarted = false;
 
-	private SurvivalGamesActive(GameMap map, SurvivalGamesConfig config, Set<PlayerRef> participants) {
+	private SurvivalGamesActive(GameWorld world, SurvivalGamesMap map, SurvivalGamesConfig config, Set<PlayerRef> participants) {
+		this.world = world;
 		this.map = map;
 		this.config = config;
 		this.participants = participants;
 
-		this.spawnLogic = new SurvivalGamesSpawnLogic(map);
+		this.spawnLogic = new SurvivalGamesSpawnLogic(world);
 	}
 
-	public static Game open(GameMap map, SurvivalGamesConfig config, Set<PlayerRef> participants) {
-		SurvivalGamesActive active = new SurvivalGamesActive(map, config, participants);
+	public static void open(GameWorld world, SurvivalGamesMap map, SurvivalGamesConfig config) {
+		Set<PlayerRef> participants = world.getPlayers().stream()
+				.map(PlayerRef::of)
+				.collect(Collectors.toSet());
 
-		Game.Builder builder = Game.builder();
-		builder.setMap(map);
+		SurvivalGamesActive active = new SurvivalGamesActive(world, map, config, participants);
 
-		builder.setRule(GameRule.ALLOW_CRAFTING, RuleResult.ALLOW);
-		builder.setRule(GameRule.ALLOW_PORTALS, RuleResult.DENY);
-		builder.setRule(GameRule.ALLOW_PVP, RuleResult.ALLOW);
-		builder.setRule(GameRule.BLOCK_DROPS, RuleResult.ALLOW);
-		builder.setRule(GameRule.FALL_DAMAGE, RuleResult.ALLOW);
-		builder.setRule(GameRule.ENABLE_HUNGER, RuleResult.DENY);
+		world.newGame(game -> {
+			game.setRule(GameRule.ALLOW_CRAFTING, RuleResult.ALLOW);
+			game.setRule(GameRule.ALLOW_PORTALS, RuleResult.DENY);
+			game.setRule(GameRule.ALLOW_PVP, RuleResult.ALLOW);
+			game.setRule(GameRule.BLOCK_DROPS, RuleResult.ALLOW);
+			game.setRule(GameRule.FALL_DAMAGE, RuleResult.ALLOW);
+			game.setRule(GameRule.ENABLE_HUNGER, RuleResult.DENY);
 
-		builder.on(GameOpenListener.EVENT, active::open);
+			game.on(GameOpenListener.EVENT, active::open);
 
-		builder.on(OfferPlayerListener.EVENT, (game, player) -> JoinResult.ok());
-		builder.on(PlayerAddListener.EVENT, active::addPlayer);
+			game.on(OfferPlayerListener.EVENT, player -> JoinResult.ok());
+			game.on(PlayerAddListener.EVENT, active::addPlayer);
 
-		builder.on(GameTickListener.EVENT, active::tick);
+			game.on(GameTickListener.EVENT, active::tick);
 
-		builder.on(PlayerDeathListener.EVENT, active::onPlayerDeath);
-		builder.on(PlayerRejoinListener.EVENT, active::rejoinPlayer);
-
-		return builder.build();
+			game.on(PlayerDeathListener.EVENT, active::onPlayerDeath);
+		});
 	}
 
-	private void open(Game game) {
-		ServerWorld world = game.getWorld();
+	private void open() {
+		ServerWorld world = this.world.getWorld();
 
 		// World border stuff
 		world.getWorldBorder().setCenter(0, 0);
@@ -96,19 +98,15 @@ public class SurvivalGamesActive {
 		}
 	}
 
-	private void addPlayer(Game game, ServerPlayerEntity player) {
+	private void addPlayer(ServerPlayerEntity player) {
 		if (!this.participants.contains(PlayerRef.of(player))) {
 			this.spawnSpectator(player);
 		}
 	}
 
-	private void rejoinPlayer(Game game, ServerPlayerEntity player) {
-		this.spawnSpectator(player);
-	}
-
-	private void tick(Game game) {
+	private void tick() {
 		if (!this.borderShrinkStarted) {
-			ServerWorld world = game.getWorld();
+			ServerWorld world = this.world.getWorld();
 			if ((world.getTime() - startTime) > 90 * 20) {
 				borderShrinkStarted = true;
 				world.getWorldBorder().interpolateSize(512, 16, 1000 * 60 * 8);
@@ -122,8 +120,8 @@ public class SurvivalGamesActive {
 		}
 	}
 
-	private boolean onPlayerDeath(Game game, ServerPlayerEntity player, DamageSource source) {
-		this.eliminatePlayer(game, player);
+	private boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
+		this.eliminatePlayer(player);
 		return true;
 	}
 
@@ -131,19 +129,19 @@ public class SurvivalGamesActive {
 		this.spawnLogic.resetPlayer(player, GameMode.SURVIVAL);
 		this.spawnLogic.spawnPlayer(player);
 
-		for (ItemStack stack : config.getKit()) {
+		for (ItemStack stack : config.kit) {
 			player.inventory.insertStack(stack);
 		}
 	}
 
-	private void eliminatePlayer(Game game, ServerPlayerEntity player) {
+	private void eliminatePlayer(ServerPlayerEntity player) {
 		Text message = player.getDisplayName().shallowCopy().append(" has been eliminated!")
 				.formatted(Formatting.RED);
 
-		this.broadcastMessage(game, message);
-		this.broadcastSound(game, SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP);
+		this.broadcastMessage(message);
+		this.broadcastSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP);
 
-		ItemScatterer.spawn(game.getWorld(), player.getBlockPos(), player.inventory);
+		ItemScatterer.spawn(this.world.getWorld(), player.getBlockPos(), player.inventory);
 
 		this.spawnSpectator(player);
 	}
@@ -153,23 +151,15 @@ public class SurvivalGamesActive {
 		this.spawnLogic.spawnPlayer(player);
 	}
 
-	private void broadcastMessage(Game game, Text message) {
-		ServerWorld world = game.getWorld();
-		for (PlayerRef playerId : game.getPlayers()) {
-			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
-			if (otherPlayer != null) {
-				otherPlayer.sendMessage(message, false);
-			}
+	private void broadcastMessage(Text message) {
+		for (ServerPlayerEntity player : this.world.getPlayers()) {
+			player.sendMessage(message, false);
 		}
 	}
 
-	private void broadcastSound(Game game, SoundEvent sound) {
-		ServerWorld world = game.getWorld();
-		for (PlayerRef playerId : game.getPlayers()) {
-			ServerPlayerEntity otherPlayer = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
-			if (otherPlayer != null) {
-				otherPlayer.playSound(sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
-			}
+	private void broadcastSound(SoundEvent sound) {
+		for (ServerPlayerEntity player : this.world.getPlayers()) {
+			player.playSound(sound, SoundCategory.PLAYERS, 1.0F, 1.0F);
 		}
 	}
 }

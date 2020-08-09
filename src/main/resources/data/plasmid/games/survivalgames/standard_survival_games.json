@@ -1,12 +1,5 @@
 {
   "type": "survivalgames:survivalgames",
-  "map": {
-    "dimension": "plasmid:void",
-    "origin": [0, 0, 0],
-    "provider": {
-      "type": "survivalgames:survivalgames"
-    }
-  },
   "players": {
     "min": 1,
     "max": 100

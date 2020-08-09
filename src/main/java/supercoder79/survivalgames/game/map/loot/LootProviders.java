@@ -5,6 +5,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.collection.WeightedList;
 
 public class LootProviders {
+
 	public static final LootProvider GENERIC = new LootProvider(new WeightedList<ItemStack>()
 			.add(new ItemStack(Items.STONE_SWORD, 1), 10)
 			.add(new ItemStack(Items.STONE_AXE, 1), 8)
@@ -93,4 +94,12 @@ public class LootProviders {
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 2)
 			.add(new ItemStack(Items.CHAINMAIL_BOOTS, 1), 2),
 			8, 13);
+
+	public static final WeightedList<LootProvider> TEMP_POOl = new WeightedList<LootProvider>()
+			.add(GENERIC, 16)
+			.add(HOUSE, 2)
+			.add(ENCHANTING_TABLE, 1)
+			.add(TOWER, 2)
+			.add(ORE_PILE, 1)
+			.add(FARMLAND, 1);
 }
