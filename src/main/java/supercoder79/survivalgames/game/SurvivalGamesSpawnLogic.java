@@ -52,8 +52,6 @@ public final class SurvivalGamesSpawnLogic {
 
         pos = mutable.up(2).toImmutable();
 
-        System.out.println(pos);
-
         player.teleport(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
     }
 }

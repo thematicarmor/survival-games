@@ -36,6 +36,10 @@ public class DiskGen implements MapGen {
 
 						if (world.getBlockState(mutable).isOf(Blocks.DIRT) || world.getBlockState(mutable).isOf(Blocks.GRASS_BLOCK)) {
 							world.setBlockState(mutable, state, 3);
+
+							if (!world.getBlockState(mutable.up()).canPlaceAt(world, mutable)) {
+								world.setBlockState(mutable.up(), Blocks.AIR.getDefaultState(), 3);
+							}
 						}
 					}
 				}
