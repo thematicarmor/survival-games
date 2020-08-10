@@ -57,7 +57,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		    for (int z = chunkZ; z < chunkZ + 16; z++) {
 				// Create base terrain
 				double noise = baseNoise.eval(x / 256.0, z / 256.0);
-				noise *= noise > 0 ? 14 : 10;
+				noise *= noise > 0 ? 14 : 12;
 
 				// Add hills in a similar method to mc interpolation noise
 				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
@@ -67,14 +67,14 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 					noise += upperNoise;
 				} else if (lerp < 0) {
 					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
-					lowerNoise *= lowerNoise > 0 ? 8 : 4;
+					lowerNoise *= lowerNoise > 0 ? 8 : 6;
 					noise += lowerNoise;
 				} else {
 					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
 					upperNoise *= upperNoise > 0 ? 12 : 8;
 
 					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
-					lowerNoise *= lowerNoise > 0 ? 8 : 4;
+					lowerNoise *= lowerNoise > 0 ? 8 : 6;
 
 					noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 				}
@@ -128,7 +128,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				int y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 				if (y > 48) {
-					int treeDensity = (int) ((treeDensityNoise.eval(x / 160.0, z / 160.0) + 1) * 48);
+					int treeDensity = (int) ((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
 					if (random.nextInt(96 + treeDensity) == 0) {
 						PoplarTreeFeature.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
 					}
