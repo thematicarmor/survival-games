@@ -6,7 +6,7 @@ import kdotjpg.opensimplex.OpenSimplexNoise;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 import supercoder79.survivalgames.game.map.gen.feature.DiskGen;
 import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
-import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeFeature;
+import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
@@ -130,14 +130,14 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				if (y > 48) {
 					int treeDensity = (int) ((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
 					if (random.nextInt(96 + treeDensity) == 0) {
-						PoplarTreeFeature.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
+						PoplarTreeGen.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
 					}
 
 					if (random.nextInt(16) == 0) {
 						GrassGen.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
 					}
 
-					if (random.nextInt(4096) == 0) {
+					if (chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
 						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.TEMP_POOl.pickRandom(random));
 					}
 

@@ -12,8 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ServerWorldAccess;
 
-public class PoplarTreeFeature implements MapGen {
-    public static final PoplarTreeFeature INSTANCE = new PoplarTreeFeature();
+public class PoplarTreeGen implements MapGen {
+    public static final PoplarTreeGen INSTANCE = new PoplarTreeGen();
     private static final BlockState LOG = Blocks.OAK_LOG.getDefaultState();
     private static final BlockState LEAVES = Blocks.OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1);
 
