@@ -2,19 +2,19 @@ package supercoder79.survivalgames.game;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.gegy1000.plasmid.game.GameWorld;
-import net.gegy1000.plasmid.game.GameWorldState;
-import net.gegy1000.plasmid.game.StartResult;
-import net.gegy1000.plasmid.game.event.AttackEntityListener;
-import net.gegy1000.plasmid.game.event.OfferPlayerListener;
-import net.gegy1000.plasmid.game.event.PlayerAddListener;
-import net.gegy1000.plasmid.game.event.PlayerDeathListener;
-import net.gegy1000.plasmid.game.event.RequestStartListener;
-import net.gegy1000.plasmid.game.event.UseBlockListener;
-import net.gegy1000.plasmid.game.event.UseItemListener;
-import net.gegy1000.plasmid.game.player.JoinResult;
-import net.gegy1000.plasmid.game.rule.GameRule;
-import net.gegy1000.plasmid.game.rule.RuleResult;
+import xyz.nucleoid.plasmid.game.GameWorld;
+import xyz.nucleoid.plasmid.game.GameWorldState;
+import xyz.nucleoid.plasmid.game.StartResult;
+import xyz.nucleoid.plasmid.game.event.AttackEntityListener;
+import xyz.nucleoid.plasmid.game.event.OfferPlayerListener;
+import xyz.nucleoid.plasmid.game.event.PlayerAddListener;
+import xyz.nucleoid.plasmid.game.event.PlayerDeathListener;
+import xyz.nucleoid.plasmid.game.event.RequestStartListener;
+import xyz.nucleoid.plasmid.game.event.UseBlockListener;
+import xyz.nucleoid.plasmid.game.event.UseItemListener;
+import xyz.nucleoid.plasmid.game.player.JoinResult;
+import xyz.nucleoid.plasmid.game.rule.GameRule;
+import xyz.nucleoid.plasmid.game.rule.RuleResult;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
 import supercoder79.survivalgames.game.map.SurvivalGamesMapGenerator;
 

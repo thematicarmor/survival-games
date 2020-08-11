@@ -2,7 +2,7 @@ package supercoder79.survivalgames.game;
 
 import java.util.Random;
 
-import net.gegy1000.plasmid.game.GameWorld;
+import xyz.nucleoid.plasmid.game.GameWorld;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;

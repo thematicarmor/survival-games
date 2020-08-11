@@ -1,6 +1,6 @@
 package supercoder79.survivalgames;
 
-import net.gegy1000.plasmid.game.GameType;
+import xyz.nucleoid.plasmid.game.GameType;
 import supercoder79.survivalgames.game.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.SurvivalGamesWaiting;
 

@@ -3,7 +3,7 @@ package supercoder79.survivalgames.game.map;
 import java.util.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
-import net.gegy1000.plasmid.game.world.generator.GameChunkGenerator;
+import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 import supercoder79.survivalgames.game.map.gen.feature.DiskGen;
 import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
 import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeFeature;
