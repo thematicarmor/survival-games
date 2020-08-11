@@ -3,6 +3,7 @@ package supercoder79.survivalgames.game;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameWorld;
 import xyz.nucleoid.plasmid.game.event.GameOpenListener;
 import xyz.nucleoid.plasmid.game.event.GameTickListener;
@@ -46,7 +47,7 @@ public class SurvivalGamesActive {
 		this.config = config;
 		this.participants = participants;
 
-		this.spawnLogic = new SurvivalGamesSpawnLogic(world);
+		this.spawnLogic = new SurvivalGamesSpawnLogic(world, config);
 	}
 
 	public static void open(GameWorld world, SurvivalGamesMap map, SurvivalGamesConfig config) {
@@ -80,7 +81,7 @@ public class SurvivalGamesActive {
 
 		// World border stuff
 		world.getWorldBorder().setCenter(0, 0);
-		world.getWorldBorder().setSize(512);
+		world.getWorldBorder().setSize(config.borderConfig.startSize);
 		world.getWorldBorder().setDamagePerBlock(0.5);
 		startTime = world.getTime();
 
@@ -105,9 +106,9 @@ public class SurvivalGamesActive {
 	private void tick() {
 		if (!this.borderShrinkStarted) {
 			ServerWorld world = this.world.getWorld();
-			if ((world.getTime() - startTime) > 90 * 20) {
+			if ((world.getTime() - startTime) > config.borderConfig.safeSecs * 20) {
 				borderShrinkStarted = true;
-				world.getWorldBorder().interpolateSize(512, 16, 1000 * 60 * 8);
+				world.getWorldBorder().interpolateSize(config.borderConfig.startSize, config.borderConfig.endSize, 1000 * config.borderConfig.shrinkSecs);
 				for (PlayerRef playerId : this.participants) {
 					ServerPlayerEntity player = (ServerPlayerEntity) world.getPlayerByUuid(playerId.getId());
 					if (player != null) {

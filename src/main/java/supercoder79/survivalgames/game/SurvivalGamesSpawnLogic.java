@@ -2,6 +2,7 @@ package supercoder79.survivalgames.game;
 
 import java.util.Random;
 
+import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameWorld;
 
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,9 +15,11 @@ import net.minecraft.world.Heightmap;
 
 public final class SurvivalGamesSpawnLogic {
     private final GameWorld world;
+    private final SurvivalGamesConfig config;
 
-    public SurvivalGamesSpawnLogic(GameWorld world) {
+    public SurvivalGamesSpawnLogic(GameWorld world, SurvivalGamesConfig config) {
         this.world = world;
+        this.config = config;
     }
 
     public void resetPlayer(ServerPlayerEntity player, GameMode gameMode) {
@@ -32,9 +35,10 @@ public final class SurvivalGamesSpawnLogic {
     public void spawnPlayer(ServerPlayerEntity player) {
         ServerWorld world = this.world.getWorld();
 
+        // TODO: trig distribution
         Random random = world.getRandom();
-        int x = random.nextInt(512) - 256;
-        int z = random.nextInt(512) - 256;
+        int x = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
+        int z = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
         BlockPos pos = new BlockPos(x, world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z), z);
 
         ChunkPos chunkPos = new ChunkPos(pos);

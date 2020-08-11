@@ -1,7 +1,7 @@
 package supercoder79.survivalgames;
 
 import xyz.nucleoid.plasmid.game.GameType;
-import supercoder79.survivalgames.game.SurvivalGamesConfig;
+import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.SurvivalGamesWaiting;
 
 import net.minecraft.util.Identifier;

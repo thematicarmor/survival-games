@@ -2,6 +2,7 @@ package supercoder79.survivalgames.game;
 
 import java.util.concurrent.CompletableFuture;
 
+import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameWorld;
 import xyz.nucleoid.plasmid.game.GameWorldState;
 import xyz.nucleoid.plasmid.game.StartResult;
@@ -41,7 +42,7 @@ public final class SurvivalGamesWaiting {
 		this.map = map;
 		this.config = config;
 
-		this.spawnLogic = new SurvivalGamesSpawnLogic(world);
+		this.spawnLogic = new SurvivalGamesSpawnLogic(world, config);
 	}
 
 	public static CompletableFuture<Void> open(GameWorldState worldState, SurvivalGamesConfig config) {
