@@ -4,12 +4,11 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import xyz.nucleoid.plasmid.game.config.GameConfig;
 import xyz.nucleoid.plasmid.game.config.PlayerConfig;
 
 import net.minecraft.item.ItemStack;
 
-public class SurvivalGamesConfig implements GameConfig {
+public class SurvivalGamesConfig {
 	public static final Codec<SurvivalGamesConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			WorldBorderConfig.CODEC.fieldOf("border").forGetter(config -> config.borderConfig),
 			PlayerConfig.CODEC.fieldOf("players").forGetter(config -> config.playerConfig),

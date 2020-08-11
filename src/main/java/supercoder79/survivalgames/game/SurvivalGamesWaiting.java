@@ -4,7 +4,6 @@ import java.util.concurrent.CompletableFuture;
 
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameWorld;
-import xyz.nucleoid.plasmid.game.GameWorldState;
 import xyz.nucleoid.plasmid.game.StartResult;
 import xyz.nucleoid.plasmid.game.event.AttackEntityListener;
 import xyz.nucleoid.plasmid.game.event.OfferPlayerListener;
@@ -18,10 +17,12 @@ import xyz.nucleoid.plasmid.game.rule.GameRule;
 import xyz.nucleoid.plasmid.game.rule.RuleResult;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
 import supercoder79.survivalgames.game.map.SurvivalGamesMapGenerator;
+import xyz.nucleoid.plasmid.game.world.bubble.BubbleWorldConfig;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -45,11 +46,15 @@ public final class SurvivalGamesWaiting {
 		this.spawnLogic = new SurvivalGamesSpawnLogic(world, config);
 	}
 
-	public static CompletableFuture<Void> open(GameWorldState worldState, SurvivalGamesConfig config) {
+	public static CompletableFuture<Void> open(MinecraftServer server, SurvivalGamesConfig config) {
 		SurvivalGamesMapGenerator generator = new SurvivalGamesMapGenerator();
 
-		return generator.create().thenAccept((map) -> {
-			GameWorld world = worldState.openWorld(map.chunkGenerator());
+		return generator.create().thenAccept(map -> {
+			BubbleWorldConfig worldConfig = new BubbleWorldConfig()
+					.setGenerator(map.chunkGenerator())
+					.setDefaultGameMode(GameMode.SPECTATOR);
+
+			GameWorld world = GameWorld.open(server, worldConfig);
 
 			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(world, map, config);
 
