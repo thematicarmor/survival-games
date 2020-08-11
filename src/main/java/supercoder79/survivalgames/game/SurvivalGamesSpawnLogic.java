@@ -30,6 +30,8 @@ public final class SurvivalGamesSpawnLogic {
         player.getHungerManager().setFoodLevel(20);
         player.fallDistance = 0.0F;
         player.setGameMode(gameMode);
+        player.setExperienceLevel(0);
+        player.setExperiencePoints(0);
     }
 
     public void spawnPlayer(ServerPlayerEntity player) {
