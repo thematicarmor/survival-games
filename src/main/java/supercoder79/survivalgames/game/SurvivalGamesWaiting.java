@@ -111,9 +111,9 @@ public final class SurvivalGamesWaiting {
 		this.spawnPlayer(player);
 	}
 
-	private boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
+	private ActionResult onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
 		this.spawnPlayer(player);
-		return true;
+		return ActionResult.SUCCESS;
 	}
 
 	private void spawnPlayer(ServerPlayerEntity player) {

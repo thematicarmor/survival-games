@@ -26,6 +26,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.world.GameMode;
@@ -119,9 +120,9 @@ public class SurvivalGamesActive {
 		}
 	}
 
-	private boolean onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
+	private ActionResult onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
 		this.eliminatePlayer(player);
-		return true;
+		return ActionResult.SUCCESS;
 	}
 
 	private void spawnParticipant(ServerPlayerEntity player) {
