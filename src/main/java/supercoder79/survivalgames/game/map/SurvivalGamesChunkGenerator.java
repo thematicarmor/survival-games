@@ -3,10 +3,10 @@ package supercoder79.survivalgames.game.map;
 import java.util.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
+import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
+import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
+import xyz.nucleoid.plasmid.game.gen.feature.PoplarTreeGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
-import supercoder79.survivalgames.game.map.gen.feature.DiskGen;
-import supercoder79.survivalgames.game.map.gen.feature.GrassGen;
-import supercoder79.survivalgames.game.map.gen.feature.PoplarTreeGen;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
