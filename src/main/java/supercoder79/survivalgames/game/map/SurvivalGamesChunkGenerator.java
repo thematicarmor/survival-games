@@ -13,6 +13,7 @@ import supercoder79.survivalgames.noise.WorleyNoise;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
@@ -32,7 +33,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	private final WorleyNoise structureNoise;
 	private final WorleyNoise chestNoise;
-	public SurvivalGamesChunkGenerator() {
+	public SurvivalGamesChunkGenerator(MinecraftServer server) {
+		super(server);
 		Random random = new Random();
 		baseNoise = new OpenSimplexNoise(random.nextLong());
 		interpolationNoise = new OpenSimplexNoise(random.nextLong());

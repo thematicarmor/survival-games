@@ -51,19 +51,19 @@ public final class SurvivalGamesWaiting {
 
 		return generator.create().thenAccept(map -> {
 			BubbleWorldConfig worldConfig = new BubbleWorldConfig()
-					.setGenerator(map.chunkGenerator())
+					.setGenerator(map.chunkGenerator(server))
 					.setDefaultGameMode(GameMode.SPECTATOR);
 
 			GameWorld world = GameWorld.open(server, worldConfig);
 
 			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(world, map, config);
 
-			world.newGame(game -> {
-				game.setRule(GameRule.ALLOW_CRAFTING, RuleResult.DENY);
-				game.setRule(GameRule.ALLOW_PORTALS, RuleResult.DENY);
-				game.setRule(GameRule.ALLOW_PVP, RuleResult.DENY);
+			world.openGame(game -> {
+				game.setRule(GameRule.CRAFTING, RuleResult.DENY);
+				game.setRule(GameRule.PORTALS, RuleResult.DENY);
+				game.setRule(GameRule.PVP, RuleResult.DENY);
 				game.setRule(GameRule.FALL_DAMAGE, RuleResult.DENY);
-				game.setRule(GameRule.ENABLE_HUNGER, RuleResult.DENY);
+				game.setRule(GameRule.HUNGER, RuleResult.DENY);
 
 				game.on(RequestStartListener.EVENT, waiting::requestStart);
 				game.on(OfferPlayerListener.EVENT, waiting::offerPlayer);

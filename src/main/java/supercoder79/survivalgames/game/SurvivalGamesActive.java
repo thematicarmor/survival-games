@@ -57,13 +57,13 @@ public class SurvivalGamesActive {
 
 		SurvivalGamesActive active = new SurvivalGamesActive(world, map, config, participants);
 
-		world.newGame(game -> {
-			game.setRule(GameRule.ALLOW_CRAFTING, RuleResult.ALLOW);
-			game.setRule(GameRule.ALLOW_PORTALS, RuleResult.DENY);
-			game.setRule(GameRule.ALLOW_PVP, RuleResult.ALLOW);
+		world.openGame(game -> {
+			game.setRule(GameRule.CRAFTING, RuleResult.ALLOW);
+			game.setRule(GameRule.PORTALS, RuleResult.DENY);
+			game.setRule(GameRule.PVP, RuleResult.ALLOW);
 			game.setRule(GameRule.BLOCK_DROPS, RuleResult.ALLOW);
 			game.setRule(GameRule.FALL_DAMAGE, RuleResult.ALLOW);
-			game.setRule(GameRule.ENABLE_HUNGER, RuleResult.DENY);
+			game.setRule(GameRule.HUNGER, RuleResult.DENY);
 
 			game.on(GameOpenListener.EVENT, active::open);
 

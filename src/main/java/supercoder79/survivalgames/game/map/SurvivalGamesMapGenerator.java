@@ -6,7 +6,7 @@ import net.minecraft.util.Util;
 
 public class SurvivalGamesMapGenerator {
 	public CompletableFuture<SurvivalGamesMap> create() {
-		return CompletableFuture.supplyAsync(this::build, Util.getServerWorkerExecutor());
+		return CompletableFuture.supplyAsync(this::build, Util.getMainWorkerExecutor());
 	}
 
 	public SurvivalGamesMap build() {
