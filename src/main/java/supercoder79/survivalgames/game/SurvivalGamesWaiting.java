@@ -3,6 +3,7 @@ package supercoder79.survivalgames.game;
 import java.util.concurrent.CompletableFuture;
 
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
+import xyz.nucleoid.plasmid.game.GameOpenContext;
 import xyz.nucleoid.plasmid.game.GameWorld;
 import xyz.nucleoid.plasmid.game.StartResult;
 import xyz.nucleoid.plasmid.game.event.AttackEntityListener;
@@ -46,17 +47,17 @@ public final class SurvivalGamesWaiting {
 		this.spawnLogic = new SurvivalGamesSpawnLogic(world, config);
 	}
 
-	public static CompletableFuture<Void> open(MinecraftServer server, SurvivalGamesConfig config) {
+	public static CompletableFuture<Void> open(GameOpenContext<SurvivalGamesConfig> context) {
 		SurvivalGamesMapGenerator generator = new SurvivalGamesMapGenerator();
 
 		return generator.create().thenAccept(map -> {
 			BubbleWorldConfig worldConfig = new BubbleWorldConfig()
-					.setGenerator(map.chunkGenerator(server))
+					.setGenerator(map.chunkGenerator(context.getServer()))
 					.setDefaultGameMode(GameMode.SPECTATOR);
 
-			GameWorld world = GameWorld.open(server, worldConfig);
+			GameWorld world = context.openWorld(worldConfig);
 
-			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(world, map, config);
+			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(world, map, context.getConfig());
 
 			world.openGame(game -> {
 				game.setRule(GameRule.CRAFTING, RuleResult.DENY);
