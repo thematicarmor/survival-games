@@ -55,6 +55,7 @@ public class SurvivalGamesActive {
 			game.setRule(GameRule.BLOCK_DROPS, RuleResult.ALLOW);
 			game.setRule(GameRule.FALL_DAMAGE, RuleResult.ALLOW);
 			game.setRule(GameRule.HUNGER, RuleResult.DENY);
+			game.setRule(GameRule.UNSTABLE_TNT, RuleResult.ALLOW);
 
 			game.on(GameOpenListener.EVENT, active::open);
 
