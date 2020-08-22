@@ -1,17 +1,16 @@
 package supercoder79.survivalgames.game.map.loot;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import com.google.common.collect.ImmutableList;
-
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.WeightedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public final class LootHelper {
 	public static List<ItemStack> get(List<LootProviderEntry> entries) {
@@ -37,7 +36,7 @@ public final class LootHelper {
 		// Get final stacks
 		List<ItemStack> stacks = new ArrayList<>();
 		for (int i = 0; i < finalCount; i++) {
-			stacks.add(weights.pickRandom(random).pickRandom(random));
+			stacks.add(weights.pickRandom(random).pickRandom(random).copy());
 		}
 
 		return stacks;

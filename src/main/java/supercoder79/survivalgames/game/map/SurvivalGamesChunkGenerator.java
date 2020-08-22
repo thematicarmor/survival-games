@@ -1,16 +1,6 @@
 package supercoder79.survivalgames.game.map;
 
-import java.util.Random;
-
 import kdotjpg.opensimplex.OpenSimplexNoise;
-import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
-import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
-import xyz.nucleoid.plasmid.game.gen.feature.PoplarTreeGen;
-import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
-import supercoder79.survivalgames.game.map.loot.LootHelper;
-import supercoder79.survivalgames.game.map.loot.LootProviders;
-import supercoder79.survivalgames.noise.WorleyNoise;
-
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
@@ -21,6 +11,15 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
+import supercoder79.survivalgames.game.map.loot.LootHelper;
+import supercoder79.survivalgames.game.map.loot.LootProviders;
+import supercoder79.survivalgames.noise.WorleyNoise;
+import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
+import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
+import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
+import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
+
+import java.util.Random;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final OpenSimplexNoise baseNoise;
