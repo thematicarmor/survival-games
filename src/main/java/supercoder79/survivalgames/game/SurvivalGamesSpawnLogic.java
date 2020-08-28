@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.chunk.WorldChunk;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameWorld;
 
@@ -40,22 +41,12 @@ public final class SurvivalGamesSpawnLogic {
         Random random = world.getRandom();
         int x = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
         int z = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
-        BlockPos pos = new BlockPos(x, world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z), z);
 
-        ChunkPos chunkPos = new ChunkPos(pos);
+        ChunkPos chunkPos = new ChunkPos(x >> 4, z >> 4);
         world.getChunkManager().addTicket(ChunkTicketType.field_19347, chunkPos, 1, player.getEntityId());
 
-        // Get the y position by using this amazing hack
-        // TODO: fix
-        BlockPos.Mutable mutable = pos.mutableCopy();
-        mutable.setY(256);
-        for (int y = 256; y > 0; y--) {
-            if (world.getBlockState(mutable.set(x, y, z)).isOpaque()) {
-                break;
-            }
-        }
-
-        pos = mutable.up(2).toImmutable();
+        WorldChunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
+        BlockPos pos = new BlockPos(x, chunk.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, z);
 
         player.teleport(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0.0F, 0.0F);
     }
