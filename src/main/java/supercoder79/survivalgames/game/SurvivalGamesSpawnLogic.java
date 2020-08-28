@@ -1,10 +1,5 @@
 package supercoder79.survivalgames.game;
 
-import java.util.Random;
-
-import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
-import xyz.nucleoid.plasmid.game.GameWorld;
-
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
@@ -12,6 +7,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.Heightmap;
+import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
+import xyz.nucleoid.plasmid.game.GameWorld;
+
+import java.util.Random;
 
 public final class SurvivalGamesSpawnLogic {
     private final GameWorld world;
@@ -41,7 +40,7 @@ public final class SurvivalGamesSpawnLogic {
         Random random = world.getRandom();
         int x = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
         int z = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
-        BlockPos pos = new BlockPos(x, world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z), z);
+        BlockPos pos = new BlockPos(x, world.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z), z);
 
         ChunkPos chunkPos = new ChunkPos(pos);
         world.getChunkManager().addTicket(ChunkTicketType.field_19347, chunkPos, 1, player.getEntityId());
