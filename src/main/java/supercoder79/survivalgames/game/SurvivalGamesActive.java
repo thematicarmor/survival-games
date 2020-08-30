@@ -58,6 +58,7 @@ public class SurvivalGamesActive {
 			game.setRule(GameRule.UNSTABLE_TNT, RuleResult.ALLOW);
 
 			game.on(GameOpenListener.EVENT, active::open);
+			game.on(GameCloseListener.EVENT, active::close);
 
 			game.on(OfferPlayerListener.EVENT, player -> JoinResult.ok());
 			game.on(PlayerAddListener.EVENT, active::addPlayer);
@@ -82,6 +83,13 @@ public class SurvivalGamesActive {
 			player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));
 			//TODO: check if this works
 			player.setCustomName(new LiteralText(""));
+		}
+	}
+
+	private void close() {
+		// this should hopefully fix players returning as survival mode to the lobby
+		for (ServerPlayerEntity player : this.participants) {
+			player.setGameMode(GameMode.ADVENTURE);
 		}
 	}
 
