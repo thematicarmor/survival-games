@@ -10,7 +10,9 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.BuiltinBiomes;
+import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
@@ -159,5 +161,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
 	}
 }
