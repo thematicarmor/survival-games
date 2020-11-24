@@ -9,15 +9,15 @@ import net.minecraft.world.GameMode;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.WorldChunk;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
-import xyz.nucleoid.plasmid.game.GameWorld;
+import xyz.nucleoid.plasmid.game.GameSpace;
 
 import java.util.Random;
 
 public final class SurvivalGamesSpawnLogic {
-    private final GameWorld world;
+    private final GameSpace world;
     private final SurvivalGamesConfig config;
 
-    public SurvivalGamesSpawnLogic(GameWorld world, SurvivalGamesConfig config) {
+    public SurvivalGamesSpawnLogic(GameSpace world, SurvivalGamesConfig config) {
         this.world = world;
         this.config = config;
     }

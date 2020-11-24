@@ -14,7 +14,7 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
-import xyz.nucleoid.plasmid.game.GameWorld;
+import xyz.nucleoid.plasmid.game.GameSpace;
 import xyz.nucleoid.plasmid.game.event.*;
 import xyz.nucleoid.plasmid.game.player.JoinResult;
 import xyz.nucleoid.plasmid.game.player.PlayerSet;
@@ -26,17 +26,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SurvivalGamesActive {
-	private final GameWorld world;
+	private final GameSpace world;
 	private final SurvivalGamesMap map;
 	private final SurvivalGamesConfig config;
 
-	private final Set<ServerPlayerEntity> participants;
+	private final PlayerSet participants;
 
 	private final SurvivalGamesSpawnLogic spawnLogic;
 	private long startTime;
 	private boolean borderShrinkStarted = false;
 
-	private SurvivalGamesActive(GameWorld world, SurvivalGamesMap map, SurvivalGamesConfig config, Set<ServerPlayerEntity> participants) {
+	private SurvivalGamesActive(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants) {
 		this.world = world;
 		this.map = map;
 		this.config = config;
@@ -45,8 +45,8 @@ public class SurvivalGamesActive {
 		this.spawnLogic = new SurvivalGamesSpawnLogic(world, config);
 	}
 
-	public static void open(GameWorld world, SurvivalGamesMap map, SurvivalGamesConfig config) {
-		SurvivalGamesActive active = new SurvivalGamesActive(world, map, config, new HashSet<>(world.getPlayers()));
+	public static void open(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config) {
+		SurvivalGamesActive active = new SurvivalGamesActive(world, map, config, world.getPlayers());
 
 		world.openGame(game -> {
 			game.setRule(GameRule.CRAFTING, RuleResult.ALLOW);
@@ -130,7 +130,7 @@ public class SurvivalGamesActive {
 		Text message = player.getDisplayName().shallowCopy().append(" has been eliminated!")
 				.formatted(Formatting.RED);
 
-		PlayerSet players = this.world.getPlayerSet();
+		PlayerSet players = this.world.getPlayers();
 		players.sendMessage(message);
 		players.sendSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP);
 
