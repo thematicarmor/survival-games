@@ -96,7 +96,7 @@ public class LootProviders {
 			4, 9);
 
 	public static final WeightedList<LootProvider> TEMP_POOl = new WeightedList<LootProvider>()
-			.add(GENERIC, 16)
+			.add(GENERIC, 24)
 			.add(HOUSE, 2)
 			.add(ENCHANTING_TABLE, 1)
 			.add(TOWER, 2)

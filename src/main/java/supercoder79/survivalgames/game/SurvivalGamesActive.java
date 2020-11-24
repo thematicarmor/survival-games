@@ -10,7 +10,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
@@ -66,6 +68,7 @@ public class SurvivalGamesActive {
 			game.on(GameTickListener.EVENT, active::tick);
 
 			game.on(PlayerDeathListener.EVENT, active::onPlayerDeath);
+			game.on(UseBlockListener.EVENT, active::onUseBlock);
 		});
 	}
 
@@ -142,5 +145,13 @@ public class SurvivalGamesActive {
 	private void spawnSpectator(ServerPlayerEntity player) {
 		this.spawnLogic.resetPlayer(player, GameMode.SPECTATOR);
 		this.spawnLogic.spawnPlayer(player);
+	}
+
+	private ActionResult onUseBlock(ServerPlayerEntity playerEntity, Hand hand, BlockHitResult hitResult) {
+		if (hitResult.getBlockPos().getY() >= 100) {
+			return ActionResult.FAIL;
+		}
+
+		return ActionResult.PASS;
 	}
 }

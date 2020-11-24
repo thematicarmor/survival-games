@@ -9,8 +9,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.StructuresConfig;
+
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
@@ -19,6 +22,8 @@ import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
 import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
+import java.util.Collections;
+import java.util.Optional;
 import java.util.Random;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
@@ -33,7 +38,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final WorleyNoise structureNoise;
 	private final WorleyNoise chestNoise;
 	public SurvivalGamesChunkGenerator(MinecraftServer server) {
-		super(server);
+		super(createBiomeSource(server, BuiltinBiomes.PLAINS), new StructuresConfig(Optional.empty(), Collections.emptyMap()));
 		Random random = new Random();
 		baseNoise = new OpenSimplexNoise(random.nextLong());
 		interpolationNoise = new OpenSimplexNoise(random.nextLong());
