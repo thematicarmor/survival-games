@@ -5,17 +5,24 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.source.BiomeAccess;
+import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
+import supercoder79.survivalgames.game.map.biome.BiomeGen;
+import supercoder79.survivalgames.game.map.biome.FakeBiomeSource;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
@@ -39,19 +46,24 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	private final WorleyNoise structureNoise;
 	private final WorleyNoise chestNoise;
+
+	private final FakeBiomeSource biomeSource;
 	public SurvivalGamesChunkGenerator(MinecraftServer server) {
-		super(createBiomeSource(server, BuiltinBiomes.PLAINS), new StructuresConfig(Optional.empty(), Collections.emptyMap()));
+		super(server);
 		Random random = new Random();
-		baseNoise = new OpenSimplexNoise(random.nextLong());
-		interpolationNoise = new OpenSimplexNoise(random.nextLong());
-		lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
-		upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
-		detailNoise = new OpenSimplexNoise(random.nextLong());
 
-		treeDensityNoise = new OpenSimplexNoise(random.nextLong());
+		this.biomeSource = new FakeBiomeSource(server.getRegistryManager().get(Registry.BIOME_KEY), random.nextLong());
 
-		structureNoise = new WorleyNoise(random.nextLong());
-		chestNoise = new WorleyNoise(random.nextLong());
+		this.baseNoise = new OpenSimplexNoise(random.nextLong());
+		this.interpolationNoise = new OpenSimplexNoise(random.nextLong());
+		this.lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
+		this.upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
+		this.detailNoise = new OpenSimplexNoise(random.nextLong());
+
+		this.treeDensityNoise = new OpenSimplexNoise(random.nextLong());
+
+		this.structureNoise = new WorleyNoise(random.nextLong());
+		this.chestNoise = new WorleyNoise(random.nextLong());
 	}
 
 	@Override
@@ -63,9 +75,31 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
 		    for (int z = chunkZ; z < chunkZ + 16; z++) {
+				double upperNoiseFactor = 0;
+				double lowerNoiseFactor = 0;
+				double detailFactor = 0;
+				double weight = 0;
+
+				for (int aX = -4; aX <= 4; aX++) {
+					for (int aZ = -4; aZ < 4; aZ++) {
+						BiomeGen biome = this.biomeSource.getRealBiome(x + aX, z + aZ);
+						upperNoiseFactor += biome.upperNoiseFactor();
+						lowerNoiseFactor += biome.lowerNoiseFactor();
+						detailFactor += biome.detailFactor();
+
+						weight++;
+					}
+				}
+
+				upperNoiseFactor /= weight;
+				lowerNoiseFactor /= weight;
+				detailFactor /= weight;
+
+				BiomeGen biome = this.biomeSource.getRealBiome(x, z);
+
 				// Create base terrain
 				double noise = baseNoise.eval(x / 256.0, z / 256.0);
-				noise *= noise > 0 ? 14 : 12;
+				noise *= noise > 0 ? upperNoiseFactor : lowerNoiseFactor;
 
 				// Add hills in a similar method to mc interpolation noise
 				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
@@ -88,7 +122,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				}
 
 				// Add small details to make the terrain less rounded
-				noise += detailNoise.eval(x / 20.0, z / 20.0) * 3.25;
+				noise += detailNoise.eval(x / 20.0, z / 20.0) * detailFactor;
 
 				int height = (int) (56 + noise);
 
@@ -133,12 +167,15 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
 			for (int z = chunkZ; z < chunkZ + 16; z++) {
+				BiomeGen biome = this.biomeSource.getRealBiome(x, z);
+
 				int y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 				if (y > 48) {
-					int treeDensity = (int) ((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
+					int treeDensity = (int) biome.modifyTreeCount((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
+
 					if (random.nextInt(96 + treeDensity) == 0) {
-						PoplarTreeGen.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
+						biome.tree(x, z, random).generate(region, mutable.set(x, y, z).toImmutable(), random);
 					}
 
 					if (random.nextInt(16) == 0) {
@@ -161,6 +198,12 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void populateBiomes(Registry<Biome> registry, Chunk chunk) {
+		ChunkPos chunkPos = chunk.getPos();
+		((ProtoChunk)chunk).setBiomes(new BiomeArray(registry, chunkPos, this.biomeSource));
 	}
 
 	@Override
