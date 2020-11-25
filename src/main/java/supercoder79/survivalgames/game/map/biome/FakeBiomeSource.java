@@ -58,6 +58,10 @@ public final class FakeBiomeSource extends BiomeSource {
 			return TaigaGen.INSTANCE;
 		}
 
+		if (rainfall < 0.5) {
+			return AspenForestGen.INSTANCE;
+		}
+
 		return PoplarForestGen.INSTANCE;
 	}
 }
