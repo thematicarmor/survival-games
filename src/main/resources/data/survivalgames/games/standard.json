@@ -1,5 +1,6 @@
 {
   "type": "survivalgames:survivalgames",
+  "name": "Survival Games",
   "border": {
     "start_size": 1024,
     "end_size": 16,
