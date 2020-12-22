@@ -19,7 +19,7 @@ public final class AspenForestGen implements BiomeGen {
 
 	@Override
 	public double modifyTreeCount(double original) {
-		return original * 0.4;
+		return original * 0.9;
 	}
 
 	@Override

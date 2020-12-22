@@ -186,9 +186,17 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.TEMP_POOl.pickRandom(random));
 					}
 
+					// TODO: noise for this too
 					if (random.nextInt(16384) == 0) {
 						if (region.getBlockState(mutable.set(x, y - 1, z)).isOf(Blocks.GRASS_BLOCK)) {
-							region.setBlockState(mutable.set(x, y, z), Blocks.ENCHANTING_TABLE.getDefaultState(), 3);
+							region.setBlockState(mutable.set(x, y, z), Blocks.OAK_PLANKS.getDefaultState(), 3);
+							region.setBlockState(mutable.set(x, y + 1, z), Blocks.ENCHANTING_TABLE.getDefaultState(), 3);
+
+							for(int x1 = -1; x1 <= 1; x1++) {
+							    for(int z1 = -1; z1 <= 1; z1++) {
+									region.setBlockState(mutable.set(x + x1, y - 1, z + z1), Blocks.OAK_PLANKS.getDefaultState(), 3);
+							    }
+							}
 						}
 					}
 				} else {

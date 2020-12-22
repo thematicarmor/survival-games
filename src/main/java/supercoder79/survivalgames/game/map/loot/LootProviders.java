@@ -24,7 +24,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.ENDER_PEARL, 1), 1)
 			.add(new ItemStack(Items.CROSSBOW, 1), 1)
 			.add(new ItemStack(Items.BOW, 1), 2)
-			.add(new ItemStack(Items.ARROW, 2), 4),
+			.add(new ItemStack(Items.ARROW, 6), 4),
 			4, 10);
 
 	public static final LootProvider HOUSE = new LootProvider(new WeightedList<ItemStack>()
@@ -56,7 +56,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.IRON_SWORD, 1), 1)
 			.add(new ItemStack(Items.SHIELD, 1), 1)
 			.add(new ItemStack(Items.BOW, 1), 3)
-			.add(new ItemStack(Items.ARROW, 8), 4)
+			.add(new ItemStack(Items.ARROW, 16), 4)
 			.add(new ItemStack(Items.CHAINMAIL_HELMET, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 1)
@@ -96,9 +96,9 @@ public class LootProviders {
 			4, 9);
 
 	public static final WeightedList<LootProvider> TEMP_POOl = new WeightedList<LootProvider>()
-			.add(GENERIC, 24)
+			.add(GENERIC, 16)
 			.add(HOUSE, 4)
-			.add(ENCHANTING_TABLE, 1)
+			.add(ENCHANTING_TABLE, 2)
 			.add(TOWER, 2)
 			.add(ORE_PILE, 1)
 			.add(FARMLAND, 2);
