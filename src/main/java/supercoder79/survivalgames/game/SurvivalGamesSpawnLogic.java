@@ -43,7 +43,7 @@ public final class SurvivalGamesSpawnLogic {
         int z = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
 
         ChunkPos chunkPos = new ChunkPos(x >> 4, z >> 4);
-        world.getChunkManager().addTicket(ChunkTicketType.field_19347, chunkPos, 1, player.getEntityId());
+        world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, player.getEntityId());
 
         WorldChunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
         BlockPos pos = new BlockPos(x, chunk.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, z);

@@ -7,7 +7,7 @@ import xyz.nucleoid.plasmid.game.gen.feature.tree.AspenTreeGen;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BuiltinBiomes;
+import net.minecraft.world.biome.BiomeKeys;
 
 public final class AspenForestGen implements BiomeGen {
 	public static final AspenForestGen INSTANCE = new AspenForestGen();
@@ -24,6 +24,6 @@ public final class AspenForestGen implements BiomeGen {
 
 	@Override
 	public RegistryKey<Biome> getFakingBiome() {
-		return BuiltinBiomes.BIRCH_FOREST;
+		return BiomeKeys.BIRCH_FOREST;
 	}
 }

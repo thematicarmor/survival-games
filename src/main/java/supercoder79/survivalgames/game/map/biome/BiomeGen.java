@@ -4,13 +4,12 @@ import java.util.Random;
 
 import xyz.nucleoid.plasmid.game.gen.MapGen;
 import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
+import xyz.nucleoid.substrate.biome.BaseBiomeGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
 
-public interface BiomeGen {
+public interface BiomeGen extends BaseBiomeGen {
 	default double upperNoiseFactor() {
 		return 14;
 	}
@@ -46,6 +45,4 @@ public interface BiomeGen {
 	default double modifyTreeCount(double original) {
 		return original;
 	}
-
-	RegistryKey<Biome> getFakingBiome();
 }

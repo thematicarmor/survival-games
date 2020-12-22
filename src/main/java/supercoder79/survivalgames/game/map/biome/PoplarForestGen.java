@@ -2,6 +2,7 @@ package supercoder79.survivalgames.game.map.biome;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.BuiltinBiomes;
 
 public final class PoplarForestGen implements BiomeGen {
@@ -9,6 +10,6 @@ public final class PoplarForestGen implements BiomeGen {
 
 	@Override
 	public RegistryKey<Biome> getFakingBiome() {
-		return BuiltinBiomes.PLAINS;
+		return BiomeKeys.PLAINS;
 	}
 }
