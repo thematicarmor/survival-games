@@ -1,11 +1,14 @@
 package supercoder79.survivalgames.game;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.WorldBorderS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -13,6 +16,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
@@ -66,6 +70,8 @@ public class SurvivalGamesActive {
 			game.on(PlayerAddListener.EVENT, active::addPlayer);
 
 			game.on(GameTickListener.EVENT, active::tick);
+
+			game.on(BreakBlockListener.EVENT, active::onBreakBlock);
 
 			game.on(PlayerDeathListener.EVENT, active::onPlayerDeath);
 			game.on(UseBlockListener.EVENT, active::onUseBlock);
@@ -145,6 +151,49 @@ public class SurvivalGamesActive {
 	private void spawnSpectator(ServerPlayerEntity player) {
 		this.spawnLogic.resetPlayer(player, GameMode.SPECTATOR);
 		this.spawnLogic.spawnPlayer(player);
+	}
+
+	private ActionResult onBreakBlock(ServerPlayerEntity player, BlockPos pos) {
+		ServerWorld world = player.getServerWorld();
+		BlockState state = world.getBlockState(pos);
+
+		if (state.isIn(BlockTags.LOGS) && !player.isSneaking()) {
+			Set<BlockPos> logs = new HashSet<>();
+			logs.add(pos);
+
+			findLogs(world, pos, logs);
+
+			for (BlockPos log : logs) {
+				BlockState logState = world.getBlockState(log);
+				world.breakBlock(log, false);
+
+				// Drop 1-2 planks
+				int count = 1 + world.random.nextInt(2);
+				world.spawnEntity(new ItemEntity(world, log.getX(), log.getY(), log.getZ(), new ItemStack(logState.getBlock(), count)));
+			}
+
+			return ActionResult.FAIL;
+		}
+
+		return ActionResult.PASS;
+	}
+
+	private void findLogs(ServerWorld world, BlockPos pos, Set<BlockPos> logs) {
+		for(int x = -1; x <= 1; x++) {
+			for(int z = -1; z <= 1; z++) {
+				for(int y = -1; y <= 1; y++) {
+					BlockPos local = pos.add(x, y, z);
+					BlockState state = world.getBlockState(local);
+
+					if (!logs.contains(local)) {
+						if (state.isIn(BlockTags.LOGS)) {
+							logs.add(local);
+							findLogs(world, local, logs);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private ActionResult onUseBlock(ServerPlayerEntity playerEntity, Hand hand, BlockHitResult hitResult) {
