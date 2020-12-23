@@ -20,6 +20,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
+import xyz.nucleoid.plasmid.game.GameCloseReason;
 import xyz.nucleoid.plasmid.game.GameSpace;
 import xyz.nucleoid.plasmid.game.event.*;
 import xyz.nucleoid.plasmid.game.player.JoinResult;
@@ -41,6 +42,7 @@ public class SurvivalGamesActive {
 	private final SurvivalGamesSpawnLogic spawnLogic;
 	private long startTime;
 	private boolean borderShrinkStarted = false;
+	private long gameCloseTick = Long.MAX_VALUE;
 
 	private SurvivalGamesActive(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants) {
 		this.world = world;
@@ -119,6 +121,10 @@ public class SurvivalGamesActive {
 				}
 			}
 		}
+
+		if (this.world.getWorld().getTime() > this.gameCloseTick) {
+			this.world.close(GameCloseReason.FINISHED);
+		}
 	}
 
 	private ActionResult onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
@@ -146,6 +152,24 @@ public class SurvivalGamesActive {
 		ItemScatterer.spawn(this.world.getWorld(), player.getBlockPos(), player.inventory);
 
 		this.spawnSpectator(player);
+
+		// TODO: fix this aaaaa
+		int survival = 0;
+		for (ServerPlayerEntity participant : this.participants) {
+			if (participant.interactionManager.getGameMode().isSurvivalLike()) {
+				survival++;
+			}
+		}
+
+		if (survival == 1) {
+			for (ServerPlayerEntity participant : this.participants) {
+				if (participant.interactionManager.getGameMode().isSurvivalLike()) {
+					players.sendMessage(new LiteralText(participant.getDisplayName() + " won!"));
+					this.gameCloseTick = this.world.getWorld().getTime() + (20 * 10);
+					break;
+				}
+			}
+		}
 	}
 
 	private void spawnSpectator(ServerPlayerEntity player) {
