@@ -51,7 +51,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.CHAINMAIL_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_BOOTS, 1), 1),
-			4, 11);
+			4, 9);
 
 	public static final LootProvider TOWER = new LootProvider(new WeightedList<ItemStack>()
 			.add(new ItemStack(Items.IRON_SWORD, 1), 2)
@@ -63,7 +63,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.CHAINMAIL_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_BOOTS, 1), 1),
-			4, 12);
+			4, 8);
 
 	public static final LootProvider ORE_PILE = new LootProvider(new WeightedList<ItemStack>()
 			.add(new ItemStack(Items.IRON_SWORD, 1), 12)
@@ -83,7 +83,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.IRON_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.IRON_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.IRON_BOOTS, 1), 1),
-			4, 10);
+			4, 8);
 
 	public static final LootProvider FARMLAND = new LootProvider(new WeightedList<ItemStack>()
 			.add(new ItemStack(Items.IRON_SWORD, 1), 6)
