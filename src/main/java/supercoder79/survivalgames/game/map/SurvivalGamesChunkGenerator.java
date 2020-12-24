@@ -4,6 +4,7 @@ import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -45,6 +46,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final WorleyNoise chestNoise;
 
 	private final FakeBiomeSource biomeSource;
+
+	private final SurvivalGamesJigsawGenerator jigsawGenerator;
+
 	public SurvivalGamesChunkGenerator(MinecraftServer server) {
 		super(server);
 		Random random = new Random();
@@ -61,6 +65,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		this.structureNoise = new WorleyNoise(random.nextLong());
 		this.chestNoise = new WorleyNoise(random.nextLong());
+
+		this.jigsawGenerator = new SurvivalGamesJigsawGenerator(server, this);
+		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 64);
 	}
 
 	@Override
@@ -163,6 +170,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	@Override
 	public void generateFeatures(ChunkRegion region, StructureAccessor structures) {
+		this.jigsawGenerator.generate(region, structures);
+
 		int chunkX = region.getCenterChunkX() * 16;
 		int chunkZ = region.getCenterChunkZ() * 16;
 		Random random = new Random();
