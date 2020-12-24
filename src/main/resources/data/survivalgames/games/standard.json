@@ -2,10 +2,10 @@
   "type": "survivalgames:survivalgames",
   "name": "Survival Games",
   "border": {
-    "start_size": 1024,
+    "start_size": 512,
     "end_size": 16,
     "safe_secs": 90,
-    "shrink_secs": 480
+    "shrink_secs": 240
   },
   "players": {
     "min": 1,

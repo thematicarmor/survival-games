@@ -12,27 +12,23 @@ import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-import net.minecraft.world.gen.chunk.StructuresConfig;
 
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.FakeBiomeSource;
+import supercoder79.survivalgames.game.map.gen.structure.Structures;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
 import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
 import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
-import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
-import java.util.Collections;
-import java.util.Optional;
 import java.util.Random;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
@@ -124,6 +120,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				// Add small details to make the terrain less rounded
 				noise += detailNoise.eval(x / 20.0, z / 20.0) * detailFactor;
 
+//				double worley = structureNoise.sample(x / 120.0, z / 120.0);
+
+				// TODO: makes a flattened sphere for the structure, needs to look better
+//				if (worley < 0.12) {
+//					noise = MathHelper.clampedLerp( noise, 16, (0.12 - worley) / 0.05);
+//				}
+
 				int height = (int) (56 + noise);
 
 				// Generation height ensures that the generator interates up to at least the water level.
@@ -172,6 +175,16 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				int y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 				if (y > 48) {
+					if (chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
+						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.TEMP_POOl.pickRandom(random));
+					}
+
+					if (this.structureNoise.sample(x / 120.0, z / 120.0) < 0.005) {
+						Structures.POOL.pickRandom(random).generate(region, mutable.set(x, y, z).toImmutable(), random);
+					}
+
+					y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
+
 					int treeDensity = (int) biome.modifyTreeCount((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
 
 					if (random.nextInt(96 + treeDensity) == 0) {
@@ -180,24 +193,6 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 					if (random.nextInt(16) == 0) {
 						GrassGen.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
-					}
-
-					if (chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
-						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.TEMP_POOl.pickRandom(random));
-					}
-
-					// TODO: noise for this too
-					if (random.nextInt(16384) == 0) {
-						if (region.getBlockState(mutable.set(x, y - 1, z)).isOf(Blocks.GRASS_BLOCK)) {
-							region.setBlockState(mutable.set(x, y, z), Blocks.OAK_PLANKS.getDefaultState(), 3);
-							region.setBlockState(mutable.set(x, y + 1, z), Blocks.ENCHANTING_TABLE.getDefaultState(), 3);
-
-							for(int x1 = -1; x1 <= 1; x1++) {
-							    for(int z1 = -1; z1 <= 1; z1++) {
-									region.setBlockState(mutable.set(x + x1, y - 1, z + z1), Blocks.OAK_PLANKS.getDefaultState(), 3);
-							    }
-							}
-						}
 					}
 				} else {
 					if (random.nextInt(64) == 0) {

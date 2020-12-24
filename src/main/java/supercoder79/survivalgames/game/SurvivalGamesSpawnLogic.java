@@ -39,8 +39,8 @@ public final class SurvivalGamesSpawnLogic {
 
         // TODO: trig distribution
         Random random = world.getRandom();
-        int x = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
-        int z = random.nextInt(config.borderConfig.startSize) - (config.borderConfig.startSize / 2);
+        int x = random.nextInt(config.borderConfig.startSize / 2) - (config.borderConfig.startSize / 2);
+        int z = random.nextInt(config.borderConfig.startSize / 2) - (config.borderConfig.startSize / 2);
 
         ChunkPos chunkPos = new ChunkPos(x >> 4, z >> 4);
         world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, player.getEntityId());
