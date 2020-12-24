@@ -17,6 +17,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
@@ -89,8 +90,21 @@ public class SurvivalGamesActive {
 		world.getWorldBorder().setDamagePerBlock(0.5);
 		startTime = world.getTime();
 
+		int index = 0;
+		int spawnDistance=  config.borderConfig.startSize * 3 / 4;
+
 		for (ServerPlayerEntity player : this.participants) {
-			this.spawnParticipant(player);
+			double theta = ((double) index++ / this.participants.size()) * 2 * Math.PI;
+			int x = MathHelper.floor(Math.cos(theta) * spawnDistance);
+			int z = MathHelper.floor(Math.sin(theta) * spawnDistance);
+
+			this.spawnLogic.resetPlayer(player, GameMode.SURVIVAL);
+			this.spawnLogic.spawnPlayerAt(player, x, z);
+
+			for (ItemStack stack : config.kit) {
+				player.inventory.insertStack(stack);
+			}
+
 			player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));
 			//TODO: check if this works
 			player.setCustomName(new LiteralText(""));
@@ -132,15 +146,6 @@ public class SurvivalGamesActive {
 		return ActionResult.SUCCESS;
 	}
 
-	private void spawnParticipant(ServerPlayerEntity player) {
-		this.spawnLogic.resetPlayer(player, GameMode.SURVIVAL);
-		this.spawnLogic.spawnPlayer(player);
-
-		for (ItemStack stack : config.kit) {
-			player.inventory.insertStack(stack);
-		}
-	}
-
 	private void eliminatePlayer(ServerPlayerEntity player) {
 		Text message = player.getDisplayName().shallowCopy().append(" has been eliminated!")
 				.formatted(Formatting.RED);
@@ -174,7 +179,7 @@ public class SurvivalGamesActive {
 
 	private void spawnSpectator(ServerPlayerEntity player) {
 		this.spawnLogic.resetPlayer(player, GameMode.SPECTATOR);
-		this.spawnLogic.spawnPlayer(player);
+		this.spawnLogic.spawnPlayerAtCenter(player);
 	}
 
 	private ActionResult onBreakBlock(ServerPlayerEntity player, BlockPos pos) {

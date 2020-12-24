@@ -11,8 +11,6 @@ import net.minecraft.world.chunk.WorldChunk;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameSpace;
 
-import java.util.Random;
-
 public final class SurvivalGamesSpawnLogic {
     private final GameSpace world;
     private final SurvivalGamesConfig config;
@@ -34,13 +32,12 @@ public final class SurvivalGamesSpawnLogic {
         player.setExperiencePoints(0);
     }
 
-    public void spawnPlayer(ServerPlayerEntity player) {
-        ServerWorld world = this.world.getWorld();
+    public void spawnPlayerAtCenter(ServerPlayerEntity player) {
+        this.spawnPlayerAt(player, 0, 0);
+    }
 
-        // TODO: trig distribution
-        Random random = world.getRandom();
-        int x = random.nextInt(config.borderConfig.startSize / 2) - (config.borderConfig.startSize / 2);
-        int z = random.nextInt(config.borderConfig.startSize / 2) - (config.borderConfig.startSize / 2);
+    public void spawnPlayerAt(ServerPlayerEntity player, int x, int z) {
+        ServerWorld world = this.world.getWorld();
 
         ChunkPos chunkPos = new ChunkPos(x >> 4, z >> 4);
         world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, player.getEntityId());
