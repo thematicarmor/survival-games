@@ -21,6 +21,7 @@ import net.minecraft.world.gen.StructureAccessor;
 
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.FakeBiomeSource;
+import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
 import supercoder79.survivalgames.game.map.gen.structure.Structures;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
@@ -167,6 +168,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		Random random = new Random();
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		boolean spawnedStructure = false;
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
 			for (int z = chunkZ; z < chunkZ + 16; z++) {
@@ -175,12 +177,23 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				int y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 				if (y > 48) {
-					if (chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
-						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.TEMP_POOl.pickRandom(random));
+					if (random.nextBoolean() && chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
+						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.GENERIC);
 					}
 
-					if (this.structureNoise.sample(x / 120.0, z / 120.0) < 0.005) {
-						Structures.POOL.pickRandom(random).generate(region, mutable.set(x, y, z).toImmutable(), random);
+					if (!spawnedStructure && this.structureNoise.sample(x / 120.0, z / 120.0) < 0.005) {
+						spawnedStructure = true;
+
+						StructureGen structure = Structures.POOL.pickRandom(random);
+						structure.generate(region, mutable.set(x, y, z).toImmutable(), random);
+
+						for (int i = 0; i < structure.nearbyChestCount(random); i++) {
+							int ax = x + (random.nextInt(16) - random.nextInt(16));
+							int az = z + (random.nextInt(16) - random.nextInt(16));
+							int ay = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, ax, az);
+
+							LootHelper.placeProviderChest(region, mutable.set(ax, ay, az).toImmutable(), structure.getLootProvider());
+						}
 					}
 
 					y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);

@@ -3,9 +3,9 @@ package supercoder79.survivalgames.game.map.gen.structure;
 import java.util.Random;
 
 import supercoder79.survivalgames.game.map.loot.LootHelper;
+import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import xyz.nucleoid.substrate.gen.GenHelper;
-import xyz.nucleoid.substrate.gen.MapGen;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.state.property.Properties;
@@ -13,8 +13,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ServerWorldAccess;
 
-public class FarmlandStructure implements MapGen {
-	public static MapGen INSTANCE = new FarmlandStructure();
+public class FarmlandStructure implements StructureGen {
+	public static StructureGen INSTANCE = new FarmlandStructure();
 
 	@Override
 	public void generate(ServerWorldAccess world, BlockPos pos, Random random) {
@@ -55,5 +55,15 @@ public class FarmlandStructure implements MapGen {
 			}
 
 		}
+	}
+
+	@Override
+	public int nearbyChestCount(Random random) {
+		return 1 + random.nextInt(2);
+	}
+
+	@Override
+	public LootProvider getLootProvider() {
+		return LootProviders.FARMLAND;
 	}
 }

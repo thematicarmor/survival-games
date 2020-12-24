@@ -3,9 +3,9 @@ package supercoder79.survivalgames.game.map.gen.structure;
 import java.util.Random;
 
 import supercoder79.survivalgames.game.map.loot.LootHelper;
+import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import xyz.nucleoid.substrate.gen.GenHelper;
-import xyz.nucleoid.substrate.gen.MapGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -14,8 +14,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ServerWorldAccess;
 
-public class OrePileStructure implements MapGen {
-	public static final MapGen INSTANCE = new OrePileStructure();
+public class OrePileGen implements StructureGen {
+	public static final StructureGen INSTANCE = new OrePileGen();
 
 	private static final WeightedList<BlockState> STATES = new WeightedList<BlockState>()
 			.add(Blocks.IRON_ORE.getDefaultState(), 1)
@@ -57,5 +57,16 @@ public class OrePileStructure implements MapGen {
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public int nearbyChestCount(Random random) {
+		return random.nextInt(2);
+	}
+
+	@Override
+	public LootProvider getLootProvider() {
+		return LootProviders.ORE_PILE;
 	}
 }

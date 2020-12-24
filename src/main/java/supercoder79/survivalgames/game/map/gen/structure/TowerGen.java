@@ -3,8 +3,8 @@ package supercoder79.survivalgames.game.map.gen.structure;
 import java.util.Random;
 
 import supercoder79.survivalgames.game.map.loot.LootHelper;
+import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
-import xyz.nucleoid.substrate.gen.MapGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -12,8 +12,8 @@ import net.minecraft.util.collection.WeightedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
 
-public class TowerStructure implements MapGen {
-	public static final MapGen INSTANCE = new TowerStructure();
+public class TowerGen implements StructureGen {
+	public static final StructureGen INSTANCE = new TowerGen();
 
 	private static final WeightedList<BlockState> STATES = new WeightedList<BlockState>()
 			.add(Blocks.OAK_PLANKS.getDefaultState(), 24)
@@ -59,5 +59,15 @@ public class TowerStructure implements MapGen {
 		world.setBlockState(pos.add(0, 2, -1), Blocks.AIR.getDefaultState(), 3);
 
 		LootHelper.placeProviderChest(world, pos.add(0, height + 1, 2), LootProviders.TOWER);
+	}
+
+	@Override
+	public int nearbyChestCount(Random random) {
+		return random.nextInt(3);
+	}
+
+	@Override
+	public LootProvider getLootProvider() {
+		return LootProviders.TOWER;
 	}
 }
