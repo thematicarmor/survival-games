@@ -91,9 +91,11 @@ public class SurvivalGamesActive {
 		startTime = world.getTime();
 
 		int index = 0;
-		int spawnDistance=  config.borderConfig.startSize * 3 / 4;
+		int spawnDistance = (config.borderConfig.startSize / 2) * 3 / 4;
 
 		for (ServerPlayerEntity player : this.participants) {
+			player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));
+
 			double theta = ((double) index++ / this.participants.size()) * 2 * Math.PI;
 			int x = MathHelper.floor(Math.cos(theta) * spawnDistance);
 			int z = MathHelper.floor(Math.sin(theta) * spawnDistance);
@@ -105,9 +107,7 @@ public class SurvivalGamesActive {
 				player.inventory.insertStack(stack);
 			}
 
-			player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));
-			//TODO: check if this works
-			player.setCustomName(new LiteralText(""));
+
 		}
 	}
 
