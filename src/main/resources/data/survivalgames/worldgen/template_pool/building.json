@@ -7,21 +7,21 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:house_1",
-        "projection": "terrain_matching",
-        "processors": []
-      }
-    },
-    {
-      "weight": 2,
-      "element": {
-        "element_type": "minecraft:single_pool_element",
-        "location": "survivalgames:tower_1",
-        "projection": "terrain_matching",
-        "processors": []
+        "projection": "rigid",
+        "processors": "minecraft:mossify_70_percent"
       }
     },
     {
       "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:tower_1",
+        "projection": "rigid",
+        "processors": "minecraft:mossify_70_percent"
+      }
+    },
+    {
+      "weight": 2,
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:enchanting_table_1",

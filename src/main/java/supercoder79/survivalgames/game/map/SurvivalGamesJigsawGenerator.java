@@ -1,5 +1,6 @@
 package supercoder79.survivalgames.game.map;
 
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.server.MinecraftServer;
@@ -37,6 +38,8 @@ public final class SurvivalGamesJigsawGenerator {
         this.registryManager = server.getRegistryManager();
         this.structureManager = server.getStructureManager();
         this.generator = generator;
+
+        this.piecesByChunk.defaultReturnValue(ImmutableList.of());
     }
 
     public void arrangePieces(BlockPos origin, Identifier startPoolId, int depth) {
@@ -108,7 +111,7 @@ public final class SurvivalGamesJigsawGenerator {
 
     public void generate(ChunkRegion region, StructureAccessor structures) {
         ChunkPos chunkPos = new ChunkPos(region.getCenterChunkX(), region.getCenterChunkZ());
-        List<PoolStructurePiece> pieces = this.piecesByChunk.remove(chunkPos.toLong());
+        List<PoolStructurePiece> pieces = this.piecesByChunk.get(chunkPos.toLong());
 
         if (pieces != null) {
             // generate all intersecting pieces with the mask of this chunk
@@ -117,5 +120,9 @@ public final class SurvivalGamesJigsawGenerator {
                 piece.method_27236(region, structures, this.generator, this.random, chunkMask, this.origin, false);
             }
         }
+    }
+
+    public List<PoolStructurePiece> getPiecesInChunk(ChunkPos pos) {
+        return this.piecesByChunk.get(pos.toLong());
     }
 }

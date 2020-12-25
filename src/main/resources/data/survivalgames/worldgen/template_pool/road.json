@@ -85,6 +85,40 @@
           }
         ]
       }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:path_1",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {}}]
+          }
+        ]
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:path_2",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {}}]
+          }
+        ]
+      }
+    },
+    {
+      "weight": 6,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
     }
   ]
 }

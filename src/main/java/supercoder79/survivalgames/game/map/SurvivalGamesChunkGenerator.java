@@ -4,7 +4,10 @@ import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -31,6 +34,7 @@ import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
 import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
+import java.util.List;
 import java.util.Random;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
@@ -67,7 +71,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		this.chestNoise = new WorleyNoise(random.nextLong());
 
 		this.jigsawGenerator = new SurvivalGamesJigsawGenerator(server, this);
-		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 16);
+		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 12);
 	}
 
 	@Override
@@ -77,69 +81,24 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		int chunkX = chunk.getPos().x * 16;
 		int chunkZ = chunk.getPos().z * 16;
 
+		List<PoolStructurePiece> pieces = this.jigsawGenerator.getPiecesInChunk(chunk.getPos());
+
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
 		    for (int z = chunkZ; z < chunkZ + 16; z++) {
-				double upperNoiseFactor = 0;
-				double lowerNoiseFactor = 0;
-				double detailFactor = 0;
-				double weight = 0;
+				double noise = getNoise(x, z);
 
-				for (int aX = -4; aX <= 4; aX++) {
-					for (int aZ = -4; aZ < 4; aZ++) {
-						BiomeGen biome = this.biomeSource.getRealBiome(x + aX, z + aZ);
-						upperNoiseFactor += biome.upperNoiseFactor();
-						lowerNoiseFactor += biome.lowerNoiseFactor();
-						detailFactor += biome.detailFactor();
-
-						weight++;
-					}
-				}
-
-				upperNoiseFactor /= weight;
-				lowerNoiseFactor /= weight;
-				detailFactor /= weight;
-
-				BiomeGen biome = this.biomeSource.getRealBiome(x, z);
-
-				// Create base terrain
-				double noise = baseNoise.eval(x / 256.0, z / 256.0);
-				noise *= noise > 0 ? upperNoiseFactor : lowerNoiseFactor;
-
-				// Add hills in a similar method to mc interpolation noise
-				double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
-				if (lerp > 1) {
-					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
-					upperNoise *= upperNoise > 0 ? 12 : 8;
-					noise += upperNoise;
-				} else if (lerp < 0) {
-					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
-					lowerNoise *= lowerNoise > 0 ? 8 : 6;
-					noise += lowerNoise;
-				} else {
-					double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
-					upperNoise *= upperNoise > 0 ? 12 : 8;
-
-					double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
-					lowerNoise *= lowerNoise > 0 ? 8 : 6;
-
-					noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
-				}
-
-				// Add small details to make the terrain less rounded
-				noise += detailNoise.eval(x / 20.0, z / 20.0) * detailFactor;
-
-//				double worley = structureNoise.sample(x / 120.0, z / 120.0);
-
-				// TODO: makes a flattened sphere for the structure, needs to look better
-//				if (worley < 0.12) {
-//					noise = MathHelper.clampedLerp( noise, 16, (0.12 - worley) / 0.05);
+//				for (PoolStructurePiece piece : pieces) {
+//					BlockBox box = piece.getBoundingBox();
+////					if (piece.getPoolElement().getProjection() == StructurePool.Projection.RIGID && box.intersectsXZ(x - 2, z - 2, x + 2, z + 2)) {
+////						noise = 20;
+////					}
 //				}
 
 				int height = (int) (56 + noise);
 
-				// Generation height ensures that the generator interates up to at least the water level.
+				// Generation height ensures that the generator iterates up to at least the water level.
 				int genHeight = Math.max(height, 48);
 				for (int y = 0; y <= genHeight; y++) {
 					// Simple surface building
@@ -168,6 +127,63 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				}
 			}
 		}
+	}
+
+	private double getNoise(int x, int z) {
+		double upperNoiseFactor = 0;
+		double lowerNoiseFactor = 0;
+		double detailFactor = 0;
+		double weight = 0;
+
+		for (int aX = -4; aX <= 4; aX++) {
+			for (int aZ = -4; aZ < 4; aZ++) {
+				BiomeGen biome = this.biomeSource.getRealBiome(x + aX, z + aZ);
+				upperNoiseFactor += biome.upperNoiseFactor();
+				lowerNoiseFactor += biome.lowerNoiseFactor();
+				detailFactor += biome.detailFactor();
+
+				weight++;
+			}
+		}
+
+		upperNoiseFactor /= weight;
+		lowerNoiseFactor /= weight;
+		detailFactor /= weight;
+
+		// Create base terrain
+		double noise = baseNoise.eval(x / 256.0, z / 256.0);
+		noise *= noise > 0 ? upperNoiseFactor : lowerNoiseFactor;
+
+		// Add hills in a similar method to mc interpolation noise
+		double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
+		if (lerp > 1) {
+			double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			upperNoise *= upperNoise > 0 ? 12 : 8;
+			noise += upperNoise;
+		} else if (lerp < 0) {
+			double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			lowerNoise *= lowerNoise > 0 ? 8 : 6;
+			noise += lowerNoise;
+		} else {
+			double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			upperNoise *= upperNoise > 0 ? 12 : 8;
+
+			double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			lowerNoise *= lowerNoise > 0 ? 8 : 6;
+
+			noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
+		}
+
+		// Add small details to make the terrain less rounded
+		noise += detailNoise.eval(x / 20.0, z / 20.0) * detailFactor;
+
+		return noise;
+	}
+
+	@Override
+	public int getHeight(int x, int z, Heightmap.Type heightmapType) {
+		int height = (int) (56 + getNoise(x, z));
+		return Math.max(height, 48);
 	}
 
 	@Override
