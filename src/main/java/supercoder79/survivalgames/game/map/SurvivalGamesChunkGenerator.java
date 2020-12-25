@@ -67,11 +67,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		this.chestNoise = new WorleyNoise(random.nextLong());
 
 		this.jigsawGenerator = new SurvivalGamesJigsawGenerator(server, this);
-		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 64);
+		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 16);
 	}
 
 	@Override
 	public void populateNoise(WorldAccess world, StructureAccessor structures, Chunk chunk) {
+		// TODO: we need to smooth terrain around rigid structures
+
 		int chunkX = chunk.getPos().x * 16;
 		int chunkZ = chunk.getPos().z * 16;
 

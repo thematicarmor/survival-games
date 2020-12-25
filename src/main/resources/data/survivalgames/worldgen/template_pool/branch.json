@@ -1,0 +1,40 @@
+{
+  "name": "survivalgames:branch",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 5,
+      "element": {
+        "element_type": "minecraft:empty_pool_element"
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:path_1",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {}}]
+          }
+        ]
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:path_2",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {}}]
+          }
+        ]
+      }
+    }
+  ]
+}

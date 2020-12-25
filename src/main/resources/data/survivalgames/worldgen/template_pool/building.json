@@ -1,0 +1,33 @@
+{
+  "name": "survivalgames:building",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:house_1",
+        "projection": "terrain_matching",
+        "processors": []
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:tower_1",
+        "projection": "terrain_matching",
+        "processors": []
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:enchanting_table_1",
+        "projection": "terrain_matching",
+        "processors": []
+      }
+    }
+  ]
+}

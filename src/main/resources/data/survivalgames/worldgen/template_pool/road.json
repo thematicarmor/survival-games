@@ -1,12 +1,12 @@
 {
-  "name": "survivalgames:path",
-  "fallback": "minecraft:empty",
+  "name": "survivalgames:road",
+  "fallback": "survivalgames:path",
   "elements": [
     {
-      "weight": 8,
+      "weight": 5,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "survivalgames:path_1",
+        "location": "survivalgames:road_1",
         "projection": "terrain_matching",
         "processors": [
           {
@@ -17,10 +17,10 @@
       }
     },
     {
-      "weight": 8,
+      "weight": 5,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "survivalgames:path_2",
+        "location": "survivalgames:road_2",
         "projection": "terrain_matching",
         "processors": [
           {
@@ -31,10 +31,10 @@
       }
     },
     {
-      "weight": 3,
+      "weight": 5,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "survivalgames:corner_path_1",
+        "location": "survivalgames:road_3",
         "projection": "terrain_matching",
         "processors": [
           {
@@ -45,10 +45,10 @@
       }
     },
     {
-      "weight": 3,
+      "weight": 5,
       "element": {
         "element_type": "minecraft:single_pool_element",
-        "location": "survivalgames:corner_path_2",
+        "location": "survivalgames:road_5",
         "projection": "terrain_matching",
         "processors": [
           {
@@ -61,7 +61,29 @@
     {
       "weight": 1,
       "element": {
-        "element_type": "minecraft:empty_pool_element"
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:corner_road_1",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {}}]
+          }
+        ]
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:corner_road_2",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {}}]
+          }
+        ]
       }
     }
   ]
