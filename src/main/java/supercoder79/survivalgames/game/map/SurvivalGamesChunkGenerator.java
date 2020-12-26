@@ -5,9 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.structure.PoolStructurePiece;
-import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -36,6 +34,8 @@ import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
 import java.util.List;
 import java.util.Random;
+
+import net.fabricmc.loader.api.FabricLoader;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final OpenSimplexNoise baseNoise;
@@ -72,6 +72,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		this.jigsawGenerator = new SurvivalGamesJigsawGenerator(server, this);
 		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 12);
+
+		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
+			DebugJigsawMapper.map(this.jigsawGenerator);
+		}
 	}
 
 	@Override
