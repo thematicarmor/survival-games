@@ -8,7 +8,13 @@
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:house_1",
         "projection": "rigid",
-        "processors": "minecraft:mossify_70_percent"
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [6, 2, 3],
+            "type": "house"
+          }
+        ]
       }
     },
     {
@@ -17,7 +23,13 @@
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:tower_1",
         "projection": "rigid",
-        "processors": "minecraft:mossify_70_percent"
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [5, 13, 2],
+            "type": "tower"
+          }
+        ]
       }
     },
     {
@@ -26,7 +38,13 @@
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:enchanting_table_1",
         "projection": "terrain_matching",
-        "processors": []
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [8, 1, 8],
+            "type": "enchanting_table"
+          }
+        ]
       }
     }
   ]
