@@ -208,7 +208,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				int y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 				if (y > 48) {
-					if (random.nextBoolean() && chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
+					if (this.chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
 						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.GENERIC);
 					}
 
