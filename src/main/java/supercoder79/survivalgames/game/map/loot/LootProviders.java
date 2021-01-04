@@ -83,7 +83,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.IRON_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.IRON_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.IRON_BOOTS, 1), 1),
-			4, 8);
+			4, 7);
 
 	public static final LootProvider FARMLAND = new LootProvider(new WeightedList<ItemStack>()
 			.add(new ItemStack(Items.IRON_SWORD, 1), 6)
@@ -96,5 +96,5 @@ public class LootProviders {
 			.add(new ItemStack(Items.CHAINMAIL_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_BOOTS, 1), 1),
-			4, 9);
+			4, 7);
 }
