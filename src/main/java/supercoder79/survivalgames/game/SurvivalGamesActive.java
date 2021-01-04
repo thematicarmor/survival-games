@@ -29,6 +29,7 @@ import xyz.nucleoid.plasmid.game.player.PlayerSet;
 import xyz.nucleoid.plasmid.game.rule.GameRule;
 import xyz.nucleoid.plasmid.game.rule.RuleResult;
 import xyz.nucleoid.plasmid.util.PlayerRef;
+import xyz.nucleoid.plasmid.widget.GlobalWidgets;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,23 +42,28 @@ public class SurvivalGamesActive {
 	private final PlayerSet participants;
 
 	private final SurvivalGamesSpawnLogic spawnLogic;
+	private final SurvivalGamesBar bar;
+
 	private long startTime;
+	private long shrinkStartTime;
 	private boolean borderShrinkStarted = false;
 	private long gameCloseTick = Long.MAX_VALUE;
 
-	private SurvivalGamesActive(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants) {
+	private SurvivalGamesActive(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants, GlobalWidgets widgets) {
 		this.world = world;
 		this.map = map;
 		this.config = config;
 		this.participants = participants;
 
 		this.spawnLogic = new SurvivalGamesSpawnLogic(world, config);
+		this.bar = SurvivalGamesBar.create(widgets);
 	}
 
 	public static void open(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config) {
-		SurvivalGamesActive active = new SurvivalGamesActive(world, map, config, world.getPlayers());
-
 		world.openGame(game -> {
+			GlobalWidgets widgets = new GlobalWidgets(game);
+			SurvivalGamesActive active = new SurvivalGamesActive(world, map, config, world.getPlayers(), widgets);
+
 			game.setRule(GameRule.CRAFTING, RuleResult.ALLOW);
 			game.setRule(GameRule.PORTALS, RuleResult.DENY);
 			game.setRule(GameRule.PVP, RuleResult.ALLOW);
@@ -104,10 +110,8 @@ public class SurvivalGamesActive {
 			this.spawnLogic.spawnPlayerAt(player, x, z);
 
 			for (ItemStack stack : config.kit) {
-				player.inventory.insertStack(stack);
+				player.inventory.insertStack(stack.copy());
 			}
-
-
 		}
 	}
 
@@ -125,18 +129,33 @@ public class SurvivalGamesActive {
 	}
 
 	private void tick() {
+		ServerWorld world = this.world.getWorld();
+
 		if (!this.borderShrinkStarted) {
-			ServerWorld world = this.world.getWorld();
-			if ((world.getTime() - startTime) > config.borderConfig.safeSecs * 20) {
-				borderShrinkStarted = true;
-				world.getWorldBorder().interpolateSize(config.borderConfig.startSize, config.borderConfig.endSize, 1000 * config.borderConfig.shrinkSecs);
+			long totalSafeTime = config.borderConfig.safeSecs * 20L;
+			this.bar.tickSafe(totalSafeTime - (world.getTime() - startTime), totalSafeTime);
+
+			if ((world.getTime() - startTime) > totalSafeTime) {
+				this.bar.setActive();
+				this.borderShrinkStarted = true;
+				this.shrinkStartTime = world.getTime();
+
+				world.getWorldBorder().interpolateSize(config.borderConfig.startSize, config.borderConfig.endSize, 1000L * config.borderConfig.shrinkSecs);
 				for (ServerPlayerEntity player : this.participants) {
 					player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.LERP_SIZE));
 				}
 			}
+		} else {
+			long totalShrinkTime = config.borderConfig.shrinkSecs * 20L;
+
+			if ((world.getTime() - shrinkStartTime) <= totalShrinkTime) {
+				this.bar.tickActive(totalShrinkTime - (world.getTime() - shrinkStartTime), totalShrinkTime);
+			} else {
+				this.bar.setFinished();
+			}
 		}
 
-		if (this.world.getWorld().getTime() > this.gameCloseTick) {
+		if (world.getTime() > this.gameCloseTick) {
 			this.world.close(GameCloseReason.FINISHED);
 		}
 	}
