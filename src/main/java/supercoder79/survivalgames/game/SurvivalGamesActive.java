@@ -196,9 +196,7 @@ public class SurvivalGamesActive {
 				BlockState logState = world.getBlockState(log);
 				world.breakBlock(log, false);
 
-				// Drop 1-2 planks
-				int count = 1 + world.random.nextInt(2);
-				world.spawnEntity(new ItemEntity(world, log.getX(), log.getY(), log.getZ(), new ItemStack(logState.getBlock(), count)));
+				world.spawnEntity(new ItemEntity(world, log.getX(), log.getY(), log.getZ(), new ItemStack(logState.getBlock())));
 			}
 
 			return ActionResult.FAIL;
