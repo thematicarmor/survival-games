@@ -48,6 +48,7 @@ public class SurvivalGamesActive {
 	private long shrinkStartTime;
 	private boolean borderShrinkStarted = false;
 	private long gameCloseTick = Long.MAX_VALUE;
+	private boolean finished = false;
 
 	private SurvivalGamesActive(GameSpace world, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants, GlobalWidgets widgets) {
 		this.world = world;
@@ -139,6 +140,7 @@ public class SurvivalGamesActive {
 				this.bar.setActive();
 				this.borderShrinkStarted = true;
 				this.shrinkStartTime = world.getTime();
+				this.participants.sendMessage(new LiteralText("The worldborder has started shrinking!").formatted(Formatting.RED));
 
 				world.getWorldBorder().interpolateSize(config.borderConfig.startSize, config.borderConfig.endSize, 1000L * config.borderConfig.shrinkSecs);
 				for (ServerPlayerEntity player : this.participants) {
@@ -148,10 +150,15 @@ public class SurvivalGamesActive {
 		} else {
 			long totalShrinkTime = config.borderConfig.shrinkSecs * 20L;
 
-			if ((world.getTime() - shrinkStartTime) <= totalShrinkTime) {
-				this.bar.tickActive(totalShrinkTime - (world.getTime() - shrinkStartTime), totalShrinkTime);
+			if ((world.getTime() - shrinkStartTime) > totalShrinkTime || world.getWorldBorder().getSize() == this.config.borderConfig.endSize) {
+				if (!this.finished) {
+					this.participants.sendMessage(new LiteralText("Last one standing wins!").formatted(Formatting.BLUE));
+					this.bar.setFinished();
+
+					this.finished = true;
+				}
 			} else {
-				this.bar.setFinished();
+				this.bar.tickActive(totalShrinkTime - (world.getTime() - shrinkStartTime), totalShrinkTime);
 			}
 		}
 
@@ -188,7 +195,7 @@ public class SurvivalGamesActive {
 		if (survival == 1) {
 			for (ServerPlayerEntity participant : this.participants) {
 				if (participant.interactionManager.getGameMode().isSurvivalLike()) {
-					players.sendMessage(new LiteralText(player.getEntityName() + " won!"));
+					players.sendMessage(new LiteralText(player.getEntityName() + " won!").formatted(Formatting.GOLD));
 					this.gameCloseTick = this.world.getWorld().getTime() + (20 * 10);
 					break;
 				}
