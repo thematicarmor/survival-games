@@ -1,11 +1,15 @@
 package supercoder79.survivalgames.game.map;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -34,6 +38,7 @@ import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -80,12 +85,16 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	@Override
 	public void populateNoise(WorldAccess world, StructureAccessor structures, Chunk chunk) {
-		// TODO: we need to smooth terrain around rigid structures
-
 		int chunkX = chunk.getPos().x * 16;
 		int chunkZ = chunk.getPos().z * 16;
 
-		List<PoolStructurePiece> pieces = this.jigsawGenerator.getPiecesInChunk(chunk.getPos());
+		// To smooth into other chunks, we need to gather all of the nearby structures
+		Set<PoolStructurePiece> pieces = new ObjectOpenHashSet<>();
+		for(int x = -1; x <= 1; x++) {
+		    for(int z = -1; z <= 1; z++) {
+				pieces.addAll(this.jigsawGenerator.getPiecesInChunk(new ChunkPos(chunk.getPos().x + x, chunk.getPos().z + z)));
+		    }
+		}
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 
@@ -93,14 +102,27 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		    for (int z = chunkZ; z < chunkZ + 16; z++) {
 				double noise = getNoise(x, z);
 
-//				for (PoolStructurePiece piece : pieces) {
-//					BlockBox box = piece.getBoundingBox();
-////					if (piece.getPoolElement().getProjection() == StructurePool.Projection.RIGID && box.intersectsXZ(x - 2, z - 2, x + 2, z + 2)) {
-////						noise = 20;
-////					}
-//				}
-
 				int height = (int) (56 + noise);
+
+				for (PoolStructurePiece piece : pieces) {
+					BlockBox box = piece.getBoundingBox();
+					if (piece.getPoolElement().getProjection() == StructurePool.Projection.RIGID) {
+						// At structure: raise to level
+						if (box.intersectsXZ(x, z, x, z )) {
+							height = Math.max(48, piece.getPos().getY());
+						} else if (box.intersectsXZ(x - 8, z - 8, x + 8, z + 8)) {
+							// Within radius: smooth
+							// I won't lie, I have no idea what I just wrote here.
+							// It seems to work though so... it stays.
+
+							double dx = Math.max(0, Math.max(box.minX - x, x - box.maxX)) / 8.0;
+							double dz = Math.max(0, Math.max(box.minZ - z, z - box.maxZ)) / 8.0;
+							double rad = dx * dx + dz * dz;
+
+							height = (int) MathHelper.clampedLerp(height, piece.getPos().getY(), 1 - rad);
+						}
+					}
+				}
 
 				// Generation height ensures that the generator iterates up to at least the water level.
 				int genHeight = Math.max(height, 48);
