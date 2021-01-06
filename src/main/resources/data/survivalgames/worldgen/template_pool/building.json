@@ -13,6 +13,24 @@
             "processor_type": "survivalgames:loot",
             "pos": [6, 1, 3],
             "type": "house"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [8, 1, 1],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [8, 1, 2],
+            "state": {
+              "Name": "minecraft:furnace",
+              "Properties": {}
+            },
+            "chance": 0.3
           }
         ]
       }
@@ -28,6 +46,24 @@
             "processor_type": "survivalgames:loot",
             "pos": [6, 2, 4],
             "type": "house"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [8, 2, 2],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [8, 2, 3],
+            "state": {
+              "Name": "minecraft:furnace",
+              "Properties": {}
+            },
+            "chance": 0.3
           }
         ]
       }
@@ -43,6 +79,24 @@
             "processor_type": "survivalgames:loot",
             "pos": [5, 13, 2],
             "type": "tower"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [5, 2, 1],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [7, 2, 1],
+            "state": {
+              "Name": "minecraft:furnace",
+              "Properties": {}
+            },
+            "chance": 0.3
           }
         ]
       }
