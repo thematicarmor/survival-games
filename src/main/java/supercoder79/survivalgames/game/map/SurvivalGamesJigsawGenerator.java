@@ -3,6 +3,8 @@ package supercoder79.survivalgames.game.map;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
+
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.StructureManager;
@@ -32,14 +34,15 @@ public final class SurvivalGamesJigsawGenerator {
     private final ChunkGenerator generator;
 
     private BlockPos origin = BlockPos.ORIGIN;
-    private final Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk = new Long2ObjectOpenHashMap<>();
+    private final Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk;
+    private final ChunkBox box;
 
-    public SurvivalGamesJigsawGenerator(MinecraftServer server, ChunkGenerator generator) {
+    public SurvivalGamesJigsawGenerator(MinecraftServer server, ChunkGenerator generator, Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk) {
         this.registryManager = server.getRegistryManager();
         this.structureManager = server.getStructureManager();
         this.generator = generator;
-
-        this.piecesByChunk.defaultReturnValue(ImmutableList.of());
+        this.piecesByChunk = piecesByChunk;
+        this.box = new ChunkBox();
     }
 
     public void arrangePieces(BlockPos origin, Identifier startPoolId, int depth) {
@@ -47,6 +50,10 @@ public final class SurvivalGamesJigsawGenerator {
 
         List<PoolStructurePiece> pieces = this.generateArrangedPieces(origin, startPoolId, depth);
         this.associatePiecesByChunk(pieces);
+
+        for (Long pos : this.piecesByChunk.keySet()) {
+            this.box.encompass(new ChunkPos(pos));
+        }
     }
 
     private List<PoolStructurePiece> generateArrangedPieces(BlockPos origin, Identifier startPoolId, int depth) {
@@ -124,5 +131,9 @@ public final class SurvivalGamesJigsawGenerator {
 
     public List<PoolStructurePiece> getPiecesInChunk(ChunkPos pos) {
         return this.piecesByChunk.get(pos.toLong());
+    }
+
+    public ChunkBox getBox() {
+        return box;
     }
 }

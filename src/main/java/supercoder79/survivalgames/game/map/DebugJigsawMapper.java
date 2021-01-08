@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
 import supercoder79.survivalgames.mixin.SinglePoolElementAccessor;
 
 import net.minecraft.structure.PoolStructurePiece;
@@ -18,7 +20,7 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
 
 public class DebugJigsawMapper {
-	public static void map(SurvivalGamesJigsawGenerator jigsawGenerator) {
+	public static void map(Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk, ChunkBox townArea) {
 		BufferedImage img = new BufferedImage(512, 512, BufferedImage.TYPE_INT_RGB);
 
 		for (int chunkX = -16; chunkX < 16; chunkX++) {
@@ -26,11 +28,11 @@ public class DebugJigsawMapper {
 		    	int chunkStartX = chunkX * 16;
 		    	int chunkStartZ = chunkZ * 16;
 
-				List<PoolStructurePiece> pieces = jigsawGenerator.getPiecesInChunk(new ChunkPos(chunkX, chunkZ));
+				List<PoolStructurePiece> pieces = piecesByChunk.get(new ChunkPos(chunkX, chunkZ).toLong());
 
 		        for (int x = chunkStartX; x < chunkStartX + 16; x++) {
 		            for (int z = chunkStartZ; z < chunkStartZ + 16; z++) {
-						int color = 0x444444;
+						int color = townArea.isBlockIn(x, z) ? 0x777777 : 0x444444;
 
 						for (PoolStructurePiece piece : pieces) {
 							BlockBox box = piece.getBoundingBox();

@@ -1,5 +1,8 @@
 package supercoder79.survivalgames.game.map;
 
+import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectSet;
 import kdotjpg.opensimplex.OpenSimplexNoise;
@@ -25,8 +28,10 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 
+import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.FakeBiomeSource;
+import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
 import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
 import supercoder79.survivalgames.game.map.gen.structure.Structures;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
@@ -36,6 +41,7 @@ import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
 import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -56,9 +62,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	private final FakeBiomeSource biomeSource;
 
-	private final SurvivalGamesJigsawGenerator jigsawGenerator;
+	private final Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk;
+	private final List<SurvivalGamesJigsawGenerator> jigsawGenerator;
 
-	public SurvivalGamesChunkGenerator(MinecraftServer server) {
+	public SurvivalGamesChunkGenerator(MinecraftServer server, SurvivalGamesConfig config) {
 		super(server);
 		Random random = new Random();
 
@@ -75,11 +82,33 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		this.structureNoise = new WorleyNoise(random.nextLong());
 		this.chestNoise = new WorleyNoise(random.nextLong());
 
-		this.jigsawGenerator = new SurvivalGamesJigsawGenerator(server, this);
-		this.jigsawGenerator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 12);
+		this.piecesByChunk = new Long2ObjectOpenHashMap<>();
+		this.piecesByChunk.defaultReturnValue(ImmutableList.of());
+
+		List<SurvivalGamesJigsawGenerator> generators = new ArrayList<>();
+
+		SurvivalGamesJigsawGenerator generator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
+		generator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 12);
+		ChunkBox townArea = generator.getBox();
+		generators.add(generator);
+
+		for (int i = 0; i < 16; i++) {
+			int startX = random.nextInt(config.borderConfig.startSize) - random.nextInt(config.borderConfig.startSize);
+			int startZ = random.nextInt(config.borderConfig.startSize) - random.nextInt(config.borderConfig.startSize);
+
+			if (townArea.isBlockIn(startX,startZ)) {
+				continue;
+			}
+
+			SurvivalGamesJigsawGenerator outskirtGenerator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
+			outskirtGenerator.arrangePieces(new BlockPos(startX, 0, startZ), new Identifier("survivalgames", "building"), 0);
+			generators.add(outskirtGenerator);
+		}
+
+		this.jigsawGenerator = generators;
 
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			DebugJigsawMapper.map(this.jigsawGenerator);
+			DebugJigsawMapper.map(this.piecesByChunk, townArea);
 		}
 	}
 
@@ -92,7 +121,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		Set<PoolStructurePiece> pieces = new ObjectOpenHashSet<>();
 		for(int x = -1; x <= 1; x++) {
 		    for(int z = -1; z <= 1; z++) {
-				pieces.addAll(this.jigsawGenerator.getPiecesInChunk(new ChunkPos(chunk.getPos().x + x, chunk.getPos().z + z)));
+				pieces.addAll(this.piecesByChunk.get(new ChunkPos(chunk.getPos().x + x, chunk.getPos().z + z).toLong()));
 		    }
 		}
 
@@ -104,6 +133,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 				int height = (int) (56 + noise);
 
+				// TODO: this is really slow and bad
 				for (PoolStructurePiece piece : pieces) {
 					BlockBox box = piece.getBoundingBox();
 					if (piece.getPoolElement().getProjection() == StructurePool.Projection.RIGID) {
@@ -212,9 +242,22 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		return Math.max(height, 48);
 	}
 
+	public void generateJigsaws(ChunkRegion region, StructureAccessor structures) {
+		ChunkPos chunkPos = new ChunkPos(region.getCenterChunkX(), region.getCenterChunkZ());
+		List<PoolStructurePiece> pieces = this.piecesByChunk.get(chunkPos.toLong());
+
+		if (pieces != null) {
+			// generate all intersecting pieces with the mask of this chunk
+			BlockBox chunkMask = new BlockBox(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunkPos.getEndX(), 255, chunkPos.getEndZ());
+			for (PoolStructurePiece piece : pieces) {
+				piece.method_27236(region, structures, this, new Random(), chunkMask, BlockPos.ORIGIN, false);
+			}
+		}
+	}
+
 	@Override
 	public void generateFeatures(ChunkRegion region, StructureAccessor structures) {
-		this.jigsawGenerator.generate(region, structures);
+		generateJigsaws(region, structures);
 
 		int chunkX = region.getCenterChunkX() * 16;
 		int chunkZ = region.getCenterChunkZ() * 16;

@@ -26,7 +26,7 @@ public final class SurvivalGamesWaiting {
 	public static GameOpenProcedure open(GameOpenContext<SurvivalGamesConfig> context) {
 		SurvivalGamesMap map = new SurvivalGamesMap();
 		BubbleWorldConfig worldConfig = new BubbleWorldConfig()
-				.setGenerator(map.chunkGenerator(context.getServer()))
+				.setGenerator(map.chunkGenerator(context.getServer(), context.getConfig()))
 				.setSpawner(BubbleWorldSpawner.atSurface(0, 0))
 				.setDefaultGameMode(GameMode.SPECTATOR);
 
