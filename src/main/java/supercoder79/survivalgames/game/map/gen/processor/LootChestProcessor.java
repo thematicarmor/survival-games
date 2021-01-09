@@ -65,6 +65,8 @@ public class LootChestProcessor extends StructureProcessor {
 			return LootProviders.TOWER;
 		case "enchanting_table":
 			return LootProviders.ENCHANTING_TABLE;
+		case "ore_pile":
+			return LootProviders.ORE_PILE;
 		default:
 			return LootProviders.GENERIC;
 		}

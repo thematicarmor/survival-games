@@ -65,6 +65,11 @@ public class DebugJigsawMapper {
 									color = 0x4444ff;
 									break;
 								}
+
+								if (location.contains("shrine")) {
+									color = 0xffff44;
+									break;
+								}
 							}
 						}
 

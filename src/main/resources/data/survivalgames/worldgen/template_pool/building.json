@@ -3,7 +3,7 @@
   "fallback": "minecraft:empty",
   "elements": [
     {
-      "weight": 3,
+      "weight": 4,
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:house_1",
@@ -36,7 +36,7 @@
       }
     },
     {
-      "weight": 3,
+      "weight": 4,
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:house_2",
@@ -105,6 +105,39 @@
       "weight": 2,
       "element": {
         "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:tower_2",
+        "projection": "rigid",
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [3, 12, 3],
+            "type": "tower"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [4, 2, 2],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [2, 2, 2],
+            "state": {
+              "Name": "minecraft:furnace",
+              "Properties": {}
+            },
+            "chance": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "weight": 3,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:enchanting_table_1",
         "projection": "terrain_matching",
         "processors": [
@@ -113,6 +146,22 @@
             "pos": [8, 2, 8],
             "match_terrain": true,
             "type": "enchanting_table"
+          }
+        ]
+      }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:shrine_1",
+        "projection": "terrain_matching",
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [1, 2, 1],
+            "match_terrain": true,
+            "type": "ore_pile"
           }
         ]
       }
