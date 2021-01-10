@@ -188,6 +188,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private double getNoise(int x, int z) {
 		double upperNoiseFactor = 0;
 		double lowerNoiseFactor = 0;
+		double upperLerpHigh = 0;
+		double upperLerpLow = 0;
+		double lowerLerpHigh = 0;
+		double lowerLerpLow = 0;
 		double detailFactor = 0;
 		double weight = 0;
 
@@ -196,6 +200,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				BiomeGen biome = this.biomeSource.getRealBiome(x + aX, z + aZ);
 				upperNoiseFactor += biome.upperNoiseFactor();
 				lowerNoiseFactor += biome.lowerNoiseFactor();
+				upperLerpHigh += biome.upperLerpHigh();
+				upperLerpLow += biome.upperLerpLow();
+				lowerLerpHigh += biome.lowerLerpHigh();
+				lowerLerpLow += biome.lowerLerpLow();
 				detailFactor += biome.detailFactor();
 
 				weight++;
@@ -204,6 +212,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		upperNoiseFactor /= weight;
 		lowerNoiseFactor /= weight;
+		upperLerpHigh /= weight;
+		upperLerpLow /= weight;
+		lowerLerpHigh /= weight;
+		lowerLerpLow /= weight;
 		detailFactor /= weight;
 
 		// Create base terrain
@@ -214,18 +226,18 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
 		if (lerp > 1) {
 			double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
-			upperNoise *= upperNoise > 0 ? 12 : 8;
+			upperNoise *= upperNoise > 0 ? upperLerpHigh : upperLerpLow;
 			noise += upperNoise;
 		} else if (lerp < 0) {
 			double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
-			lowerNoise *= lowerNoise > 0 ? 8 : 6;
+			lowerNoise *= lowerNoise > 0 ? lowerLerpHigh : lowerLerpLow;
 			noise += lowerNoise;
 		} else {
 			double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
-			upperNoise *= upperNoise > 0 ? 12 : 8;
+			upperNoise *= upperNoise > 0 ? upperLerpHigh : upperLerpLow;
 
 			double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
-			lowerNoise *= lowerNoise > 0 ? 8 : 6;
+			lowerNoise *= lowerNoise > 0 ? lowerLerpHigh : lowerLerpLow;
 
 			noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 		}

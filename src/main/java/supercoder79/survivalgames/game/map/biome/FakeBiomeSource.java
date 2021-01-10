@@ -54,11 +54,15 @@ public final class FakeBiomeSource extends BiomeSource {
 
 		double rainfall = (rainfallNoise.eval(x / 320.0, z / 320.0) + 1) / 2;
 
-		if (temperature < 0.45) {
+		if (temperature < 0.35) {
 			return TaigaGen.INSTANCE;
 		}
 
-		if (rainfall < 0.5) {
+		if (rainfall < 0.35) {
+			return PlainsGen.INSTANCE;
+		}
+
+		if (rainfall > 0.8) {
 			return AspenForestGen.INSTANCE;
 		}
 

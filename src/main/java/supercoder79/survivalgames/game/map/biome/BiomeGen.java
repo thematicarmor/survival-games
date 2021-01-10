@@ -18,6 +18,22 @@ public interface BiomeGen extends BaseBiomeGen {
 		return 12;
 	}
 
+	default double upperLerpHigh() {
+		return 12;
+	}
+
+	default double upperLerpLow() {
+		return 8;
+	}
+
+	default double lowerLerpHigh() {
+		return 8;
+	}
+
+	default double lowerLerpLow() {
+		return 6;
+	}
+
 	default double detailFactor() {
 		return 3.25;
 	}
