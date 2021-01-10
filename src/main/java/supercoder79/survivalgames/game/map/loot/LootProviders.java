@@ -51,7 +51,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.CHAINMAIL_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_BOOTS, 1), 1),
-			4, 9);
+			4, 8);
 
 	public static final LootProvider TOWER = new LootProvider(new WeightedList<ItemStack>()
 			.add(new ItemStack(Items.IRON_SWORD, 1), 2)

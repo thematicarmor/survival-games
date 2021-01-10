@@ -195,7 +195,7 @@ public class SurvivalGamesActive {
 		if (survival == 1) {
 			for (ServerPlayerEntity participant : this.participants) {
 				if (participant.interactionManager.getGameMode().isSurvivalLike()) {
-					players.sendMessage(new LiteralText(player.getEntityName() + " won!").formatted(Formatting.GOLD));
+					players.sendMessage(new LiteralText(participant.getEntityName() + " won!").formatted(Formatting.GOLD));
 					this.gameCloseTick = this.world.getWorld().getTime() + (20 * 10);
 					break;
 				}
