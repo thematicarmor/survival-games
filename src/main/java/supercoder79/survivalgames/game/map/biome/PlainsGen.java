@@ -6,17 +6,6 @@ import net.minecraft.world.biome.BiomeKeys;
 
 public class PlainsGen implements BiomeGen {
 	public static final PlainsGen INSTANCE = new PlainsGen();
-
-	@Override
-	public double upperNoiseFactor() {
-		return 8;
-	}
-
-	@Override
-	public double lowerNoiseFactor() {
-		return 6;
-	}
-
 	@Override
 	public double upperLerpHigh() {
 		return 3;
