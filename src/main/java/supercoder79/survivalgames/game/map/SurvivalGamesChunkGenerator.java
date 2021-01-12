@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -55,6 +54,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final OpenSimplexNoise upperInterpolatedNoise;
 	private final OpenSimplexNoise detailNoise;
 
+	private final OpenSimplexNoise riverNoise;
+	private final OpenSimplexNoise riverNoise2;
+	private final OpenSimplexNoise riverDepthNoise;
+
 	private final OpenSimplexNoise treeDensityNoise;
 
 	private final WorleyNoise structureNoise;
@@ -76,6 +79,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		this.lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
 		this.upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
 		this.detailNoise = new OpenSimplexNoise(random.nextLong());
+
+		this.riverNoise = new OpenSimplexNoise(random.nextLong());
+		this.riverNoise2 = new OpenSimplexNoise(random.nextLong());
+		this.riverDepthNoise = new OpenSimplexNoise(random.nextLong());
 
 		this.treeDensityNoise = new OpenSimplexNoise(random.nextLong());
 
@@ -245,6 +252,14 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		// Add small details to make the terrain less rounded
 		noise += detailNoise.eval(x / 20.0, z / 20.0) * detailFactor;
 
+		// River gen
+		double river = this.riverNoise.eval(x / 160.0, z / 160.0) + this.riverNoise2.eval(x / 32.0, z / 32.0) * 0.2;
+		if (river > -0.24 && river < 0.24) {
+			double depth = -10 + this.riverDepthNoise.eval(x / 60.0, z / 60.0) * 1.75;
+
+			noise = MathHelper.lerp(smoothstep(river / 0.24), noise, depth);
+		}
+
 		return noise;
 	}
 
@@ -332,5 +347,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	@Override
 	public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
+	}
+
+	public static double smoothstep(double x) {
+		return (1 - x * x) * (1 - x * x) * (1 - x * x);
 	}
 }
