@@ -51,6 +51,11 @@ public class DebugJigsawMapper {
 									break;
 								}
 
+								if (location.contains("ruins")) {
+									color = 0x884444;
+									break;
+								}
+
 								if (location.contains("house")) {
 									color = 0xff4444;
 									break;

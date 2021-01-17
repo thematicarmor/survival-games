@@ -99,7 +99,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		ChunkBox townArea = generator.getBox();
 		generators.add(generator);
 
-		for (int i = 0; i < 16; i++) {
+		for (int i = 0; i < 24; i++) {
 			int startX = random.nextInt(config.borderConfig.startSize) - random.nextInt(config.borderConfig.startSize);
 			int startZ = random.nextInt(config.borderConfig.startSize) - random.nextInt(config.borderConfig.startSize);
 
@@ -108,7 +108,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 			}
 
 			SurvivalGamesJigsawGenerator outskirtGenerator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
-			outskirtGenerator.arrangePieces(new BlockPos(startX, 0, startZ), new Identifier("survivalgames", "building"), 0);
+			outskirtGenerator.arrangePieces(new BlockPos(startX, 0, startZ), new Identifier("survivalgames", "outskirts_building"), 0);
 			generators.add(outskirtGenerator);
 		}
 
