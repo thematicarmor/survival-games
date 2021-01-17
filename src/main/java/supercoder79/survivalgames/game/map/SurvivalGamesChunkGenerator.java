@@ -95,13 +95,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		List<SurvivalGamesJigsawGenerator> generators = new ArrayList<>();
 
 		SurvivalGamesJigsawGenerator generator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
-		generator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), 12);
+		generator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), config.townDepth);
 		ChunkBox townArea = generator.getBox();
 		generators.add(generator);
 
-		for (int i = 0; i < 24; i++) {
-			int startX = random.nextInt(config.borderConfig.startSize) - random.nextInt(config.borderConfig.startSize);
-			int startZ = random.nextInt(config.borderConfig.startSize) - random.nextInt(config.borderConfig.startSize);
+		for (int i = 0; i < config.outskirtsBuildingCount; i++) {
+			int startX = random.nextInt(config.borderConfig.startSize / 2) - random.nextInt(config.borderConfig.startSize / 2);
+			int startZ = random.nextInt(config.borderConfig.startSize / 2) - random.nextInt(config.borderConfig.startSize / 2);
 
 			if (townArea.isBlockIn(startX,startZ)) {
 				continue;
@@ -115,7 +115,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		this.jigsawGenerator = generators;
 
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			DebugJigsawMapper.map(this.piecesByChunk, townArea);
+			DebugJigsawMapper.map(config, this.piecesByChunk, townArea);
 		}
 	}
 
@@ -266,7 +266,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	@Override
 	public int getHeight(int x, int z, Heightmap.Type heightmapType) {
 		int height = (int) (56 + getNoise(x, z));
-		return Math.max(height, 48);
+		return Math.max(height, 50);
 	}
 
 	public void generateJigsaws(ChunkRegion region, StructureAccessor structures) {
