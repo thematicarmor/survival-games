@@ -125,6 +125,7 @@ public class SurvivalGamesActive {
 
 	private void addPlayer(ServerPlayerEntity player) {
 		if (!this.participants.contains(PlayerRef.of(player))) {
+			player.networkHandler.sendPacket(new WorldBorderS2CPacket(this.world.getWorld().getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));
 			this.spawnSpectator(player);
 		}
 	}
@@ -153,6 +154,8 @@ public class SurvivalGamesActive {
 			if ((world.getTime() - shrinkStartTime) > totalShrinkTime || world.getWorldBorder().getSize() == this.config.borderConfig.endSize) {
 				if (!this.finished) {
 					this.participants.sendMessage(new LiteralText("Last one standing wins!").formatted(Formatting.BLUE));
+					world.getWorldBorder().setDamagePerBlock(2.5);
+					world.getWorldBorder().setBuffer(0.125);
 					this.bar.setFinished();
 
 					this.finished = true;
