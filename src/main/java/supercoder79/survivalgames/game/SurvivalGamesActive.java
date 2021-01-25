@@ -1,9 +1,11 @@
 package supercoder79.survivalgames.game;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.s2c.play.WorldBorderS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -227,6 +229,20 @@ public class SurvivalGamesActive {
 
 				world.spawnEntity(new ItemEntity(world, log.getX(), log.getY(), log.getZ(), new ItemStack(logState.getBlock())));
 			}
+
+			return ActionResult.FAIL;
+		}
+
+		if (state.isOf(Blocks.IRON_ORE)) {
+			world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.IRON_INGOT)));
+			world.breakBlock(pos, false);
+
+			return ActionResult.FAIL;
+		}
+
+		if (state.isOf(Blocks.COAL_ORE)) {
+			world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.COAL)));
+			world.breakBlock(pos, false);
 
 			return ActionResult.FAIL;
 		}
