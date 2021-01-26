@@ -1,9 +1,12 @@
 package supercoder79.survivalgames.game.map.gen.structure;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 
-public class ChunkBox {
+public final class ChunkBox {
 	private int minX;
 	private int minZ;
 	private int maxX;
@@ -53,6 +56,18 @@ public class ChunkBox {
 		}
 
 		return false;
+	}
+
+	public Set<Long> getAllPositions() {
+		Set<Long> positions = new HashSet<>();
+
+		for(int x = this.minX; x <= this.maxX; x++) {
+			for(int z = this.minZ; z <= this.maxZ; z++) {
+				positions.add(ChunkPos.toLong(x, z));
+			}
+		}
+
+		return positions;
 	}
 
 	@Override

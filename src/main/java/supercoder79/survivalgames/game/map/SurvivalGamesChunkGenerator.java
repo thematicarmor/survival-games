@@ -31,6 +31,7 @@ import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.FakeBiomeSource;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
+import supercoder79.survivalgames.game.map.gen.structure.ChunkMask;
 import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
 import supercoder79.survivalgames.game.map.gen.structure.Structures;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
@@ -99,23 +100,32 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		ChunkBox townArea = generator.getBox();
 		generators.add(generator);
 
+		ChunkMask mask = new ChunkMask();
+		mask.and(townArea);
+
 		for (int i = 0; i < config.outskirtsBuildingCount; i++) {
 			int startX = random.nextInt(config.borderConfig.startSize / 2) - random.nextInt(config.borderConfig.startSize / 2);
 			int startZ = random.nextInt(config.borderConfig.startSize / 2) - random.nextInt(config.borderConfig.startSize / 2);
 
-			if (townArea.isBlockIn(startX,startZ)) {
+			BlockPos start = new BlockPos(startX, 0, startZ);
+			ChunkPos chunkPos = new ChunkPos(start);
+
+			if (mask.isIn(chunkPos)) {
 				continue;
 			}
 
 			SurvivalGamesJigsawGenerator outskirtGenerator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
-			outskirtGenerator.arrangePieces(new BlockPos(startX, 0, startZ), new Identifier("survivalgames", "outskirts_building"), 0);
+			outskirtGenerator.arrangePieces(start, new Identifier("survivalgames", "outskirts_building"), 0);
+
+			mask.and(chunkPos);
+
 			generators.add(outskirtGenerator);
 		}
 
 		this.jigsawGenerator = generators;
 
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
-			DebugJigsawMapper.map(config, this.piecesByChunk, townArea);
+			DebugJigsawMapper.map(config, this.piecesByChunk, townArea, mask);
 		}
 	}
 

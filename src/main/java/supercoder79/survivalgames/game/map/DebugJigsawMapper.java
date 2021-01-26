@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
+import supercoder79.survivalgames.game.map.gen.structure.ChunkMask;
 import supercoder79.survivalgames.mixin.SinglePoolElementAccessor;
 
 import net.minecraft.structure.PoolStructurePiece;
@@ -21,7 +22,7 @@ import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.ChunkPos;
 
 public class DebugJigsawMapper {
-	public static void map(SurvivalGamesConfig config, Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk, ChunkBox townArea) {
+	public static void map(SurvivalGamesConfig config, Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk, ChunkBox townArea, ChunkMask totalArea) {
 		int rad = config.borderConfig.startSize;
 		int rad2 = rad / 2;
 		int chunkRad = rad2 >> 4;
@@ -37,12 +38,12 @@ public class DebugJigsawMapper {
 
 		        for (int x = chunkStartX; x < chunkStartX + 16; x++) {
 		            for (int z = chunkStartZ; z < chunkStartZ + 16; z++) {
-						int color = townArea.isBlockIn(x, z) ? 0x777777 : 0x444444;
+						int color = townArea.isBlockIn(x, z) ? 0xaaaaaa : totalArea.isIn(chunkX, chunkZ) ? 0x777777 : 0x444444;
 
 						for (PoolStructurePiece piece : pieces) {
 							BlockBox box = piece.getBoundingBox();
 							if (box.intersectsXZ(x - 2, z - 2, x + 2, z + 2)) {
-								color = 0xaaaaaa;
+								color = 0xcccccc;
 
 								String location = ((SinglePoolElementAccessor)piece.getPoolElement()).getLocation().left().get().toString();
 
