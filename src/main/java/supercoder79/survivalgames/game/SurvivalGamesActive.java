@@ -34,6 +34,7 @@ import xyz.nucleoid.plasmid.util.PlayerRef;
 import xyz.nucleoid.plasmid.widget.GlobalWidgets;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 
 public class SurvivalGamesActive {
@@ -100,12 +101,21 @@ public class SurvivalGamesActive {
 		startTime = world.getTime();
 
 		int index = 0;
-		int spawnDistance = (config.borderConfig.startSize / 2) * 3 / 4;
+
+		Random random = new Random();
+
+		double radius = (config.borderConfig.startSize / 2.0);
+
+		double maxSpawnDistance = radius * 0.95;
+		double minSpawnDistance = radius * 0.60;
 
 		for (ServerPlayerEntity player : this.participants) {
 			player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));
 
 			double theta = ((double) index++ / this.participants.size()) * 2 * Math.PI;
+
+			int spawnDistance = (int) MathHelper.lerp(random.nextDouble(), minSpawnDistance, maxSpawnDistance);
+
 			int x = MathHelper.floor(Math.cos(theta) * spawnDistance);
 			int z = MathHelper.floor(Math.sin(theta) * spawnDistance);
 

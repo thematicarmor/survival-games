@@ -4,7 +4,7 @@
   "border": {
     "start_size": 512,
     "end_size": 16,
-    "safe_secs": 90,
+    "safe_secs": 120,
     "shrink_secs": 240
   },
   "players": {
