@@ -213,7 +213,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		double weight = 0;
 
 		for (int aX = -4; aX <= 4; aX++) {
-			for (int aZ = -4; aZ < 4; aZ++) {
+			for (int aZ = -4; aZ <= 4; aZ++) {
 				BiomeGen biome = this.biomeSource.getRealBiome(x + aX, z + aZ);
 				upperNoiseFactor += biome.upperNoiseFactor();
 				lowerNoiseFactor += biome.lowerNoiseFactor();
