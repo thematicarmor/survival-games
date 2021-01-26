@@ -48,8 +48,13 @@ public class DeadlandGen implements BiomeGen {
 	}
 
 	@Override
-	public double modifyTreeCount(double original) {
+	public double modifyTreeChance(double original) {
 		return original * 2.5;
+	}
+
+	@Override
+	public int grassChance(int x, int z, Random random) {
+		return 32;
 	}
 
 	@Override

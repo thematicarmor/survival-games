@@ -21,7 +21,7 @@ public final class TaigaGen implements BiomeGen {
 	}
 
 	@Override
-	public double modifyTreeCount(double original) {
+	public double modifyTreeChance(double original) {
 		return original * 1.25;
 	}
 

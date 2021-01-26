@@ -20,7 +20,7 @@ public class LootProviders {
 			.add(new ItemStack(Items.CHAINMAIL_CHESTPLATE, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.CHAINMAIL_BOOTS, 1), 1)
-			.add(new ItemStack(Items.EXPERIENCE_BOTTLE, 1), 2)
+			.add(new ItemStack(Items.EXPERIENCE_BOTTLE, 2), 2)
 			.add(new ItemStack(Items.LAPIS_LAZULI, 1), 2)
 			.add(new ItemStack(Items.ENDER_PEARL, 1), 1)
 			.add(new ItemStack(Items.CROSSBOW, 1), 1)

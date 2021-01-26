@@ -143,10 +143,12 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		}
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
+		Random random = new Random();
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
 		    for (int z = chunkZ; z < chunkZ + 16; z++) {
 				double noise = getNoise(x, z);
+				BiomeGen biome = this.biomeSource.getRealBiome(x, z);
 
 				int height = (int) (56 + noise);
 
@@ -179,13 +181,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 					if (y == height) {
 						// If the height and the generation height are the same, it means that we're on land
 						if (height == genHeight) {
-							state = Blocks.GRASS_BLOCK.getDefaultState();
+							state = biome.topState(random, x, z);
 						} else {
 							// height and genHeight are different, so we're under water. Place dirt instead of grass.
-							state = Blocks.DIRT.getDefaultState();
+							state = biome.underState(random, x, z);
 						}
 					} else if ((height - y) <= 3) { //TODO: biome controls under depth
-						state = Blocks.DIRT.getDefaultState();
+						state = biome.underState(random, x, z);
 					} else if (y == 0) {
 						state = Blocks.BEDROCK.getDefaultState();
 					}
@@ -331,14 +333,14 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 					y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
-					int treeDensity = (int) biome.modifyTreeCount((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
+					int treeDensity = (int) biome.modifyTreeChance((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
 
 					if (random.nextInt(96 + treeDensity) == 0) {
 						biome.tree(x, z, random).generate(region, mutable.set(x, y, z).toImmutable(), random);
 					}
 
-					if (random.nextInt(16) == 0) {
-						GrassGen.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
+					if (random.nextInt(biome.grassChance(x, z, random)) == 0) {
+						biome.grass(x, z, random).generate(region, mutable.set(x, y, z).toImmutable(), random);
 					}
 				} else {
 					if (random.nextInt(64) == 0) {

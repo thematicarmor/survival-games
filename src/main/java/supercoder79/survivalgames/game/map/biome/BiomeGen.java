@@ -3,6 +3,7 @@ package supercoder79.survivalgames.game.map.biome;
 import java.util.Random;
 
 import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
 import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
 import xyz.nucleoid.substrate.biome.BaseBiomeGen;
 
@@ -38,19 +39,11 @@ public interface BiomeGen extends BaseBiomeGen {
 		return 3.25;
 	}
 
-	default BlockState topState(Random random) {
+	default BlockState topState(Random random, int x, int z) {
 		return Blocks.GRASS_BLOCK.getDefaultState();
 	}
 
-	default BlockState pathState() {
-		return Blocks.GRASS_PATH.getDefaultState();
-	}
-
-	default BlockState underState() {
-		return Blocks.DIRT.getDefaultState();
-	}
-
-	default BlockState underWaterState() {
+	default BlockState underState(Random random, int x, int z) {
 		return Blocks.DIRT.getDefaultState();
 	}
 
@@ -58,7 +51,15 @@ public interface BiomeGen extends BaseBiomeGen {
 		return PoplarTreeGen.INSTANCE;
 	}
 
-	default double modifyTreeCount(double original) {
+	default double modifyTreeChance(double original) {
 		return original;
+	}
+
+	default int grassChance(int x, int z, Random random) {
+		return 16;
+	}
+
+	default MapGen grass(int x, int z, Random random) {
+		return GrassGen.INSTANCE;
 	}
 }
