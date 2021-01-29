@@ -8,8 +8,11 @@ import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.state.property.Properties;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +32,8 @@ import net.minecraft.world.gen.StructureAccessor;
 
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
-import supercoder79.survivalgames.game.map.biome.FakeBiomeSource;
+import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
+import supercoder79.survivalgames.game.map.biome.source.FakeBiomeSource;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkMask;
 import supercoder79.survivalgames.game.map.gen.structure.StructureGen;
@@ -38,7 +42,6 @@ import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
 import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
-import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
 import java.util.ArrayList;
@@ -65,6 +68,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final WorleyNoise chestNoise;
 
 	private final FakeBiomeSource biomeSource;
+	private final BiomeGenerator biomeGenerator;
 
 	private final Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk;
 	private final List<SurvivalGamesJigsawGenerator> jigsawGenerator;
@@ -73,7 +77,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		super(server);
 		Random random = new Random();
 
-		this.biomeSource = new FakeBiomeSource(server.getRegistryManager().get(Registry.BIOME_KEY), random.nextLong());
+		this.biomeSource = new FakeBiomeSource(server.getRegistryManager().get(Registry.BIOME_KEY), random.nextLong(), config.biomeGenerator);
+		this.biomeGenerator = config.biomeGenerator;
 
 		this.baseNoise = new OpenSimplexNoise(random.nextLong());
 		this.interpolationNoise = new OpenSimplexNoise(random.nextLong());
@@ -295,11 +300,11 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	}
 
 	@Override
-	public void generateFeatures(ChunkRegion region, StructureAccessor structures) {
-		generateJigsaws(region, structures);
+	public void generateFeatures(ChunkRegion world, StructureAccessor structures) {
+		generateJigsaws(world, structures);
 
-		int chunkX = region.getCenterChunkX() * 16;
-		int chunkZ = region.getCenterChunkZ() * 16;
+		int chunkX = world.getCenterChunkX() * 16;
+		int chunkZ = world.getCenterChunkZ() * 16;
 		Random random = new Random();
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
@@ -309,42 +314,63 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 			for (int z = chunkZ; z < chunkZ + 16; z++) {
 				BiomeGen biome = this.biomeSource.getRealBiome(x, z);
 
-				int y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
+				int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 				if (y > 48) {
 					if (this.chestNoise.sample(x / 45.0, z / 45.0) < 0.01) {
-						LootHelper.placeProviderChest(region, mutable.set(x, y, z).toImmutable(), LootProviders.GENERIC);
+						LootHelper.placeProviderChest(world, mutable.set(x, y, z).toImmutable(), LootProviders.GENERIC);
 					}
 
 					if (!spawnedStructure && this.structureNoise.sample(x / 120.0, z / 120.0) < 0.005) {
 						spawnedStructure = true;
 
 						StructureGen structure = Structures.POOL.pickRandom(random);
-						structure.generate(region, mutable.set(x, y, z).toImmutable(), random);
+						structure.generate(world, mutable.set(x, y, z).toImmutable(), random);
 
 						for (int i = 0; i < structure.nearbyChestCount(random); i++) {
 							int ax = x + (random.nextInt(16) - random.nextInt(16));
 							int az = z + (random.nextInt(16) - random.nextInt(16));
-							int ay = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, ax, az);
+							int ay = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, ax, az);
 
-							LootHelper.placeProviderChest(region, mutable.set(ax, ay, az).toImmutable(), structure.getLootProvider());
+							LootHelper.placeProviderChest(world, mutable.set(ax, ay, az).toImmutable(), structure.getLootProvider());
 						}
 					}
 
-					y = region.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
+					y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
 					int treeDensity = (int) biome.modifyTreeChance((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
 
 					if (random.nextInt(96 + treeDensity) == 0) {
-						biome.tree(x, z, random).generate(region, mutable.set(x, y, z).toImmutable(), random);
+						biome.tree(x, z, random).generate(world, mutable.set(x, y, z).toImmutable(), random);
 					}
 
 					if (random.nextInt(biome.grassChance(x, z, random)) == 0) {
-						biome.grass(x, z, random).generate(region, mutable.set(x, y, z).toImmutable(), random);
+						biome.grass(x, z, random).generate(world, mutable.set(x, y, z).toImmutable(), random);
 					}
 				} else {
 					if (random.nextInt(64) == 0) {
-						DiskGen.INSTANCE.generate(region, mutable.set(x, y, z).toImmutable(), random);
+						DiskGen.INSTANCE.generate(world, mutable.set(x, y, z).toImmutable(), random);
+					}
+				}
+			}
+		}
+
+		if (this.biomeGenerator.generateSnow()) {
+			mutable = new BlockPos.Mutable();
+			for (int x = chunkX; x < chunkX + 16; x++) {
+				for (int z = chunkZ; z < chunkZ + 16; z++) {
+					int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
+					mutable.set(x, y, z);
+
+					BlockState down = world.getBlockState(mutable.down());
+					if (down.isOpaqueFullCube(world, mutable.down()) || down.isIn(BlockTags.LEAVES)) {
+						world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 3);
+
+						if (down.contains(Properties.SNOWY)) {
+							world.setBlockState(mutable.down(), down.with(Properties.SNOWY, true), 3);
+						}
+					} else if (down.getFluidState().isIn(FluidTags.WATER)) {
+						world.setBlockState(mutable.down(), Blocks.ICE.getDefaultState(), 3);
 					}
 				}
 			}

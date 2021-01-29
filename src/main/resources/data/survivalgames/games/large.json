@@ -13,6 +13,9 @@
   },
   "town_depth": 14,
   "outskirts_building_count": 32,
+  "biome_generator": {
+    "type": "survivalgames:default"
+  },
   "kit": [
     {
       "id": "minecraft:wooden_sword",

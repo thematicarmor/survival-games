@@ -1,6 +1,6 @@
 {
   "type": "survivalgames:survivalgames",
-  "name": "Survival Games (Standard)",
+  "name": "Survival Games (Winterland)",
   "border": {
     "start_size": 512,
     "end_size": 16,
@@ -14,7 +14,7 @@
   "town_depth": 12,
   "outskirts_building_count": 16,
   "biome_generator": {
-    "type": "survivalgames:default"
+    "type": "survivalgames:winterland"
   },
   "kit": [
     {
