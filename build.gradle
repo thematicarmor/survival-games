@@ -12,8 +12,8 @@ group = project.maven_group
 
 repositories {
     mavenLocal()
-    maven { url = "https://maven.gegy.dev/" }
     maven { url = "https://jitpack.io/" }
+    maven { url = "https://maven.gegy.dev/" }
 }
 
 dependencies {
@@ -32,6 +32,9 @@ dependencies {
 
     implementation "kdotjpg:open-simplex:2.0"
     include "kdotjpg:open-simplex:2.0"
+
+    implementation "dev.gegy:noise-composer:0.1.0"
+    include "dev.gegy:noise-composer:0.1.0"
 
     modRuntime ("com.github.SuperCoder7979:databreaker:0.2.6") {
         exclude module : "fabric-loader"

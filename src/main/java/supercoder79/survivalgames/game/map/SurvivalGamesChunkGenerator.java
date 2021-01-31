@@ -1,10 +1,11 @@
 package supercoder79.survivalgames.game.map;
 
 import com.google.common.collect.ImmutableList;
+import dev.gegy.noise.compile.NoiseCompiler;
+import dev.gegy.noise.sampler.NoiseSampler2d;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
@@ -30,6 +31,7 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 
+import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
@@ -41,6 +43,7 @@ import supercoder79.survivalgames.game.map.gen.structure.Structures;
 import supercoder79.survivalgames.game.map.loot.LootHelper;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.noise.WorleyNoise;
+import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
 import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
@@ -52,17 +55,17 @@ import java.util.Set;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
-	private final OpenSimplexNoise baseNoise;
-	private final OpenSimplexNoise interpolationNoise;
-	private final OpenSimplexNoise lowerInterpolatedNoise;
-	private final OpenSimplexNoise upperInterpolatedNoise;
-	private final OpenSimplexNoise detailNoise;
+	private final NoiseSampler2d baseNoise;
+	private final NoiseSampler2d interpolationNoise;
+	private final NoiseSampler2d lowerInterpolatedNoise;
+	private final NoiseSampler2d upperInterpolatedNoise;
+	private final NoiseSampler2d detailNoise;
 
-	private final OpenSimplexNoise riverNoise;
-	private final OpenSimplexNoise riverNoise2;
-	private final OpenSimplexNoise riverDepthNoise;
+	private final NoiseSampler2d riverNoise;
+	private final NoiseSampler2d riverNoise2;
+	private final NoiseSampler2d riverDepthNoise;
 
-	private final OpenSimplexNoise treeDensityNoise;
+	private final NoiseSampler2d treeDensityNoise;
 
 	private final WorleyNoise structureNoise;
 	private final WorleyNoise chestNoise;
@@ -80,17 +83,17 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		this.biomeSource = new FakeBiomeSource(server.getRegistryManager().get(Registry.BIOME_KEY), random.nextLong(), config.biomeGenerator);
 		this.biomeGenerator = config.biomeGenerator;
 
-		this.baseNoise = new OpenSimplexNoise(random.nextLong());
-		this.interpolationNoise = new OpenSimplexNoise(random.nextLong());
-		this.lowerInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
-		this.upperInterpolatedNoise = new OpenSimplexNoise(random.nextLong());
-		this.detailNoise = new OpenSimplexNoise(random.nextLong());
+		this.baseNoise = compile(random, 256.0);
+		this.interpolationNoise = compile(random, 50.0);
+		this.lowerInterpolatedNoise = compile(random,  60.0);
+		this.upperInterpolatedNoise = compile(random,  60.0);
+		this.detailNoise = compile(random, 20.0);
 
-		this.riverNoise = new OpenSimplexNoise(random.nextLong());
-		this.riverNoise2 = new OpenSimplexNoise(random.nextLong());
-		this.riverDepthNoise = new OpenSimplexNoise(random.nextLong());
+		this.riverNoise = compile(random, 160.0);
+		this.riverNoise2 = compile(random, 32.0); // TODO: octave sampler
+		this.riverDepthNoise = compile(random, 60.0);
 
-		this.treeDensityNoise = new OpenSimplexNoise(random.nextLong());
+		this.treeDensityNoise = compile(random, 180.0);
 
 		this.structureNoise = new WorleyNoise(random.nextLong());
 		this.chestNoise = new WorleyNoise(random.nextLong());
@@ -132,6 +135,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		if (FabricLoader.getInstance().isDevelopmentEnvironment()) {
 			DebugJigsawMapper.map(config, this.piecesByChunk, townArea, mask);
 		}
+	}
+
+	public static NoiseSampler2d compile(Random random, double scale) {
+		return SurvivalGames.NOISE_COMPILER.compile(OpenSimplexNoise.create().scale(1 / scale, 1 / scale), NoiseSampler2d.TYPE).create(random.nextLong());
 	}
 
 	@Override
@@ -243,36 +250,36 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		detailFactor /= weight;
 
 		// Create base terrain
-		double noise = baseNoise.eval(x / 256.0, z / 256.0);
+		double noise = baseNoise.get(x, z);
 		noise *= noise > 0 ? upperNoiseFactor : lowerNoiseFactor;
 
 		// Add hills in a similar method to mc interpolation noise
-		double lerp = interpolationNoise.eval(x / 50.0, z / 50.0) * 2.5;
+		double lerp = interpolationNoise.get(x, z) * 2.5;
 		if (lerp > 1) {
-			double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			double upperNoise = upperInterpolatedNoise.get(x, z);
 			upperNoise *= upperNoise > 0 ? upperLerpHigh : upperLerpLow;
 			noise += upperNoise;
 		} else if (lerp < 0) {
-			double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			double lowerNoise = lowerInterpolatedNoise.get(x, z);
 			lowerNoise *= lowerNoise > 0 ? lowerLerpHigh : lowerLerpLow;
 			noise += lowerNoise;
 		} else {
-			double upperNoise = upperInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			double upperNoise = upperInterpolatedNoise.get(x, z);
 			upperNoise *= upperNoise > 0 ? upperLerpHigh : upperLerpLow;
 
-			double lowerNoise = lowerInterpolatedNoise.eval(x / 60.0, z / 60.0);
+			double lowerNoise = lowerInterpolatedNoise.get(x, z);
 			lowerNoise *= lowerNoise > 0 ? lowerLerpHigh : lowerLerpLow;
 
 			noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 		}
 
 		// Add small details to make the terrain less rounded
-		noise += detailNoise.eval(x / 20.0, z / 20.0) * detailFactor;
+		noise += detailNoise.get(x, z) * detailFactor;
 
 		// River gen
-		double river = this.riverNoise.eval(x / 160.0, z / 160.0) + this.riverNoise2.eval(x / 32.0, z / 32.0) * 0.2;
+		double river = this.riverNoise.get(x, z) + this.riverNoise2.get(x, z) * 0.2;
 		if (river > -0.24 && river < 0.24) {
-			double depth = -10 + this.riverDepthNoise.eval(x / 60.0, z / 60.0) * 1.75;
+			double depth = -10 + this.riverDepthNoise.get(x, z) * 1.75;
 
 			noise = MathHelper.lerp(smoothstep(river / 0.24), noise, depth);
 		}
@@ -338,7 +345,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 					y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
 
-					int treeDensity = (int) biome.modifyTreeChance((treeDensityNoise.eval(x / 180.0, z / 180.0) + 1) * 64);
+					int treeDensity = (int) biome.modifyTreeChance((treeDensityNoise.get(x, z) + 1) * 64);
 
 					if (random.nextInt(96 + treeDensity) == 0) {
 						biome.tree(x, z, random).generate(world, mutable.set(x, y, z).toImmutable(), random);
