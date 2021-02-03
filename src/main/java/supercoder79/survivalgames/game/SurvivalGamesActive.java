@@ -106,8 +106,8 @@ public class SurvivalGamesActive {
 
 		double radius = (config.borderConfig.startSize / 2.0);
 
-		double maxSpawnDistance = radius * 0.95;
-		double minSpawnDistance = radius * 0.60;
+		double maxSpawnDistance = radius * this.config.noiseGenerator.maxSpawnDistFactor();
+		double minSpawnDistance = radius * this.config.noiseGenerator.minSpawnDistFactor();
 
 		for (ServerPlayerEntity player : this.participants) {
 			player.networkHandler.sendPacket(new WorldBorderS2CPacket(world.getWorldBorder(), WorldBorderS2CPacket.Type.INITIALIZE));

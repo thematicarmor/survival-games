@@ -1,6 +1,6 @@
 {
   "type": "survivalgames:survivalgames",
-  "name": "Survival Games (Winterland)",
+  "name": "Survival Games (Island)",
   "border": {
     "start_size": 512,
     "end_size": 16,
@@ -11,13 +11,13 @@
     "min": 1,
     "max": 100
   },
-  "town_depth": 12,
-  "outskirts_building_count": 16,
+  "town_depth": 6,
+  "outskirts_building_count": 0,
   "biome_generator": {
-    "type": "survivalgames:winterland"
+    "type": "survivalgames:default"
   },
   "noise_generator": {
-    "type": "survivalgames:default"
+    "type": "survivalgames:island"
   },
   "kit": [
     {

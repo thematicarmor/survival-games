@@ -16,6 +16,9 @@
   "biome_generator": {
     "type": "survivalgames:default"
   },
+  "noise_generator": {
+    "type": "survivalgames:default"
+  },
   "kit": [
     {
       "id": "minecraft:wooden_sword",

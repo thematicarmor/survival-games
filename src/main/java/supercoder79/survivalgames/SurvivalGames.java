@@ -3,6 +3,7 @@ package supercoder79.survivalgames;
 import dev.gegy.noise.compile.NoiseCompiler;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerators;
 import supercoder79.survivalgames.game.map.gen.processor.SurvivalGamesProcessorTypes;
+import supercoder79.survivalgames.game.map.noise.NoiseGenerators;
 import xyz.nucleoid.plasmid.game.GameType;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.SurvivalGamesWaiting;
@@ -18,6 +19,7 @@ public class SurvivalGames implements ModInitializer {
 	public void onInitialize() {
 		SurvivalGamesProcessorTypes.init();
 		BiomeGenerators.init();
+		NoiseGenerators.init();
 
 		GameType.register(
 				new Identifier("survivalgames", "survivalgames"),
