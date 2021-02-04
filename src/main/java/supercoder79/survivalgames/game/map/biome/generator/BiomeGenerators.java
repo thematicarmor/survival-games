@@ -8,6 +8,7 @@ public final class BiomeGenerators {
 	public static void init() {
 		register("default", DefaultBiomeGenerator.CODEC);
 		register("winterland", WinterlandBiomeGenerator.CODEC);
+		register("tropical", TropicalBiomeGenerator.CODEC);
 	}
 
 	public static void register(String name, Codec<? extends BiomeGenerator> generator) {
