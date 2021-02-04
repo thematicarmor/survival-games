@@ -31,9 +31,9 @@ public class BadlandsGen implements BiomeGen {
     @Override
     public BlockState underState(Random random, int x, int z) {
         if (random.nextInt(3) == 0) {
-            return Blocks.YELLOW_TERRACOTTA.getDefaultState();
+            return Blocks.RED_TERRACOTTA.getDefaultState();
         }
-        return Blocks.GRAY_TERRACOTTA.getDefaultState();
+        return Blocks.TERRACOTTA.getDefaultState();
     }
 
     @Override
