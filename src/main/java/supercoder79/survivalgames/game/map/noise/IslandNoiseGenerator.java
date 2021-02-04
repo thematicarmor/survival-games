@@ -113,7 +113,16 @@ public class IslandNoiseGenerator implements NoiseGenerator {
 
 	@Override
 	public double minSpawnDistFactor() {
-		return 0.50;
+		return 0.60;
+	}
+
+	@Override
+	public boolean shouldOutskirtsSpawn(int x, int z) {
+		double ax = x / this.radius;
+		double az = z / this.radius;
+		double rad = ax * ax + az * az;
+
+		return rad <= 1.0;
 	}
 
 	@Override

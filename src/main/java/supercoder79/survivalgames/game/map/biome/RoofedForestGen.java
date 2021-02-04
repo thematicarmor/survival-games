@@ -9,7 +9,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class RoofedForestGen implements BiomeGen {
+public final class RoofedForestGen implements BiomeGen {
 	public static final RoofedForestGen INSTANCE = new RoofedForestGen();
 
 	@Override
@@ -19,7 +19,7 @@ public class RoofedForestGen implements BiomeGen {
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return 12;
+		return 6;
 	}
 
 	@Override

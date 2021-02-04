@@ -47,6 +47,10 @@ public interface BiomeGen extends BaseBiomeGen {
 		return Blocks.DIRT.getDefaultState();
 	}
 
+	default BlockState underWaterState(Random random, int x, int z) {
+		return underState(random, x, z);
+	}
+
 	default MapGen tree(int x, int z, Random random) {
 		return PoplarTreeGen.INSTANCE;
 	}

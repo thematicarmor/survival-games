@@ -17,6 +17,10 @@ public interface NoiseGenerator {
 
 	double getHeightAt(FakeBiomeSource biomeSource, int x, int z);
 
+	default boolean shouldOutskirtsSpawn(int x, int z) {
+		return true;
+	}
+
 	default double maxSpawnDistFactor() {
 		return 0.95;
 	}

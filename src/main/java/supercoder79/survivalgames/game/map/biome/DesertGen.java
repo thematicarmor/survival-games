@@ -14,7 +14,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class DesertGen implements BiomeGen {
+public final class DesertGen implements BiomeGen {
 	public static final DesertGen INSTANCE = new DesertGen();
 	private static final OpenSimplexNoise GRASS_NOISE = new OpenSimplexNoise(60);
 
@@ -30,6 +30,11 @@ public class DesertGen implements BiomeGen {
 	@Override
 	public BlockState underState(Random random, int x, int z) {
 		return Blocks.SANDSTONE.getDefaultState();
+	}
+
+	@Override
+	public BlockState underWaterState(Random random, int x, int z) {
+		return Blocks.SAND.getDefaultState();
 	}
 
 	@Override

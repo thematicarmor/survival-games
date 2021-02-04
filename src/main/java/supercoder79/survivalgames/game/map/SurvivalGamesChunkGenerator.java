@@ -90,17 +90,24 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		this.noiseGenerator.initialize(random, config);
 
-		SurvivalGamesJigsawGenerator generator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
-		generator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), config.townDepth);
-		ChunkBox townArea = generator.getBox();
-		generators.add(generator);
-
 		ChunkMask mask = new ChunkMask();
-		mask.and(townArea);
+		ChunkBox townArea = new ChunkBox();
+
+		if (config.townDepth > 0) {
+			SurvivalGamesJigsawGenerator generator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
+			generator.arrangePieces(new BlockPos(0, 64, 0), new Identifier("survivalgames", "starts"), config.townDepth);
+			townArea = generator.getBox();
+			generators.add(generator);
+			mask.and(townArea);
+		}
 
 		for (int i = 0; i < config.outskirtsBuildingCount; i++) {
 			int startX = random.nextInt(config.borderConfig.startSize / 2) - random.nextInt(config.borderConfig.startSize / 2);
 			int startZ = random.nextInt(config.borderConfig.startSize / 2) - random.nextInt(config.borderConfig.startSize / 2);
+
+			if (!this.noiseGenerator.shouldOutskirtsSpawn(startX, startZ)) {
+				continue;
+			}
 
 			BlockPos start = new BlockPos(startX, 0, startZ);
 			ChunkPos chunkPos = new ChunkPos(start);
