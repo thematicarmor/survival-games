@@ -1,0 +1,40 @@
+{
+    "type": "survivalgames:survivalgames",
+    "name": "Survival Games (Tropical)",
+    "border": {
+      "start_size": 512,
+      "end_size": 16,
+      "safe_secs": 120,
+      "shrink_secs": 240
+    },
+    "players": {
+      "min": 1,
+      "max": 100
+    },
+    "town_depth": 6,
+    "outskirts_building_count": 0,
+    "biome_generator": {
+      "type": "survivalgames:tropical"
+    },
+    "noise_generator": {
+      "type": "survivalgames:default"
+    },
+    "kit": [
+      {
+        "id": "minecraft:wooden_sword",
+        "Count": 1
+      },
+      {
+        "id": "minecraft:wooden_pickaxe",
+        "Count": 1
+      },
+      {
+        "id": "minecraft:wooden_axe",
+        "Count": 1
+      },
+      {
+        "id": "minecraft:cobblestone",
+        "Count": 16
+      }
+    ]
+  }
