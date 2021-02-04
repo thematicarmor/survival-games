@@ -13,7 +13,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 
 public class BadlandsGen implements BiomeGen {
-    public static final PlainsGen INSTANCE = new PlainsGen();
+    public static final BadlandsGen INSTANCE = new BadlandsGen();
     public static final OpenSimplexNoise TERRACOTTA_NOISE = new OpenSimplexNoise(12);
     public static final OpenSimplexNoise RED_TERRACOTTA_NOISE = new OpenSimplexNoise(12);
 

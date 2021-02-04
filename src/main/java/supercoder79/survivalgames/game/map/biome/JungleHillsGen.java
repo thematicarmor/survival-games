@@ -68,7 +68,7 @@ public final class JungleHillsGen implements BiomeGen {
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return 512;
+		return 32;
 	}
 
 	@Override

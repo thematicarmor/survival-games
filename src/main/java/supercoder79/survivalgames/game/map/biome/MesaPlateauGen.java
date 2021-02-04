@@ -13,7 +13,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
 public final class MesaPlateauGen implements BiomeGen {
-    public static final MesaPlateauGen INSTANCE = new MesaPlateauGen();
+	public static final MesaPlateauGen INSTANCE = new MesaPlateauGen();
 	private static final OpenSimplexNoise RED_NOISE = new OpenSimplexNoise(32);
 
 	@Override
@@ -63,15 +63,15 @@ public final class MesaPlateauGen implements BiomeGen {
 
 	@Override
 	public MapGen tree(int x, int z, Random random) {
-        if(random.nextInt(2) == 0) {
-            return AcaciaTreeGen.INSTANCE;
-        }
+		if (random.nextInt(2) == 0) {
+			return AcaciaTreeGen.INSTANCE;
+		}
 		return ShrubGen.INSTANCE;
 	}
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return original * 0;
+		return 0;
 	}
 
 	@Override
