@@ -3,8 +3,7 @@ package supercoder79.survivalgames.game.map.biome;
 import java.util.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
-import supercoder79.survivalgames.game.map.gen.AcaciaTreeGen;
-import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
+import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
 import xyz.nucleoid.plasmid.game.gen.feature.ShrubGen;
 import net.minecraft.block.BlockState;
@@ -64,9 +63,10 @@ public final class ShatteredSavannaGen implements BiomeGen {
 
 	@Override
 	public MapGen tree(int x, int z, Random random) {
-        if(random.nextInt(2) == 0) {
-            return AcaciaTreeGen.INSTANCE;
+        if (random.nextInt(2) == 0) {
+			return BranchingTreeGen.ACACIA;
         }
+
 		return ShrubGen.INSTANCE;
 	}
 

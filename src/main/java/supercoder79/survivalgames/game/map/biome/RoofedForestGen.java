@@ -2,7 +2,7 @@ package supercoder79.survivalgames.game.map.biome;
 
 import java.util.Random;
 
-import supercoder79.survivalgames.game.map.gen.RoofedTreeGen;
+import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
 
 import net.minecraft.util.registry.RegistryKey;
@@ -14,7 +14,7 @@ public final class RoofedForestGen implements BiomeGen {
 
 	@Override
 	public MapGen tree(int x, int z, Random random) {
-		return RoofedTreeGen.INSTANCE;
+		return BranchingTreeGen.DARK_OAK;
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public class TropicalBiomeGenerator implements BiomeGenerator {
 			if (rainfall > 0.5) {
 				return ShatteredSavannaGen.INSTANCE;
 			}
+
 			return SavannaGen.INSTANCE;
 		}
 
@@ -40,8 +41,10 @@ public class TropicalBiomeGenerator implements BiomeGenerator {
 			if (temperature < 0.5) {
 				return AspenForestGen.INSTANCE;
 			}
+
 			return JungleHillsGen.INSTANCE;
 		}
+
 		return JungleGen.INSTANCE;
 	}
 

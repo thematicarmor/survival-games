@@ -2,15 +2,13 @@ package supercoder79.survivalgames.game.map.biome;
 
 import java.util.Random;
 
-import kdotjpg.opensimplex.OpenSimplexNoise;
+import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
-import xyz.nucleoid.plasmid.game.gen.feature.tree.AspenTreeGen;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
-import supercoder79.survivalgames.game.map.gen.JungleTreeGen;
 
 public final class JungleGen implements BiomeGen {
     public static final JungleGen INSTANCE = new JungleGen();
@@ -52,12 +50,12 @@ public final class JungleGen implements BiomeGen {
 
 	@Override
 	public MapGen tree(int x, int z, Random random) {
-		return JungleTreeGen.INSTANCE;
+		return BranchingTreeGen.JUNGLE;
 	}
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return 24;
+		return 6;
 	}
 
 	@Override
@@ -67,6 +65,6 @@ public final class JungleGen implements BiomeGen {
 
 	@Override
 	public int grassChance(int x, int z, Random random) {
-		return 48;
+		return 4;
 	}
 }

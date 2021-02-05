@@ -14,21 +14,24 @@ import kdotjpg.opensimplex.OpenSimplexNoise;
 
 public class BadlandsGen implements BiomeGen {
     public static final BadlandsGen INSTANCE = new BadlandsGen();
-    public static final OpenSimplexNoise TERRACOTTA_NOISE = new OpenSimplexNoise(12);
+    public static final OpenSimplexNoise TERRACOTTA_NOISE = new OpenSimplexNoise(11);
     public static final OpenSimplexNoise GRASS_NOISE = new OpenSimplexNoise(12);
-    public static final OpenSimplexNoise RED_TERRACOTTA_NOISE = new OpenSimplexNoise(12);
+    public static final OpenSimplexNoise RED_TERRACOTTA_NOISE = new OpenSimplexNoise(13);
 
     @Override
     public BlockState topState(Random random, int x, int z) {
         if (random.nextDouble() <= 0.1 + GRASS_NOISE.eval(x / 30.0, z / 30.0) * 0.1) {
             return Blocks.GRASS_BLOCK.getDefaultState();
         }
+
         if (random.nextDouble() <= 0.1 + TERRACOTTA_NOISE.eval(x / 30.0, z / 30.0) * 0.1) {
             return Blocks.TERRACOTTA.getDefaultState();
         }
+
         if (random.nextDouble() <= 0.1 + RED_TERRACOTTA_NOISE.eval(x / 30.0, z / 30.0) * 0.1) {
             return Blocks.RED_TERRACOTTA.getDefaultState();
         }
+
         return Blocks.RED_SAND.getDefaultState();
     }
 
@@ -37,6 +40,7 @@ public class BadlandsGen implements BiomeGen {
         if (random.nextInt(3) == 0) {
             return Blocks.RED_TERRACOTTA.getDefaultState();
         }
+
         return Blocks.TERRACOTTA.getDefaultState();
     }
 

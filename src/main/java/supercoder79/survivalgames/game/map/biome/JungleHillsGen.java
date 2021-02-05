@@ -2,9 +2,7 @@ package supercoder79.survivalgames.game.map.biome;
 
 import java.util.Random;
 
-import kdotjpg.opensimplex.OpenSimplexNoise;
-import supercoder79.survivalgames.game.map.gen.JungleTreeGen;
-import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
+import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
 
 import net.minecraft.block.BlockState;
@@ -63,16 +61,21 @@ public final class JungleHillsGen implements BiomeGen {
 
 	@Override
 	public MapGen tree(int x, int z, Random random) {
-		return JungleTreeGen.INSTANCE;
+		return BranchingTreeGen.JUNGLE;
 	}
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return 32;
+		return 8;
 	}
 
 	@Override
 	public RegistryKey<Biome> getFakingBiome() {
 		return BiomeKeys.JUNGLE_HILLS;
+	}
+
+	@Override
+	public int grassChance(int x, int z, Random random) {
+		return 4;
 	}
 }

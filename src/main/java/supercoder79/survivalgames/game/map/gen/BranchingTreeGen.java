@@ -13,16 +13,21 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ServerWorldAccess;
 
-public class RoofedTreeGen implements MapGen {
-	public static final MapGen INSTANCE = new RoofedTreeGen(Blocks.DARK_OAK_LOG.getDefaultState(), Blocks.DARK_OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), 8);
+public class BranchingTreeGen implements MapGen {
+	public static final MapGen DARK_OAK = new BranchingTreeGen(Blocks.DARK_OAK_LOG.getDefaultState(), Blocks.DARK_OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), 8, 1);
+	public static final MapGen JUNGLE = new BranchingTreeGen(Blocks.JUNGLE_LOG.getDefaultState(), Blocks.JUNGLE_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), 16, 1);
+	public static final MapGen ACACIA = new BranchingTreeGen(Blocks.ACACIA_LOG.getDefaultState(), Blocks.ACACIA_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), 8, 3);
+
 	private final BlockState log;
 	private final BlockState leaves;
 	private final int height;
+	private final int branchLength;
 
-	public RoofedTreeGen(BlockState log, BlockState leaves, int height) {
+	public BranchingTreeGen(BlockState log, BlockState leaves, int height, int branchLength) {
 		this.log = log;
 		this.leaves = leaves;
 		this.height = height;
+		this.branchLength = branchLength;
 	}
 
 	@Override
@@ -41,7 +46,7 @@ public class RoofedTreeGen implements MapGen {
 				BlockPos local = mutable.toImmutable();
 				double theta = random.nextDouble() * Math.PI * 2;
 				// TODO: scale with height
-				int branchLength = random.nextInt(3) + 1;
+				int branchLength = random.nextInt(3) + this.branchLength;
 				for (int i = 0; i <= branchLength; i++) {
 					int dx = (int) (Math.cos(theta) * i);
 					int dy = i / 2;
