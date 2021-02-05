@@ -16,6 +16,7 @@ public final class MesaPlateauGen implements BiomeGen {
 	public static final MesaPlateauGen INSTANCE = new MesaPlateauGen();
 	private static final OpenSimplexNoise RED_NOISE = new OpenSimplexNoise(24);
 	private static final OpenSimplexNoise ORANGE_NOISE = new OpenSimplexNoise(24);
+	private static final OpenSimplexNoise GRASS_NOISE = new OpenSimplexNoise(24);
 
 	@Override
 	public BlockState topState(Random random, int x, int z) {
@@ -24,6 +25,9 @@ public final class MesaPlateauGen implements BiomeGen {
         }
         if (random.nextDouble() <= 0.1 + ORANGE_NOISE.eval(x / 45.0, z / 45.0) * 1.5) {
             return Blocks.ORANGE_TERRACOTTA.getDefaultState();
+        }
+		if (random.nextDouble() <= 0.1 + GRASS_NOISE.eval(x / 30.0, z / 30.0) * 0.1) {
+            return Blocks.GRASS_BLOCK.getDefaultState();
         }
 		return Blocks.TERRACOTTA.getDefaultState();
 	}
