@@ -10,7 +10,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
-public class DeadlandGen implements BiomeGen {
+public final class DeadlandGen implements BiomeGen {
 	public static final DeadlandGen INSTANCE = new DeadlandGen();
 
 	@Override

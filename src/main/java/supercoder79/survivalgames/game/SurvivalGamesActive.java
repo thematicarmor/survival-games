@@ -257,6 +257,10 @@ public class SurvivalGamesActive {
 			return ActionResult.FAIL;
 		}
 
+		if (state.isOf(Blocks.ENCHANTING_TABLE)) {
+			return ActionResult.FAIL;
+		}
+
 		return ActionResult.PASS;
 	}
 

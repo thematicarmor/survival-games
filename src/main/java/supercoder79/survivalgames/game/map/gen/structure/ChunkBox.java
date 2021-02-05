@@ -11,6 +11,7 @@ public final class ChunkBox {
 	private int minZ;
 	private int maxX;
 	private int maxZ;
+
 	public ChunkBox() {
 		this.minX = 0;
 		this.minZ = 0;
