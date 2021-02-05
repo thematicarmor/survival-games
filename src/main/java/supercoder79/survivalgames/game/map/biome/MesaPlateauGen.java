@@ -3,9 +3,9 @@ package supercoder79.survivalgames.game.map.biome;
 import java.util.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
-import supercoder79.survivalgames.game.map.gen.AcaciaTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
 import xyz.nucleoid.plasmid.game.gen.feature.ShrubGen;
+import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.RegistryKey;
@@ -64,7 +64,7 @@ public final class MesaPlateauGen implements BiomeGen {
 	@Override
 	public MapGen tree(int x, int z, Random random) {
 		if (random.nextInt(2) == 0) {
-			return AcaciaTreeGen.INSTANCE;
+			return PoplarTreeGen.INSTANCE;
 		}
 		return ShrubGen.INSTANCE;
 	}
