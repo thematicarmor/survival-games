@@ -14,16 +14,23 @@ import net.minecraft.world.biome.BiomeKeys;
 
 public final class MesaPlateauGen implements BiomeGen {
 	public static final MesaPlateauGen INSTANCE = new MesaPlateauGen();
-	private static final OpenSimplexNoise RED_NOISE = new OpenSimplexNoise(32);
+	private static final OpenSimplexNoise RED_NOISE = new OpenSimplexNoise(24);
+	private static final OpenSimplexNoise ORANGE_NOISE = new OpenSimplexNoise(24);
 
 	@Override
 	public BlockState topState(Random random, int x, int z) {
-		return RED_NOISE.eval(x / 45.0, z / 45.0) > 0 ? Blocks.RED_TERRACOTTA.getDefaultState() : Blocks.TERRACOTTA.getDefaultState();
+		if (random.nextDouble() <= 0.1 + RED_NOISE.eval(x / 30.0, z / 30.0) * 1.5) {
+            return Blocks.RED_TERRACOTTA.getDefaultState();
+        }
+        if (random.nextDouble() <= 0.1 + ORANGE_NOISE.eval(x / 45.0, z / 45.0) * 1.5) {
+            return Blocks.ORANGE_TERRACOTTA.getDefaultState();
+        }
+		return Blocks.TERRACOTTA.getDefaultState();
 	}
 
 	@Override
 	public BlockState underState(Random random, int x, int z) {
-		return RED_NOISE.eval(x / 45.0, z / 45.0) > 0 ? Blocks.LIGHT_GRAY_TERRACOTTA.getDefaultState() : Blocks.RED_TERRACOTTA.getDefaultState();
+		return RED_NOISE.eval(x / 45.0, z / 45.0) > 0 ? Blocks.RED_TERRACOTTA.getDefaultState() : Blocks.TERRACOTTA.getDefaultState();
 	}
 
 	@Override
