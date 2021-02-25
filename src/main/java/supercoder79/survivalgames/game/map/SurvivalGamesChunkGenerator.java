@@ -89,13 +89,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		List<SurvivalGamesJigsawGenerator> generators = new ArrayList<>();
 
 		this.noiseGenerator.initialize(random, config);
-		if (config.dimension.getPath().equals("the_nether")) {
-			this.defaultState = Blocks.NETHERRACK.getDefaultState();
-			this.defaultFluid = Blocks.LAVA.getDefaultState();
-		} else {
-			this.defaultState = Blocks.STONE.getDefaultState();
-			this.defaultFluid = Blocks.WATER.getDefaultState();
-		}
+
+		this.defaultState = config.defaultState;
+		this.defaultFluid = config.defaultFluid;
 
 		ChunkMask mask = new ChunkMask();
 		ChunkBox townArea = new ChunkBox();
@@ -124,7 +120,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 			}
 
 			SurvivalGamesJigsawGenerator outskirtGenerator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
-			outskirtGenerator.arrangePieces(start, new Identifier("survivalgames", config.buildingType.getPath() + "_outskirts_buildings"), 0);
+			outskirtGenerator.arrangePieces(start, config.outskirtsPool, 0);
 
 			mask.and(chunkPos);
 

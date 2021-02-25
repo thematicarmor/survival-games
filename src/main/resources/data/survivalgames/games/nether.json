@@ -14,7 +14,7 @@
   },
   "town_depth": -6,
   "outskirts_building_count": 10,
-  "building_type": "survivalgames:the_nether",
+  "outskirts_pool": "survivalgames:nether_outskirts_buildings",
   "biome_generator": {
     "type": "survivalgames:nether"
   },
@@ -42,5 +42,15 @@
       "id": "minecraft:golden_boots",
       "Count": 1
     }
-  ]
+  ],
+  "default_state": {
+    "Name": "minecraft:netherrack",
+    "Properties": {}
+  },
+  "default_fluid": {
+    "Name": "minecraft:lava",
+    "Properties": {
+      "level": "0"
+    }
+  }
 }

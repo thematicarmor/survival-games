@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
 import supercoder79.survivalgames.game.map.noise.NoiseGenerator;
@@ -22,7 +25,9 @@ public class SurvivalGamesConfig {
 			NoiseGenerator.CODEC.fieldOf("noise_generator").forGetter(config -> config.noiseGenerator),
 			ItemStack.CODEC.listOf().fieldOf("kit").forGetter(config -> config.kit),
 			Identifier.CODEC.optionalFieldOf("dimension", DimensionType.OVERWORLD_ID).forGetter(config -> config.dimension),
-			Identifier.CODEC.optionalFieldOf("building_type", DimensionType.OVERWORLD_ID).forGetter(config -> config.buildingType)
+			Identifier.CODEC.optionalFieldOf("outskirts_pool", new Identifier("survivalgames", "outskirts_buildings")).forGetter(config -> config.outskirtsPool),
+			BlockState.CODEC.optionalFieldOf("default_state", Blocks.STONE.getDefaultState()).forGetter(config -> config.defaultState),
+			BlockState.CODEC.optionalFieldOf("default_fluid", Blocks.WATER.getDefaultState()).forGetter(config -> config.defaultFluid)
 	).apply(instance, SurvivalGamesConfig::new));
 	public final WorldBorderConfig borderConfig;
 	public final PlayerConfig playerConfig;
@@ -32,9 +37,11 @@ public class SurvivalGamesConfig {
 	public final NoiseGenerator noiseGenerator;
 	public final List<ItemStack> kit;
 	public final Identifier dimension;
-	public final Identifier buildingType;
+	public final Identifier outskirtsPool;
+	public final BlockState defaultState;
+	public final BlockState defaultFluid;
 
-	public SurvivalGamesConfig(WorldBorderConfig borderConfig, PlayerConfig playerConfig, int townDepth, int outskirtsBuildingCount, BiomeGenerator biomeGenerator, NoiseGenerator noiseGenerator, List<ItemStack> kit, Identifier dimension, Identifier buildingType) {
+	public SurvivalGamesConfig(WorldBorderConfig borderConfig, PlayerConfig playerConfig, int townDepth, int outskirtsBuildingCount, BiomeGenerator biomeGenerator, NoiseGenerator noiseGenerator, List<ItemStack> kit, Identifier dimension, Identifier outskirtsPool, BlockState defaultState, BlockState defaultFluid) {
 		this.borderConfig = borderConfig;
 		this.playerConfig = playerConfig;
 		this.townDepth = townDepth;
@@ -43,6 +50,8 @@ public class SurvivalGamesConfig {
 		this.noiseGenerator = noiseGenerator;
 		this.kit = kit;
 		this.dimension = dimension;
-		this.buildingType = buildingType;
+		this.outskirtsPool = outskirtsPool;
+		this.defaultState = defaultState;
+		this.defaultFluid = defaultFluid;
 	}
 }
