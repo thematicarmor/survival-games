@@ -3,6 +3,8 @@ package supercoder79.survivalgames.game;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
@@ -28,7 +30,8 @@ public final class SurvivalGamesWaiting {
 		BubbleWorldConfig worldConfig = new BubbleWorldConfig()
 				.setGenerator(map.chunkGenerator(context.getServer(), context.getConfig()))
 				.setSpawner(BubbleWorldSpawner.atSurface(0, 0))
-				.setDefaultGameMode(GameMode.SPECTATOR);
+				.setDefaultGameMode(GameMode.SPECTATOR)
+				.setDimensionType(RegistryKey.of(Registry.DIMENSION_TYPE_KEY, context.getConfig().dimension));
 
 		return context.createOpenProcedure(worldConfig, (game) -> {
 			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(game.getSpace(), map, context.getConfig());

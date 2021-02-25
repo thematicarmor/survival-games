@@ -1,11 +1,11 @@
 package supercoder79.survivalgames.game.map;
 
 import com.google.common.collect.ImmutableList;
-import dev.gegy.noise.compile.NoiseCompiler;
 import dev.gegy.noise.sampler.NoiseSampler2d;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +30,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
-
 import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
@@ -53,8 +52,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 
@@ -69,6 +66,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	private final Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk;
 	private final List<SurvivalGamesJigsawGenerator> jigsawGenerator;
+
+	private final BlockState defaultState;
+	private final BlockState defaultFluid;
 
 	public SurvivalGamesChunkGenerator(MinecraftServer server, SurvivalGamesConfig config) {
 		super(server);
@@ -89,6 +89,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		List<SurvivalGamesJigsawGenerator> generators = new ArrayList<>();
 
 		this.noiseGenerator.initialize(random, config);
+		if (config.dimension.getPath().equals("the_nether")) {
+			this.defaultState = Blocks.NETHERRACK.getDefaultState();
+			this.defaultFluid = Blocks.LAVA.getDefaultState();
+		} else {
+			this.defaultState = Blocks.STONE.getDefaultState();
+			this.defaultFluid = Blocks.WATER.getDefaultState();
+		}
 
 		ChunkMask mask = new ChunkMask();
 		ChunkBox townArea = new ChunkBox();
@@ -117,7 +124,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 			}
 
 			SurvivalGamesJigsawGenerator outskirtGenerator = new SurvivalGamesJigsawGenerator(server, this, piecesByChunk);
-			outskirtGenerator.arrangePieces(start, new Identifier("survivalgames", "outskirts_building"), 0);
+			outskirtGenerator.arrangePieces(start, new Identifier("survivalgames", config.buildingType.getPath() + "_outskirts_buildings"), 0);
 
 			mask.and(chunkPos);
 
@@ -142,17 +149,17 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 		// To smooth into other chunks, we need to gather all of the nearby structures
 		Set<PoolStructurePiece> pieces = new ObjectOpenHashSet<>();
-		for(int x = -1; x <= 1; x++) {
-		    for(int z = -1; z <= 1; z++) {
+		for (int x = -1; x <= 1; x++) {
+			for (int z = -1; z <= 1; z++) {
 				pieces.addAll(this.piecesByChunk.get(new ChunkPos(chunk.getPos().x + x, chunk.getPos().z + z).toLong()));
-		    }
+			}
 		}
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		Random random = new Random();
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
-		    for (int z = chunkZ; z < chunkZ + 16; z++) {
+			for (int z = chunkZ; z < chunkZ + 16; z++) {
 				double noise = getNoise(x, z);
 				BiomeGen biome = this.biomeSource.getRealBiome(x, z);
 
@@ -163,7 +170,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 					BlockBox box = piece.getBoundingBox();
 					if (piece.getPoolElement().getProjection() == StructurePool.Projection.RIGID) {
 						// At structure: raise to level
-						if (box.intersectsXZ(x, z, x, z )) {
+						if (box.intersectsXZ(x, z, x, z)) {
 							height = Math.max(48, piece.getPos().getY());
 						} else if (box.intersectsXZ(x - 8, z - 8, x + 8, z + 8)) {
 							// Within radius: smooth
@@ -183,7 +190,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 				int genHeight = Math.max(height, 48);
 				for (int y = 0; y <= genHeight; y++) {
 					// Simple surface building
-					BlockState state = Blocks.STONE.getDefaultState();
+					BlockState state = this.defaultState;
 					if (y == height) {
 						// If the height and the generation height are the same, it means that we're on land
 						if (height == genHeight) {
@@ -200,7 +207,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 					// If the y is higher than the land height, then we must place water
 					if (y > height) {
-						state = Blocks.WATER.getDefaultState();
+						state = defaultFluid;
 					}
 
 					// Set the state here
@@ -314,7 +321,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	@Override
 	public void populateBiomes(Registry<Biome> registry, Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk)chunk).setBiomes(new BiomeArray(registry, chunkPos, this.biomeSource));
+		((ProtoChunk) chunk).setBiomes(new BiomeArray(registry, chunkPos, this.biomeSource));
 	}
 
 	@Override

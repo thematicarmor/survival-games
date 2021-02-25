@@ -1,5 +1,5 @@
 {
-  "name": "survivalgames:outskirts_building",
+  "name": "survivalgames:overworld_outskirts_buildings",
   "fallback": "minecraft:empty",
   "elements": [
     {

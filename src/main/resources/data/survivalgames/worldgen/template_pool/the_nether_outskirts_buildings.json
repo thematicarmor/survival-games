@@ -1,0 +1,63 @@
+{
+  "name": "survivalgames:nether_outskirts_fort",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:nether_outskirts_fort",
+        "projection": "rigid",
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [3, 5, 1],
+            "type": "house"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [1, 5, 3],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [-3, 5, 1],
+            "state": {
+              "Name": "minecraft:furnace",
+              "Properties": {}
+            },
+            "chance": 0.3
+          }
+        ]
+      }
+    },
+    {
+      "weight": 2,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:nether_temple",
+        "projection": "rigid",
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [5, 3, 8],
+            "type": "tower"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [4, 3, 8],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          }
+        ]
+      }
+    }
+  ]
+}
