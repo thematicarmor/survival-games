@@ -46,7 +46,6 @@ public final class SurvivalGamesSpawnLogic {
         BlockPos pos = new BlockPos(x, chunk.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, z);
 
         if (!chunk.getBlockState(pos.down()).getFluidState().isEmpty()) {
-            System.out.println("Avoiding fluid");
             boolean found = false;
 
             // Try 20 times to spiral outwards, hopefully not hitting fluid
