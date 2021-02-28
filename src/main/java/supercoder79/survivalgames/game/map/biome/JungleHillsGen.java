@@ -4,6 +4,7 @@ import java.util.Random;
 
 import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.plasmid.game.gen.feature.ShrubGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -61,12 +62,16 @@ public final class JungleHillsGen implements BiomeGen {
 
 	@Override
 	public MapGen tree(int x, int z, Random random) {
+		if (random.nextInt(3) == 0) {
+			return ShrubGen.INSTANCE;
+		}
+
 		return BranchingTreeGen.JUNGLE;
 	}
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return 8;
+		return -32; // 96 - 32 = 64
 	}
 
 	@Override
