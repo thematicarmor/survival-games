@@ -1,7 +1,6 @@
 {
   "type": "survivalgames:survivalgames",
-  "name": "Survival Games (Nether)",
-  "dimension": "minecraft:the_nether",
+  "name": "Survival Games (Alps)",
   "border": {
     "start_size": 512,
     "end_size": 16,
@@ -13,10 +12,9 @@
     "max": 100
   },
   "town_depth": 0,
-  "outskirts_building_count": 10,
-  "outskirts_pool": "survivalgames:nether_outskirts_buildings",
+  "outskirts_building_count": 6,
   "biome_generator": {
-    "type": "survivalgames:nether"
+    "type": "survivalgames:alps"
   },
   "noise_generator": {
     "type": "survivalgames:default"
@@ -37,20 +35,6 @@
     {
       "id": "minecraft:cobblestone",
       "Count": 16
-    },
-    {
-      "id": "minecraft:golden_boots",
-      "Count": 1
     }
-  ],
-  "default_state": {
-    "Name": "minecraft:netherrack",
-    "Properties": {}
-  },
-  "default_fluid": {
-    "Name": "minecraft:lava",
-    "Properties": {
-      "level": "0"
-    }
-  }
+  ]
 }

@@ -10,6 +10,7 @@ public final class BiomeGenerators {
 		register("winterland", WinterlandBiomeGenerator.CODEC);
 		register("tropical", TropicalBiomeGenerator.CODEC);
 		register("nether", NetherBiomeGenerator.CODEC);
+		register("alps", AlpsBiomeGenerator.CODEC);
 	}
 
 	public static void register(String name, Codec<? extends BiomeGenerator> generator) {

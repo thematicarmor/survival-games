@@ -11,7 +11,7 @@
       "min": 1,
       "max": 100
     },
-    "town_depth": -1,
+    "town_depth": 0,
     "outskirts_building_count": 12,
     "biome_generator": {
       "type": "survivalgames:tropical"
