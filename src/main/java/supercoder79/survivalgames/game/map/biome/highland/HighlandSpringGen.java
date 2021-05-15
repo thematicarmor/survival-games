@@ -86,7 +86,7 @@ public class HighlandSpringGen implements BiomeGen {
 
     @Override
     public double modifyTreeChance(double original) {
-        return 0.00000001;
+        return 16;
     }
 
     @Override
