@@ -184,7 +184,7 @@ public class SurvivalGamesActive {
 
 	private ActionResult onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
 		this.eliminatePlayer(player);
-		return ActionResult.SUCCESS;
+		return ActionResult.FAIL;
 	}
 
 	private void eliminatePlayer(ServerPlayerEntity player) {
@@ -197,7 +197,7 @@ public class SurvivalGamesActive {
 
 		ItemScatterer.spawn(this.world.getWorld(), player.getBlockPos(), player.inventory);
 
-		this.spawnSpectator(player);
+		this.spawnLogic.resetPlayer(player, GameMode.SPECTATOR);
 
 		// TODO: fix this aaaaa
 		int survival = 0;
