@@ -1,0 +1,94 @@
+package supercoder79.survivalgames.game.map.biome.highland;
+
+import kdotjpg.opensimplex.OpenSimplexNoise;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import supercoder79.survivalgames.game.map.biome.BiomeGen;
+import supercoder79.survivalgames.game.map.gen.ThistleGen;
+import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.plasmid.game.gen.feature.ShrubGen;
+
+import java.util.Random;
+
+public class HighlandHillsGen implements BiomeGen {
+    public static final BiomeGen INSTANCE = new HighlandHillsGen();
+    public final OpenSimplexNoise STONE_NOISE = new OpenSimplexNoise(22);
+
+    @Override
+    public RegistryKey<Biome> getFakingBiome() {
+        return RegistryKey.of(Registry.BIOME_KEY, new Identifier("survivalgames", "highland"));
+    }
+
+    @Override
+    public double upperNoiseFactor() {
+        return 10;
+    }
+
+    @Override
+    public double lowerNoiseFactor() {
+        return 6;
+    }
+
+    @Override
+    public double upperLerpHigh() {
+        return 20;
+    }
+
+    @Override
+    public double upperLerpLow() {
+        return 16;
+    }
+
+    @Override
+    public double lowerLerpHigh() {
+        return 16;
+    }
+
+    @Override
+    public double lowerLerpLow() {
+        return 12;
+    }
+
+    @Override
+    public double detailFactor() {
+        return 2;
+    }
+
+    @Override
+    public BlockState topState(Random random, int x, int z) {
+        if (random.nextDouble() < STONE_NOISE.eval(x / 45.0, z / 45.0)/1.8) {
+            return Blocks.STONE.getDefaultState();
+        }
+        return BiomeGen.super.topState(random, x, z);
+    }
+
+    @Override
+    public BlockState underState(Random random, int x, int z) {
+        return Blocks.DIRT.getDefaultState();
+    }
+
+    @Override
+    public MapGen tree(int x, int z, Random random) {
+        if (random.nextDouble() < 0.8) return ShrubGen.INSTANCE;
+        return BiomeGen.super.tree(x, z, random);
+    }
+
+    @Override
+    public double modifyTreeChance(double original) {
+        return 6;
+    }
+
+    @Override
+    public int grassChance(int x, int z, Random random) {
+        return 6;
+    }
+
+    @Override
+    public MapGen grass(int x, int z, Random random) {
+        return ThistleGen.INSTANCE;
+    }
+}
