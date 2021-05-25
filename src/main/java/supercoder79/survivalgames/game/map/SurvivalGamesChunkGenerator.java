@@ -177,7 +177,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 							double dz = Math.max(0, Math.max(box.minZ - z, z - box.maxZ)) / 8.0;
 							double rad = dx * dx + dz * dz;
 
-							height = (int) MathHelper.clampedLerp(height, piece.getPos().getY(), 1 - rad);
+							double falloff = rad >= 1 ? 0 : (1 - rad) * (1 - rad);
+
+							height = (int) MathHelper.lerp(falloff, 56 + noise, piece.getPos().getY());
 						}
 					}
 				}
