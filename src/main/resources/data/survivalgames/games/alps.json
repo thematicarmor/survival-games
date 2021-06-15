@@ -13,6 +13,7 @@
   },
   "town_depth": 0,
   "outskirts_building_count": 6,
+  "outskirts_pool": "survivalgames:snowy",
   "biome_generator": {
     "type": "survivalgames:alps"
   },

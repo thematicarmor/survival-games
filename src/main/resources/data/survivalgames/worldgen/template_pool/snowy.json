@@ -1,0 +1,39 @@
+{
+  "name": "survivalgames:snowy",
+  "fallback": "minecraft:empty",
+  "elements": [
+    {
+      "weight": 4,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "survivalgames:snowy_house_1",
+        "projection": "rigid",
+        "processors": [
+          {
+            "processor_type": "survivalgames:loot",
+            "pos": [2, 1, 4],
+            "type": "house"
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [8, 1, 1],
+            "state": {
+              "Name": "minecraft:crafting_table",
+              "Properties": {}
+            },
+            "chance": 0.8
+          },
+          {
+            "processor_type": "survivalgames:chance_at",
+            "pos": [8, 1, 2],
+            "state": {
+              "Name": "minecraft:furnace",
+              "Properties": {}
+            },
+            "chance": 0.3
+          }
+        ]
+      }
+    }
+  ]
+}

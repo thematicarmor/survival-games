@@ -1,7 +1,8 @@
-package supercoder79.survivalgames.game.map.biome;
+package supercoder79.survivalgames.game.map.biome.alpine;
 
 import java.util.Random;
 
+import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
 import xyz.nucleoid.plasmid.game.gen.MapGen;
 
