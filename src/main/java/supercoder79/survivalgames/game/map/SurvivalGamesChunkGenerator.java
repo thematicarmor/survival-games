@@ -52,6 +52,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
@@ -138,8 +140,15 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	public static NoiseSampler2d compile(Random random, double scale) {
 		return SurvivalGames.NOISE_COMPILER.compile(OpenSimplexNoise.create().scale(1 / scale, 1 / scale), NoiseSampler2d.TYPE).create(random.nextLong());
 	}
-	
-	public void populateNoise(WorldAccess world, StructureAccessor structures, Chunk chunk) {
+
+	@Override
+	public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
+		populateNoise(accessor, chunk);
+
+		return CompletableFuture.completedFuture(chunk);
+	}
+
+	public void populateNoise(StructureAccessor structures, Chunk chunk) {
 		int chunkX = chunk.getPos().x * 16;
 		int chunkZ = chunk.getPos().z * 16;
 
@@ -219,7 +228,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		return this.noiseGenerator.getHeightAt(this.biomeSource, x, z);
 	}
 
-	public int getHeight(int x, int z, Heightmap.Type heightmapType) {
+	@Override
+	public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world) {
 		int height = (int) (56 + getNoise(x, z));
 		return Math.max(height, 50);
 	}

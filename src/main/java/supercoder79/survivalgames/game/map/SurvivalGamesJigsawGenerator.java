@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.world.chunk.Chunk;
+import supercoder79.survivalgames.game.config.Y256Height;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
 
 import net.minecraft.server.MinecraftServer;
@@ -62,15 +63,13 @@ public final class SurvivalGamesJigsawGenerator {
 
         // we start with a starting piece which all further pieces will branch off from
         PoolStructurePiece startPiece = this.createStartPiece(origin, startPoolId);
-        // TODO
-        // this.placePieceOnGround(origin, startPiece, );
+         this.placePieceOnGround(origin, startPiece);
         // Not quite sure how to port this
 
         pieces.add(startPiece);
 
         // invoke vanilla code to handle the actual arrangement logic
-        // TODO fix this
-        //StructurePoolBasedGenerator.method_27230(this.registryManager, startPiece, depth, new PoolStructurePiece(this.structureManager /* Other args*/), this.generator, this.structureManager, pieces, this.random);
+        StructurePoolBasedGenerator.method_27230(this.registryManager, startPiece, depth, PoolStructurePiece::new, this.generator, this.structureManager, pieces, this.random, Y256Height.INSTANCE);
 
         return pieces;
     }
@@ -91,11 +90,11 @@ public final class SurvivalGamesJigsawGenerator {
         );
     }
 
-    private void placePieceOnGround(BlockPos origin, PoolStructurePiece piece, Chunk chunk) {
+    private void placePieceOnGround(BlockPos origin, PoolStructurePiece piece) {
         BlockBox box = piece.getBoundingBox();
         int centerX = (box.getMaxX() + box.getMaxX()) / 2;
         int centerZ = (box.getMaxZ() + box.getMinZ()) / 2;
-        int centerY = origin.getY() + this.generator.getHeightOnGround(centerX, centerZ, Heightmap.Type.WORLD_SURFACE_WG, chunk);
+        int centerY = origin.getY() + this.generator.getHeightOnGround(centerX, centerZ, Heightmap.Type.WORLD_SURFACE_WG, Y256Height.INSTANCE);
 
         // offset the piece to be level with the ground at its center
         int targetY = box.getMinY() + piece.getGroundLevelDelta();
