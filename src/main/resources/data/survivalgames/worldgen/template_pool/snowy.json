@@ -28,7 +28,10 @@
             "pos": [8, 1, 2],
             "state": {
               "Name": "minecraft:furnace",
-              "Properties": {}
+              "Properties": {
+                "lit": "false",
+                "facing": "north"
+              }
             },
             "chance": 0.3
           }

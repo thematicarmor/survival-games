@@ -4,7 +4,7 @@ import java.util.Random;
 
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

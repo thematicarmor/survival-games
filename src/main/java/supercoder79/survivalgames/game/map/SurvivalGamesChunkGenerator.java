@@ -21,6 +21,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
@@ -44,7 +45,7 @@ import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.game.map.noise.NoiseGenerator;
 import supercoder79.survivalgames.noise.WorleyNoise;
 import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
-import xyz.nucleoid.plasmid.game.gen.feature.DiskGen;
+import xyz.nucleoid.substrate.gen.DiskGen;
 import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
 import java.util.ArrayList;
@@ -137,8 +138,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	public static NoiseSampler2d compile(Random random, double scale) {
 		return SurvivalGames.NOISE_COMPILER.compile(OpenSimplexNoise.create().scale(1 / scale, 1 / scale), NoiseSampler2d.TYPE).create(random.nextLong());
 	}
-
-	@Override
+	
 	public void populateNoise(WorldAccess world, StructureAccessor structures, Chunk chunk) {
 		int chunkX = chunk.getPos().x * 16;
 		int chunkZ = chunk.getPos().z * 16;
@@ -173,8 +173,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 							// I won't lie, I have no idea what I just wrote here.
 							// It seems to work though so... it stays.
 
-							double dx = Math.max(0, Math.max(box.minX - x, x - box.maxX)) / 8.0;
-							double dz = Math.max(0, Math.max(box.minZ - z, z - box.maxZ)) / 8.0;
+							double dx = Math.max(0, Math.max(box.getMinX() - x, x - box.getMaxX())) / 8.0;
+							double dz = Math.max(0, Math.max(box.getMinZ() - z, z - box.getMaxZ())) / 8.0;
 							double rad = dx * dx + dz * dz;
 
 							double falloff = rad >= 1 ? 0 : (1 - rad) * (1 - rad);
@@ -219,21 +219,20 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		return this.noiseGenerator.getHeightAt(this.biomeSource, x, z);
 	}
 
-	@Override
 	public int getHeight(int x, int z, Heightmap.Type heightmapType) {
 		int height = (int) (56 + getNoise(x, z));
 		return Math.max(height, 50);
 	}
 
 	public void generateJigsaws(ChunkRegion region, StructureAccessor structures) {
-		ChunkPos chunkPos = new ChunkPos(region.getCenterChunkX(), region.getCenterChunkZ());
+		ChunkPos chunkPos = new ChunkPos(region.getCenterPos().x, region.getCenterPos().z);
 		List<PoolStructurePiece> pieces = this.piecesByChunk.get(chunkPos.toLong());
 
 		if (pieces != null) {
 			// generate all intersecting pieces with the mask of this chunk
 			BlockBox chunkMask = new BlockBox(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunkPos.getEndX(), 255, chunkPos.getEndZ());
 			for (PoolStructurePiece piece : pieces) {
-				piece.method_27236(region, structures, this, new Random(), chunkMask, BlockPos.ORIGIN, false);
+				piece.generate(region, structures, this, new Random(), chunkMask, BlockPos.ORIGIN, false);
 			}
 		}
 	}
@@ -242,8 +241,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	public void generateFeatures(ChunkRegion world, StructureAccessor structures) {
 		generateJigsaws(world, structures);
 
-		int chunkX = world.getCenterChunkX() * 16;
-		int chunkZ = world.getCenterChunkZ() * 16;
+		int chunkX = world.getCenterPos().x * 16;
+		int chunkZ = world.getCenterPos().z * 16;
 		Random random = new Random();
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
@@ -263,7 +262,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 					if (!spawnedStructure && this.structureNoise.sample(x / 120.0, z / 120.0) < 0.005) {
 						spawnedStructure = true;
 
-						StructureGen structure = Structures.POOL.pickRandom(random);
+						StructureGen structure = Structures.POOL.shuffle().stream().findFirst().get();
 						structure.generate(world, mutable.set(x, y, z).toImmutable(), random);
 
 						for (int i = 0; i < structure.nearbyChestCount(random); i++) {
@@ -319,7 +318,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	@Override
 	public void populateBiomes(Registry<Biome> registry, Chunk chunk) {
 		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk) chunk).setBiomes(new BiomeArray(registry, chunkPos, this.biomeSource));
+		((ProtoChunk) chunk).setBiomes(new BiomeArray(registry, chunk, chunkPos, this.biomeSource));
 	}
 
 	@Override

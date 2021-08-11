@@ -1,18 +1,20 @@
 package supercoder79.survivalgames.game;
 
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.GameMode;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
-import xyz.nucleoid.fantasy.BubbleWorldConfig;
-import xyz.nucleoid.fantasy.BubbleWorldSpawner;
-import xyz.nucleoid.plasmid.game.*;
-import xyz.nucleoid.plasmid.game.event.PlayerDeathListener;
-import xyz.nucleoid.plasmid.game.event.RequestStartListener;
+import xyz.nucleoid.fantasy.RuntimeWorldConfig;
+import xyz.nucleoid.plasmid.game.GameOpenContext;
+import xyz.nucleoid.plasmid.game.GameOpenProcedure;
+import xyz.nucleoid.plasmid.game.GameResult;
+import xyz.nucleoid.plasmid.game.GameSpace;
+import xyz.nucleoid.plasmid.game.common.GameWaitingLobby;
+import xyz.nucleoid.plasmid.game.event.GameActivityEvents;
+import xyz.nucleoid.plasmid.game.event.GamePlayerEvents;
 
 public final class SurvivalGamesWaiting {
 	private final GameSpace world;
@@ -27,29 +29,28 @@ public final class SurvivalGamesWaiting {
 
 	public static GameOpenProcedure open(GameOpenContext<SurvivalGamesConfig> context) {
 		SurvivalGamesMap map = new SurvivalGamesMap();
-		BubbleWorldConfig worldConfig = new BubbleWorldConfig()
-				.setTimeOfDay(context.getConfig().time)
-				.setGenerator(map.chunkGenerator(context.getServer(), context.getConfig()))
-				.setSpawner(BubbleWorldSpawner.atSurface(0, 0))
-				.setDefaultGameMode(GameMode.SPECTATOR)
-				.setDimensionType(RegistryKey.of(Registry.DIMENSION_TYPE_KEY, context.getConfig().dimension));
+		RuntimeWorldConfig worldConfig = new RuntimeWorldConfig()
+				.setTimeOfDay(context.config().time)
+				.setGenerator(map.chunkGenerator(context.server(), context.config()))
+				//.setSpawner(BubbleWorldSpawner.atSurface(0, 0))
+				.setDimensionType(RegistryKey.of(Registry.DIMENSION_TYPE_KEY, context.config().dimension));
 
 
-		return context.createOpenProcedure(worldConfig, (game) -> {
-			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(game.getSpace(), map, context.getConfig());
-			GameWaitingLobby.applyTo(game, context.getConfig().playerConfig);
+		return context.openWithWorld(worldConfig, (game, world) -> {
+			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(game.getGameSpace(), map, context.config());
+			GameWaitingLobby.applyTo(game, context.config().playerConfig);
 
-			game.on(RequestStartListener.EVENT, waiting::requestStart);
-			game.on(PlayerDeathListener.EVENT, waiting::onPlayerDeath);
+			game.listen(GameActivityEvents.REQUEST_START, () -> waiting.requestStart(world));
+			game.listen(GamePlayerEvents.REMOVE, waiting::onPlayerDeath);
+			game.listen(GamePlayerEvents.OFFER, offer -> offer.accept(world, new Vec3d(0, 70, 0)));
 		});
 	}
 
-	private StartResult requestStart() {
-		SurvivalGamesActive.open(this.world, this.map, this.config);
-		return StartResult.OK;
+	private GameResult requestStart(ServerWorld world) {
+		SurvivalGamesActive.open(this.world, this.map, this.config, world);
+		return GameResult.ok();
 	}
 
-	private ActionResult onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
-		return ActionResult.FAIL;
+	private void onPlayerDeath(ServerPlayerEntity player) {
 	}
 }

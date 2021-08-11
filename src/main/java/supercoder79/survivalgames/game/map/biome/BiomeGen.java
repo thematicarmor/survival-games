@@ -2,10 +2,10 @@ package supercoder79.survivalgames.game.map.biome;
 
 import java.util.Random;
 
-import xyz.nucleoid.plasmid.game.gen.MapGen;
-import xyz.nucleoid.plasmid.game.gen.feature.GrassGen;
-import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
+import xyz.nucleoid.substrate.gen.MapGen;
+import xyz.nucleoid.substrate.gen.GrassGen;
 import xyz.nucleoid.substrate.biome.BaseBiomeGen;
+import xyz.nucleoid.substrate.gen.tree.PoplarTreeGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

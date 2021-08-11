@@ -10,7 +10,7 @@ import supercoder79.survivalgames.game.map.biome.source.FakeBiomeSource;
 import xyz.nucleoid.plasmid.registry.TinyRegistry;
 
 public interface NoiseGenerator {
-	TinyRegistry<Codec<? extends NoiseGenerator>> REGISTRY = TinyRegistry.newStable();
+	TinyRegistry<Codec<? extends NoiseGenerator>> REGISTRY = TinyRegistry.create();
 	MapCodec<NoiseGenerator> CODEC = REGISTRY.dispatchMap(NoiseGenerator::getCodec, Function.identity());
 
 	void initialize(Random random, SurvivalGamesConfig config);

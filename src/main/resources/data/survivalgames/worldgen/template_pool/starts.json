@@ -8,7 +8,14 @@
         "element_type": "minecraft:single_pool_element",
         "location": "survivalgames:center",
         "projection": "terrain_matching",
-        "processors": []
+        "processors": [
+          {
+            "processor_type": "minecraft:block_ignore",
+            "blocks": [{"Name": "minecraft:grass_block", "Properties": {
+              "snowy": "false"
+            }}]
+          }
+        ]
       }
     }
   ]

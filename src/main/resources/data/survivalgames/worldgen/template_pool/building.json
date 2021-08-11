@@ -28,7 +28,10 @@
             "pos": [8, 1, 2],
             "state": {
               "Name": "minecraft:furnace",
-              "Properties": {}
+              "Properties": {
+                "facing": "north",
+                "lit": "false"
+              }
             },
             "chance": 0.3
           }
@@ -61,7 +64,10 @@
             "pos": [8, 2, 3],
             "state": {
               "Name": "minecraft:furnace",
-              "Properties": {}
+              "Properties": {
+                "facing": "north",
+                "lit": "false"
+              }
             },
             "chance": 0.3
           }
@@ -94,7 +100,10 @@
             "pos": [7, 2, 1],
             "state": {
               "Name": "minecraft:furnace",
-              "Properties": {}
+              "Properties": {
+                "lit": "false",
+                "facing": "north"
+              }
             },
             "chance": 0.3
           }
@@ -127,7 +136,10 @@
             "pos": [2, 2, 2],
             "state": {
               "Name": "minecraft:furnace",
-              "Properties": {}
+              "Properties": {
+                "lit": "false",
+                "facing": "north"
+              }
             },
             "chance": 0.3
           }

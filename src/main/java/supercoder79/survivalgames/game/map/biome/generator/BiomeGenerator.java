@@ -8,7 +8,7 @@ import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import xyz.nucleoid.plasmid.registry.TinyRegistry;
 
 public interface BiomeGenerator {
-	TinyRegistry<Codec<? extends BiomeGenerator>> REGISTRY = TinyRegistry.newStable();
+	TinyRegistry<Codec<? extends BiomeGenerator>> REGISTRY = TinyRegistry.create();
 	MapCodec<BiomeGenerator> CODEC = REGISTRY.dispatchMap(BiomeGenerator::getCodec, Function.identity());
 
 	BiomeGen getBiome(double temperature, double rainfall);

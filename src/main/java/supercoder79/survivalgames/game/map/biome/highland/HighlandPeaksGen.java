@@ -9,7 +9,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.ThistleGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import java.util.Random;
 

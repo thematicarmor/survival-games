@@ -36,7 +36,8 @@ public final class LootHelper {
 		// Get final stacks
 		List<ItemStack> stacks = new ArrayList<>();
 		for (int i = 0; i < finalCount; i++) {
-			stacks.add(weights.pickRandom(random).pickRandom(random).copy());
+			//TODO method remove in 1.17
+			//stacks.add(weights.pickRandom(random).pickRandom(random).copy());
 		}
 
 		return stacks;

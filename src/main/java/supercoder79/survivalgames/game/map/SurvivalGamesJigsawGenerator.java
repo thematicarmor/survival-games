@@ -3,6 +3,7 @@ package supercoder79.survivalgames.game.map;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import net.minecraft.world.chunk.Chunk;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
 
 import net.minecraft.server.MinecraftServer;
@@ -61,20 +62,23 @@ public final class SurvivalGamesJigsawGenerator {
 
         // we start with a starting piece which all further pieces will branch off from
         PoolStructurePiece startPiece = this.createStartPiece(origin, startPoolId);
-        this.placePieceOnGround(origin, startPiece);
+        // TODO
+        // this.placePieceOnGround(origin, startPiece, );
+        // Not quite sure how to port this
 
         pieces.add(startPiece);
 
         // invoke vanilla code to handle the actual arrangement logic
-        StructurePoolBasedGenerator.method_27230(this.registryManager, startPiece, depth, PoolStructurePiece::new, this.generator, this.structureManager, pieces, this.random);
+        // TODO fix this
+        //StructurePoolBasedGenerator.method_27230(this.registryManager, startPiece, depth, new PoolStructurePiece(this.structureManager /* Other args*/), this.generator, this.structureManager, pieces, this.random);
 
         return pieces;
     }
 
     private PoolStructurePiece createStartPiece(BlockPos origin, Identifier startPoolId) {
-        StructurePool pool = this.registryManager.get(Registry.TEMPLATE_POOL_WORLDGEN).get(startPoolId);
+        StructurePool pool = this.registryManager.get(Registry.STRUCTURE_POOL_KEY).get(startPoolId);
         if (pool == null) {
-            throw new IllegalStateException("missing start pool: '" + startPoolId + "'");
+            //throw new IllegalStateException("missing start pool: '" + startPoolId + "'");
         }
 
         BlockRotation rotation = BlockRotation.random(this.random);
@@ -87,24 +91,24 @@ public final class SurvivalGamesJigsawGenerator {
         );
     }
 
-    private void placePieceOnGround(BlockPos origin, PoolStructurePiece piece) {
+    private void placePieceOnGround(BlockPos origin, PoolStructurePiece piece, Chunk chunk) {
         BlockBox box = piece.getBoundingBox();
-        int centerX = (box.maxX + box.minX) / 2;
-        int centerZ = (box.maxZ + box.minZ) / 2;
-        int centerY = origin.getY() + this.generator.getHeightOnGround(centerX, centerZ, Heightmap.Type.WORLD_SURFACE_WG);
+        int centerX = (box.getMaxX() + box.getMaxX()) / 2;
+        int centerZ = (box.getMaxZ() + box.getMinZ()) / 2;
+        int centerY = origin.getY() + this.generator.getHeightOnGround(centerX, centerZ, Heightmap.Type.WORLD_SURFACE_WG, chunk);
 
         // offset the piece to be level with the ground at its center
-        int targetY = box.minY + piece.getGroundLevelDelta();
+        int targetY = box.getMinY() + piece.getGroundLevelDelta();
         piece.translate(0, centerY - targetY, 0);
     }
 
     private void associatePiecesByChunk(List<PoolStructurePiece> pieces) {
         for (PoolStructurePiece piece : pieces) {
             BlockBox box = piece.getBoundingBox();
-            int minChunkX = box.minX >> 4;
-            int minChunkZ = box.minZ >> 4;
-            int maxChunkX = box.maxX >> 4;
-            int maxChunkZ = box.maxZ >> 4;
+            int minChunkX = box.getMinX() >> 4;
+            int minChunkZ = box.getMinZ() >> 4;
+            int maxChunkX = box.getMaxX() >> 4;
+            int maxChunkZ = box.getMaxZ() >> 4;
 
             for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; chunkZ++) {
                 for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++) {
@@ -117,14 +121,14 @@ public final class SurvivalGamesJigsawGenerator {
     }
 
     public void generate(ChunkRegion region, StructureAccessor structures) {
-        ChunkPos chunkPos = new ChunkPos(region.getCenterChunkX(), region.getCenterChunkZ());
+        ChunkPos chunkPos = new ChunkPos(region.getCenterPos().x, region.getCenterPos().x);
         List<PoolStructurePiece> pieces = this.piecesByChunk.get(chunkPos.toLong());
 
         if (pieces != null) {
             // generate all intersecting pieces with the mask of this chunk
             BlockBox chunkMask = new BlockBox(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunkPos.getEndX(), 255, chunkPos.getEndZ());
             for (PoolStructurePiece piece : pieces) {
-                piece.method_27236(region, structures, this.generator, this.random, chunkMask, this.origin, false);
+                piece.generate(region, structures, this.generator, this.random, chunkMask, this.origin, false);
             }
         }
     }

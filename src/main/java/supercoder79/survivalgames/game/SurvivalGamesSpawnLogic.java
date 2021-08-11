@@ -1,5 +1,6 @@
 package supercoder79.survivalgames.game;
 
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
@@ -8,6 +9,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.WorldChunk;
+import org.apache.logging.log4j.core.jmx.Server;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import xyz.nucleoid.plasmid.game.GameSpace;
 
@@ -21,26 +23,27 @@ public final class SurvivalGamesSpawnLogic {
     }
 
     public void resetPlayer(ServerPlayerEntity player, GameMode gameMode) {
-        player.inventory.clear();
+        player.getInventory().clear();
         player.getEnderChestInventory().clear();
         player.clearStatusEffects();
         player.setHealth(20.0F);
         player.getHungerManager().setFoodLevel(20);
         player.fallDistance = 0.0F;
-        player.setGameMode(gameMode);
+        var nbt = new NbtCompound();
+        nbt.putInt("playerGameType", GameMode.SPECTATOR.getId());
+        player.setGameMode(nbt);
         player.setExperienceLevel(0);
         player.setExperiencePoints(0);
     }
 
-    public void spawnPlayerAtCenter(ServerPlayerEntity player) {
-        this.spawnPlayerAt(player, 0, 0);
+    public void spawnPlayerAtCenter(ServerPlayerEntity player, ServerWorld world) {
+        this.spawnPlayerAt(player, 0, 0, world);
     }
 
-    public void spawnPlayerAt(ServerPlayerEntity player, int x, int z) {
-        ServerWorld world = this.world.getWorld();
+    public void spawnPlayerAt(ServerPlayerEntity player, int x, int z, ServerWorld world) {
 
         ChunkPos chunkPos = new ChunkPos(x >> 4, z >> 4);
-        world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, player.getEntityId());
+        world.getChunkManager().addTicket(ChunkTicketType.POST_TELEPORT, chunkPos, 1, player.getId());
 
         WorldChunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
         BlockPos pos = new BlockPos(x, chunk.sampleHeightmap(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, z);

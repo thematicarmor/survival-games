@@ -6,10 +6,9 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
-import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import supercoder79.survivalgames.game.map.gen.GroundCoverGen;
 import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import java.util.Random;
 

@@ -1,17 +1,12 @@
 package supercoder79.survivalgames.game.map.biome;
 
-import java.util.Random;
-
-import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
-import xyz.nucleoid.plasmid.game.gen.feature.tree.PoplarTreeGen;
-
-import net.minecraft.block.Blocks;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.BuiltinBiomes;
+import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
+import xyz.nucleoid.substrate.gen.MapGen;
+
+import java.util.Random;
 
 public final class TaigaGen implements BiomeGen {
 	public static final TaigaGen INSTANCE = new TaigaGen();

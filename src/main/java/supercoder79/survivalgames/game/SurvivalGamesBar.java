@@ -1,10 +1,9 @@
 package supercoder79.survivalgames.game;
 
-import xyz.nucleoid.plasmid.widget.BossBarWidget;
-import xyz.nucleoid.plasmid.widget.GlobalWidgets;
-
 import net.minecraft.entity.boss.BossBar;
 import net.minecraft.text.LiteralText;
+import xyz.nucleoid.plasmid.game.common.GlobalWidgets;
+import xyz.nucleoid.plasmid.game.common.widget.BossBarWidget;
 
 public final class SurvivalGamesBar {
 	private final BossBarWidget widget;

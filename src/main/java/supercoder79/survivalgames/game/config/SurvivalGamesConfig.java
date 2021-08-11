@@ -10,7 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
 import supercoder79.survivalgames.game.map.noise.NoiseGenerator;
-import xyz.nucleoid.plasmid.game.config.PlayerConfig;
+import xyz.nucleoid.plasmid.game.common.config.PlayerConfig;
 import net.minecraft.world.dimension.DimensionType;
 
 import net.minecraft.item.ItemStack;

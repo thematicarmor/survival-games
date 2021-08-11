@@ -8,7 +8,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.FireGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import java.util.Random;
 

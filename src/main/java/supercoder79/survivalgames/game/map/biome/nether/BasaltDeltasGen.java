@@ -9,7 +9,7 @@ import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import supercoder79.survivalgames.game.map.gen.LavaHoleGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import java.util.Random;
 

@@ -1,12 +1,12 @@
 package supercoder79.survivalgames;
 
 import dev.gegy.noise.compile.NoiseCompiler;
+import supercoder79.survivalgames.game.SurvivalGamesWaiting;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerators;
 import supercoder79.survivalgames.game.map.gen.processor.SurvivalGamesProcessorTypes;
-import supercoder79.survivalgames.game.map.noise.NoiseGenerators;
 import xyz.nucleoid.plasmid.game.GameType;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
-import supercoder79.survivalgames.game.SurvivalGamesWaiting;
+import supercoder79.survivalgames.game.map.noise.NoiseGenerators;
 
 import net.minecraft.util.Identifier;
 
@@ -23,8 +23,8 @@ public class SurvivalGames implements ModInitializer {
 
 		GameType.register(
 				new Identifier("survivalgames", "survivalgames"),
-				SurvivalGamesWaiting::open,
-				SurvivalGamesConfig.CODEC
+				SurvivalGamesConfig.CODEC,
+				SurvivalGamesWaiting::open
 		);
 	}
 }

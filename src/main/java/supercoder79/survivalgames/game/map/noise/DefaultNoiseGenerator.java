@@ -8,9 +8,8 @@ import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.source.FakeBiomeSource;
-import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
-
 import net.minecraft.util.math.MathHelper;
+import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
 
 public class DefaultNoiseGenerator implements NoiseGenerator {
 	public static final Codec<DefaultNoiseGenerator> CODEC = Codec.unit(new DefaultNoiseGenerator());

@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.gegy.noise.sampler.NoiseSampler2d;
+import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
+import net.minecraft.util.dynamic.RegistryLookupCodec;
 import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.map.biome.*;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
-import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
 
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 

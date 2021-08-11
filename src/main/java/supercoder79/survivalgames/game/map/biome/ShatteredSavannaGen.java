@@ -4,8 +4,8 @@ import java.util.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
-import xyz.nucleoid.plasmid.game.gen.feature.ShrubGen;
+import xyz.nucleoid.substrate.gen.MapGen;
+import xyz.nucleoid.substrate.gen.ShrubGen;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.RegistryKey;

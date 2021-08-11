@@ -39,7 +39,7 @@ public class OrePileGen implements StructureGen {
 			int slY = random.nextInt(3) - random.nextInt(3);
 			int slZ = random.nextInt(12) - random.nextInt(12);
 			BlockPos stackLocal = pos.add(slX, slY, slZ);
-			BlockState state = STATES.pickRandom(random);
+			BlockState state = STATES.shuffle().stream().findFirst().get();
 			for (int j = 0; j < 40; j++) {
 				int aX = random.nextInt(4) - random.nextInt(4);
 				int aY = random.nextInt(6) - random.nextInt(6);

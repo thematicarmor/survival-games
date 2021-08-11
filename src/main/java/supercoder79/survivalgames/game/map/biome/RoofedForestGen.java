@@ -3,7 +3,7 @@ package supercoder79.survivalgames.game.map.biome;
 import java.util.Random;
 
 import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;

@@ -5,7 +5,7 @@ import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.mob.PiglinEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
-import xyz.nucleoid.plasmid.game.gen.MapGen;
+import xyz.nucleoid.substrate.gen.MapGen;
 
 import java.util.Random;
 

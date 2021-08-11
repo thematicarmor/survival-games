@@ -2,9 +2,9 @@ package supercoder79.survivalgames.game.map.biome;
 
 import java.util.Random;
 
-import xyz.nucleoid.plasmid.game.gen.MapGen;
-import xyz.nucleoid.plasmid.game.gen.feature.ShrubGen;
-import xyz.nucleoid.plasmid.game.gen.feature.tree.DeadTreeGen;
+import xyz.nucleoid.substrate.gen.MapGen;
+import xyz.nucleoid.substrate.gen.ShrubGen;
+import xyz.nucleoid.substrate.gen.tree.DeadTreeGen;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;

@@ -2,11 +2,6 @@ package supercoder79.survivalgames.game.map.gen.processor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import supercoder79.survivalgames.game.map.loot.LootHelper;
-import supercoder79.survivalgames.game.map.loot.LootProvider;
-import supercoder79.survivalgames.game.map.loot.LootProviders;
-
-import net.minecraft.block.Blocks;
 import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.processor.StructureProcessor;
@@ -15,6 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import supercoder79.survivalgames.game.map.loot.LootHelper;
+import supercoder79.survivalgames.game.map.loot.LootProvider;
+import supercoder79.survivalgames.game.map.loot.LootProviders;
 
 public class LootChestProcessor extends StructureProcessor {
 	public static Codec<LootChestProcessor> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -58,18 +56,13 @@ public class LootChestProcessor extends StructureProcessor {
 
 	// TODO: loot provider registry
 	private static LootProvider getLootProvider(String name) {
-		switch (name) {
-		case "house":
-			return LootProviders.HOUSE;
-		case "tower":
-			return LootProviders.TOWER;
-		case "enchanting_table":
-			return LootProviders.ENCHANTING_TABLE;
-		case "ore_pile":
-			return LootProviders.ORE_PILE;
-		default:
-			return LootProviders.GENERIC;
-		}
+		return switch (name) {
+			case "house" -> LootProviders.HOUSE;
+			case "tower" -> LootProviders.TOWER;
+			case "enchanting_table" -> LootProviders.ENCHANTING_TABLE;
+			case "ore_pile" -> LootProviders.ORE_PILE;
+			default -> LootProviders.GENERIC;
+		};
 	}
 
 	@Override

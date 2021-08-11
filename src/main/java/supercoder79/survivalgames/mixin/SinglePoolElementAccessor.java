@@ -10,6 +10,6 @@ import net.minecraft.util.Identifier;
 
 @Mixin(SinglePoolElement.class)
 public interface SinglePoolElementAccessor {
-	@Accessor(value = "field_24015")
+	@Accessor(value = "location")
 	Either<Identifier, Structure> getLocation();
 }
