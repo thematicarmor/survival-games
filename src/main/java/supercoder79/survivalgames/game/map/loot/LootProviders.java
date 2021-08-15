@@ -2,7 +2,6 @@ package supercoder79.survivalgames.game.map.loot;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.collection.WeightedList;
 
 public class LootProviders {
 
