@@ -30,7 +30,7 @@ public final class SurvivalGamesSpawnLogic {
         player.getHungerManager().setFoodLevel(20);
         player.fallDistance = 0.0F;
         var nbt = new NbtCompound();
-        nbt.putInt("playerGameType", GameMode.SPECTATOR.getId());
+        nbt.putInt("playerGameType", gameMode.getId());
         player.setGameMode(nbt);
         player.setExperienceLevel(0);
         player.setExperiencePoints(0);

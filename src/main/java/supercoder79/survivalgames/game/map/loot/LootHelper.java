@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.collection.WeightedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
 
@@ -36,8 +35,7 @@ public final class LootHelper {
 		// Get final stacks
 		List<ItemStack> stacks = new ArrayList<>();
 		for (int i = 0; i < finalCount; i++) {
-			//TODO method remove in 1.17
-			//stacks.add(weights.pickRandom(random).pickRandom(random).copy());
+			stacks.add(weights.pickRandom(random).pickRandom(random).copy());
 		}
 
 		return stacks;

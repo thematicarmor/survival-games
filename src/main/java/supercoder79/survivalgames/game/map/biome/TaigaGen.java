@@ -3,8 +3,8 @@ package supercoder79.survivalgames.game.map.biome;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
-import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
 import xyz.nucleoid.substrate.gen.MapGen;
+import xyz.nucleoid.substrate.gen.tree.TaigaTreeGen;
 
 import java.util.Random;
 

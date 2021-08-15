@@ -1,6 +1,6 @@
 {
   "type": "survivalgames:survivalgames",
-  "name": "Survival Games (Alps)",
+  "name": "Survival Games (Winter Island)",
   "border": {
     "start_size": 512,
     "end_size": 16,
@@ -12,13 +12,12 @@
     "max": 100
   },
   "town_depth": 0,
-  "outskirts_building_count": 6,
-  "outskirts_pool": "survivalgames:snowy",
+  "outskirts_building_count": 12,
   "biome_generator": {
-    "type": "survivalgames:alps"
+    "type": "survivalgames:winterland"
   },
   "noise_generator": {
-    "type": "survivalgames:default"
+    "type": "survivalgames:island"
   },
   "kit": [
     {

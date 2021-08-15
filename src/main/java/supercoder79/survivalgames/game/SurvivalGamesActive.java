@@ -69,7 +69,7 @@ public class SurvivalGamesActive {
 	}
 
 	public static void open(GameSpace space, SurvivalGamesMap map, SurvivalGamesConfig config, ServerWorld world) {
-		space.setActivity(space.getSourceConfig(), game -> {
+		space.setActivity(game -> {
 			GlobalWidgets widgets = GlobalWidgets.addTo(game);
 			SurvivalGamesActive active = new SurvivalGamesActive(space, map, config, space.getPlayers(), widgets, world);
 
@@ -80,6 +80,7 @@ public class SurvivalGamesActive {
 			game.setRule(GameRuleType.FALL_DAMAGE, ActionResult.PASS);
 			game.setRule(GameRuleType.HUNGER, ActionResult.FAIL);
 			game.setRule(GameRuleType.UNSTABLE_TNT, ActionResult.PASS);
+			game.setRule(GameRuleType.THROW_ITEMS, ActionResult.SUCCESS);
 
 			game.listen(GameActivityEvents.CREATE, active::open);
 			game.listen(GameActivityEvents.DESTROY, active::close);
@@ -135,7 +136,7 @@ public class SurvivalGamesActive {
 		// this should hopefully fix players returning as survival mode to the lobby
 		for (ServerPlayerEntity player : this.participants) {
 			var nbt = new NbtCompound();
-			nbt.putInt("playerGameType", GameMode.SURVIVAL.getId());;
+			nbt.putInt("playerGameType", GameMode.SURVIVAL.getId());
 			player.setGameMode(nbt);
 		}
 	}

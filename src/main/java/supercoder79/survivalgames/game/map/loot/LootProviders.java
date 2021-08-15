@@ -27,7 +27,8 @@ public class LootProviders {
 			.add(new ItemStack(Items.BOW, 1), 2)
 			.add(new ItemStack(Items.IRON_INGOT, 2), 1)
 			.add(new ItemStack(Items.IRON_INGOT, 1), 2)
-			.add(new ItemStack(Items.ARROW, 6), 4),
+			.add(new ItemStack(Items.ARROW, 6), 4)
+			.add(new ItemStack(Items.SNOWBALL, 4), 1),
 			4, 6);
 
 	public static final LootProvider HOUSE = new LootProvider(new WeightedList<ItemStack>()

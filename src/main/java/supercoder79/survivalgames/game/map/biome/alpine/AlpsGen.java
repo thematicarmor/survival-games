@@ -2,6 +2,7 @@ package supercoder79.survivalgames.game.map.biome.alpine;
 
 import java.util.Random;
 
+import kdotjpg.opensimplex.OpenSimplexNoise;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
 import xyz.nucleoid.substrate.gen.MapGen;
@@ -72,7 +73,7 @@ public final class AlpsGen implements BiomeGen {
 
 	@Override
 	public double modifyTreeChance(double original) {
-		return 512;
+		return 256;
 	}
 
 	@Override
