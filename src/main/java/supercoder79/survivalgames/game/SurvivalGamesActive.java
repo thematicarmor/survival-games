@@ -9,6 +9,7 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.WorldBorderInitializeS2CPacket;
+import net.minecraft.network.packet.s2c.play.WorldBorderInterpolateSizeS2CPacket;
 import net.minecraft.network.packet.s2c.play.WorldBorderSizeChangedS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -160,7 +161,7 @@ public class SurvivalGamesActive {
 
 				world.getWorldBorder().interpolateSize(config.borderConfig.startSize, config.borderConfig.endSize, 1000L * config.borderConfig.shrinkSecs);
 				for (ServerPlayerEntity player : this.participants) {
-					player.networkHandler.sendPacket(new WorldBorderSizeChangedS2CPacket(world.getWorldBorder()));
+					player.networkHandler.sendPacket(new WorldBorderInterpolateSizeS2CPacket(world.getWorldBorder()));
 				}
 			}
 		} else {
@@ -170,7 +171,7 @@ public class SurvivalGamesActive {
 				if (!this.finished) {
 					this.participants.sendMessage(new LiteralText("Last one standing wins!").formatted(Formatting.BLUE));
 					world.getWorldBorder().setDamagePerBlock(2.5);
-					world.getWorldBorder().setDamagePerBlock(0.125);
+					world.getWorldBorder().setSafeZone(0.125);
 					this.bar.setFinished();
 
 					this.finished = true;
@@ -196,9 +197,7 @@ public class SurvivalGamesActive {
 
 		PlayerSet players = this.space.getPlayers();
 		players.sendMessage(message);
-		players.forEach(p -> {
-			p.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
-		});
+		players.forEach(p -> p.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1));
 
 		ItemScatterer.spawn(player.world, player.getBlockPos(), player.getInventory());
 

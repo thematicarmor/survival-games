@@ -18,6 +18,7 @@ public class ThistleGen implements MapGen {
     public void generate(ServerWorldAccess world, BlockPos pos, Random random) {
         BlockState state = random.nextDouble() < 0.1 ? getFlower(pos) : Blocks.GRASS.getDefaultState();
         boolean grassBelow = world.getBlockState(pos.mutableCopy().down()).getBlock().equals(Blocks.GRASS_BLOCK);
+        if (!world.getBlockState(pos).getBlock().equals(Blocks.AIR)) return;
         if (grassBelow) {
             world.setBlockState(pos, state, 0);
         } else {
