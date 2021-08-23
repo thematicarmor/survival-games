@@ -29,7 +29,7 @@ public final class MeteorStructure implements StructureGen {
 
     @Override
     public LootProvider getLootProvider() {
-        return LootProviders.GENERIC;
+        return LootProviders.METEOR;
     }
 
     @Override
