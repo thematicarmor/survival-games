@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.state.property.Properties;
 import net.minecraft.structure.PoolStructurePiece;
@@ -295,6 +296,9 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 						biome.grass(x, z, random).generate(world, mutable.set(x, y, z).toImmutable(), random);
 					}
 				} else {
+					if (random.nextInt(384) == 0) {
+						generateBoats(world, random, new BlockPos(x, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z), z));
+					}
 					if (random.nextInt(64) == 0) {
 						DiskGen.INSTANCE.generate(world, mutable.set(x, y, z).toImmutable(), random);
 					}
@@ -320,6 +324,51 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 						} else if (down.getFluidState().isIn(FluidTags.WATER)) {
 							world.setBlockState(mutable.down(), Blocks.ICE.getDefaultState(), 3);
 						}
+					}
+				}
+			}
+		}
+	}
+
+	private static void generateBoats(ChunkRegion world, Random random, BlockPos pos) {
+		int count = 0;
+
+		for (int x = -3; x <= 3; x++) {
+			for (int z = -3; z <= 3; z++) {
+				if (world.getBlockState(new BlockPos(pos.getX() + x, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, pos.getX() + x, pos.getZ() + z), pos.getZ() + z).down()).isOf(Blocks.WATER)) {
+					count++;
+				}
+			}
+		}
+
+		if (count > 16 && count < 38) {
+			for (int x = -3; x <= 3; x++) {
+				for (int z = -3; z <= 3; z++) {
+					if (x * x + z * z < 3 * 3 + random.nextInt(3)) {
+						BlockPos local = new BlockPos(pos.getX() + x, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, pos.getX() + x, pos.getZ() + z), pos.getZ() + z).down();
+
+						if (world.getBlockState(local).isOf(Blocks.WATER)) {
+							world.setBlockState(local, Blocks.OAK_PLANKS.getDefaultState(), 3);
+						}
+					}
+				}
+			}
+
+			int boatCount = 6 + random.nextInt(8);
+			int placed = 0;
+			for (int i = 0; i < boatCount; i++) {
+				int dx = random.nextInt(5) - random.nextInt(5);
+				int dz = random.nextInt(5) - random.nextInt(5);
+
+				BlockPos local = new BlockPos(pos.getX() + dx, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, pos.getX() + dx, pos.getZ() + dz), pos.getZ() + dz).down();
+
+				if (world.getBlockState(local).isOf(Blocks.WATER)) {
+					placed++;
+					BoatEntity boat = new BoatEntity(world.toServerWorld(), local.getX(), local.getY() + 1, local.getZ());
+					world.spawnEntity(boat);
+
+					if (placed >= 4) {
+						return;
 					}
 				}
 			}

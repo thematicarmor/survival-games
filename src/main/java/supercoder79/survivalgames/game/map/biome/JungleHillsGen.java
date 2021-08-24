@@ -22,7 +22,7 @@ public final class JungleHillsGen implements BiomeGen {
 
 	@Override
 	public BlockState underState(Random random, int x, int z) {
-		return Blocks.GRASS_BLOCK.getDefaultState();
+		return Blocks.DIRT.getDefaultState();
 	}
 
 	@Override
