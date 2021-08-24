@@ -17,9 +17,10 @@ public class GroundCoverGen implements MapGen {
         this.state = state;
         this.chance = chance;
     }
+
     @Override
     public void generate(ServerWorldAccess world, BlockPos pos, Random random) {
-        if (random.nextInt(chance) == 0) {
+        if (random.nextInt(chance) == 0 && world.isAir(pos)) {
             world.setBlockState(pos, state, 0);
         }
     }

@@ -23,7 +23,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeArray;
@@ -310,15 +309,17 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 					int y = world.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
 					mutable.set(x, y, z);
 
-					BlockState down = world.getBlockState(mutable.down());
-					if (down.isOpaqueFullCube(world, mutable.down()) || down.isIn(BlockTags.LEAVES)) {
-						world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 3);
+					if (world.isAir(mutable)) {
+						BlockState down = world.getBlockState(mutable.down());
+						if (down.isOpaqueFullCube(world, mutable.down()) || down.isIn(BlockTags.LEAVES)) {
+							world.setBlockState(mutable, Blocks.SNOW.getDefaultState(), 3);
 
-						if (down.contains(Properties.SNOWY)) {
-							world.setBlockState(mutable.down(), down.with(Properties.SNOWY, true), 3);
+							if (down.contains(Properties.SNOWY)) {
+								world.setBlockState(mutable.down(), down.with(Properties.SNOWY, true), 3);
+							}
+						} else if (down.getFluidState().isIn(FluidTags.WATER)) {
+							world.setBlockState(mutable.down(), Blocks.ICE.getDefaultState(), 3);
 						}
-					} else if (down.getFluidState().isIn(FluidTags.WATER)) {
-						world.setBlockState(mutable.down(), Blocks.ICE.getDefaultState(), 3);
 					}
 				}
 			}

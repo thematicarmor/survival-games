@@ -55,7 +55,7 @@ public class AlpineCliffsGen implements BiomeGen {
 
     @Override
     public BlockState topState(Random random, int x, int z) {
-        if (POWDER_SNOW_NOISE.eval(x, z) <= 0.25) {
+        if (POWDER_SNOW_NOISE.eval(x / 16.0, z / 16.0) <= 0.25 + (random.nextDouble() * 0.05)) {
             return Blocks.POWDER_SNOW.getDefaultState();
         }
         return Blocks.GRASS_BLOCK.getDefaultState();
@@ -63,9 +63,6 @@ public class AlpineCliffsGen implements BiomeGen {
 
     @Override
     public BlockState underState(Random random, int x, int z) {
-        if (POWDER_SNOW_NOISE.eval(x, z) >= 0.2 + random.nextDouble()) {
-            return Blocks.POWDER_SNOW.getDefaultState();
-        }
         return Blocks.STONE.getDefaultState();
     }
 
