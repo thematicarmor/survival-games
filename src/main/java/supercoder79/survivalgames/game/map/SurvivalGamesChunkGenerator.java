@@ -296,8 +296,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 						biome.grass(x, z, random).generate(world, mutable.set(x, y, z).toImmutable(), random);
 					}
 				} else {
-					if (random.nextInt(384) == 0) {
-						generateBoats(world, random, new BlockPos(x, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z), z));
+					if (!this.biomeGenerator.generateSnow()) {
+						if (random.nextInt(384) == 0) {
+							generateBoats(world, random, new BlockPos(x, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z), z));
+						}
 					}
 					if (random.nextInt(64) == 0) {
 						DiskGen.INSTANCE.generate(world, mutable.set(x, y, z).toImmutable(), random);
