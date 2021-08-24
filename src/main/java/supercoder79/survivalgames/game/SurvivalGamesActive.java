@@ -252,6 +252,13 @@ public class SurvivalGamesActive {
 			return ActionResult.FAIL;
 		}
 
+		if (state.isOf(Blocks.RAW_IRON_BLOCK)) {
+			world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.IRON_INGOT, 9)));
+			world.breakBlock(pos, false);
+
+			return ActionResult.FAIL;
+		}
+
 		if (state.isOf(Blocks.COAL_ORE)) {
 			world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.COAL)));
 			world.breakBlock(pos, false);
