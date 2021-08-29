@@ -4,6 +4,7 @@
   "package": "supercoder79.survivalgames.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
+    "MixinMobSpawnerLogic",
     "SinglePoolElementAccessor"
   ],
   "client": [

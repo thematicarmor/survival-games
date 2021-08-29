@@ -141,4 +141,23 @@ public class LootProviders {
 			.add(new ItemStack(Items.IRON_LEGGINGS, 1), 1)
 			.add(new ItemStack(Items.IRON_BOOTS, 1), 1),
 			6, 7);
+
+	public static final LootProvider SPAWNER_LOOT = new LootProvider(new WeightedList<ItemStack>()
+			.add(new ItemStack(Items.IRON_SWORD, 1), 12)
+			.add(new ItemStack(Items.SHIELD, 1), 8)
+			.add(new ItemStack(Items.IRON_AXE, 1), 4)
+			.add(new ItemStack(Items.IRON_INGOT, 8), 8)
+			.add(new ItemStack(Items.BUCKET, 1), 4)
+			.add(new ItemStack(Items.LAVA_BUCKET, 1), 1)
+			.add(new ItemStack(Items.DIAMOND, 1), 6)
+			.add(new ItemStack(Items.DIAMOND, 3), 4)
+			.add(new ItemStack(Items.GOLDEN_APPLE, 1), 6)
+			.add(new ItemStack(Items.TNT, 8), 3)
+			.add(new ItemStack(Items.FLINT_AND_STEEL, 1), 2)
+			.add(new ItemStack(Items.FIRE_CHARGE, 1), 2)
+			.add(new ItemStack(Items.IRON_HELMET, 1), 1)
+			.add(new ItemStack(Items.IRON_CHESTPLATE, 1), 1)
+			.add(new ItemStack(Items.IRON_LEGGINGS, 1), 1)
+			.add(new ItemStack(Items.IRON_BOOTS, 1), 1),
+			4, 6);
 }

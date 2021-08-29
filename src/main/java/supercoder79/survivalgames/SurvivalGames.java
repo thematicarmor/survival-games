@@ -11,8 +11,10 @@ import supercoder79.survivalgames.game.map.noise.NoiseGenerators;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import xyz.nucleoid.plasmid.game.rule.GameRuleType;
 
 public class SurvivalGames implements ModInitializer {
+	public static final GameRuleType DISABLE_SPAWNERS = GameRuleType.create();
 	public static final NoiseCompiler NOISE_COMPILER = NoiseCompiler.create(SurvivalGames.class.getClassLoader());
 
 	@Override

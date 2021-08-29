@@ -2,8 +2,11 @@ package supercoder79.survivalgames.game;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.ai.TargetPredicate;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.Items;
@@ -23,7 +26,10 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.GameMode;
+import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
+import supercoder79.survivalgames.game.logic.ActiveLogic;
+import supercoder79.survivalgames.game.logic.SpawnerLogic;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
 import xyz.nucleoid.plasmid.game.GameCloseReason;
 import xyz.nucleoid.plasmid.game.GameSpace;
@@ -35,13 +41,15 @@ import xyz.nucleoid.plasmid.game.rule.GameRuleType;
 import xyz.nucleoid.plasmid.util.PlayerRef;
 import xyz.nucleoid.stimuli.event.block.BlockBreakEvent;
 import xyz.nucleoid.stimuli.event.block.BlockPlaceEvent;
+import xyz.nucleoid.stimuli.event.entity.EntityDeathEvent;
 import xyz.nucleoid.stimuli.event.player.PlayerDeathEvent;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
-public class SurvivalGamesActive {
+public final class SurvivalGamesActive {
 	private final GameSpace space;
 	private final SurvivalGamesMap map;
 	private final SurvivalGamesConfig config;
@@ -56,23 +64,26 @@ public class SurvivalGamesActive {
 	private boolean borderShrinkStarted = false;
 	private long gameCloseTick = Long.MAX_VALUE;
 	private boolean finished = false;
-	private ServerWorld world;
+	private final ServerWorld world;
+	private final GenerationTracker tracker;
+	private final Set<ActiveLogic> logics = new HashSet<>();
 
-	private SurvivalGamesActive(GameSpace space, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants, GlobalWidgets widgets, ServerWorld world) {
+	private SurvivalGamesActive(GameSpace space, SurvivalGamesMap map, SurvivalGamesConfig config, PlayerSet participants, GlobalWidgets widgets, ServerWorld world, GenerationTracker tracker) {
 		this.space = space;
 		this.map = map;
 		this.config = config;
 		this.participants = participants;
 		this.world = world;
+		this.tracker = tracker;
 
 		this.spawnLogic = new SurvivalGamesSpawnLogic(space, config);
 		this.bar = SurvivalGamesBar.create(widgets);
 	}
 
-	public static void open(GameSpace space, SurvivalGamesMap map, SurvivalGamesConfig config, ServerWorld world) {
+	public static void open(GameSpace space, SurvivalGamesMap map, SurvivalGamesConfig config, ServerWorld world, GenerationTracker tracker) {
 		space.setActivity(game -> {
 			GlobalWidgets widgets = GlobalWidgets.addTo(game);
-			SurvivalGamesActive active = new SurvivalGamesActive(space, map, config, space.getPlayers(), widgets, world);
+			SurvivalGamesActive active = new SurvivalGamesActive(space, map, config, space.getPlayers(), widgets, world, tracker);
 
 			game.setRule(GameRuleType.CRAFTING, ActionResult.PASS);
 			game.setRule(GameRuleType.PORTALS, ActionResult.FAIL);
@@ -82,6 +93,7 @@ public class SurvivalGamesActive {
 			game.setRule(GameRuleType.HUNGER, ActionResult.FAIL);
 			game.setRule(GameRuleType.UNSTABLE_TNT, ActionResult.PASS);
 			game.setRule(GameRuleType.THROW_ITEMS, ActionResult.SUCCESS);
+			game.setRule(SurvivalGames.DISABLE_SPAWNERS, ActionResult.SUCCESS);
 
 			game.listen(GameActivityEvents.CREATE, active::open);
 			game.listen(GameActivityEvents.DESTROY, active::close);
@@ -94,6 +106,7 @@ public class SurvivalGamesActive {
 			game.listen(BlockBreakEvent.EVENT, active::onBreakBlock);
 
 			game.listen(PlayerDeathEvent.EVENT, active::onPlayerDeath);
+			game.listen(EntityDeathEvent.EVENT, active::onEntityDeath);
 			game.listen(BlockPlaceEvent.BEFORE, active::onUseBlock);
 		});
 	}
@@ -181,14 +194,65 @@ public class SurvivalGamesActive {
 			}
 		}
 
-		if (world.getTime() > this.gameCloseTick) {
+		long time = this.world.getTime();
+
+		if (time > this.gameCloseTick) {
 			this.space.close(GameCloseReason.FINISHED);
+		}
+
+		if (time % 20 == 0) {
+			tickMobSpawners();
+		}
+
+		Iterator<ActiveLogic> iterator = this.logics.iterator();
+		// prevent CMEs
+		while (iterator.hasNext()) {
+			ActiveLogic logic = iterator.next();
+			logic.tick(time);
+		}
+	}
+
+	private void tickMobSpawners() {
+
+		Set<BlockPos> removed = new HashSet<>();
+		for (BlockPos pos : this.tracker.getRedstoneTracked()) {
+			if (this.world.isReceivingRedstonePower(pos)) {
+				addLogic(new SpawnerLogic(this, pos));
+				TargetPredicate pred = TargetPredicate.DEFAULT;
+				pred.setPredicate(p -> p instanceof ServerPlayerEntity player && this.participants.contains(player) && player.interactionManager.getGameMode() == GameMode.SURVIVAL);
+
+				PlayerEntity player = this.world.getClosestPlayer(pred, pos.getX(), pos.getY(), pos.getZ());
+
+				if (player != null) {
+					this.participants.sendMessage(new LiteralText(player.getEntityName() + " triggered a spawner!").formatted(Formatting.GOLD));
+				} else {
+					this.participants.sendMessage(new LiteralText("A spawner has been triggered!").formatted(Formatting.GOLD));
+				}
+				removed.add(pos);
+			}
+		}
+
+		for (BlockPos pos : removed) {
+			this.tracker.removeRedstoneTracked(pos);
 		}
 	}
 
 	private ActionResult onPlayerDeath(ServerPlayerEntity player, DamageSource source) {
 		this.eliminatePlayer(player);
 		return ActionResult.FAIL;
+	}
+
+	private ActionResult onEntityDeath(Entity entity, DamageSource source) {
+		for (ActiveLogic logic : this.logics) {
+			ActionResult res = logic.onEntityDeath(entity, source);
+
+			if (res != ActionResult.PASS) {
+				return res;
+			}
+		}
+
+
+		return ActionResult.PASS;
 	}
 
 	private void eliminatePlayer(ServerPlayerEntity player) {
@@ -245,6 +309,10 @@ public class SurvivalGamesActive {
 			return ActionResult.FAIL;
 		}
 
+		if (state.isOf(Blocks.SPAWNER)) {
+			return ActionResult.FAIL;
+		}
+
 		if (state.isOf(Blocks.IRON_ORE)) {
 			world.spawnEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), new ItemStack(Items.IRON_INGOT)));
 			world.breakBlock(pos, false);
@@ -297,5 +365,17 @@ public class SurvivalGamesActive {
 		}
 
 		return ActionResult.PASS;
+	}
+
+	public ServerWorld getWorld() {
+		return world;
+	}
+
+	public void addLogic(ActiveLogic logic) {
+		this.logics.add(logic);
+	}
+
+	public void destroyLogic(ActiveLogic logic) {
+		this.logics.remove(logic);
 	}
 }

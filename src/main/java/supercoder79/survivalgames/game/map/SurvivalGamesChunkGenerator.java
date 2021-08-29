@@ -32,6 +32,8 @@ import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
 import supercoder79.survivalgames.SurvivalGames;
+import supercoder79.survivalgames.game.GameTrackable;
+import supercoder79.survivalgames.game.GenerationTracker;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
@@ -72,10 +74,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 	private final BlockState defaultState;
 	private final BlockState defaultFluid;
+	private final GenerationTracker tracker;
 
-	public SurvivalGamesChunkGenerator(MinecraftServer server, SurvivalGamesConfig config) {
+	public SurvivalGamesChunkGenerator(MinecraftServer server, SurvivalGamesConfig config, GenerationTracker tracker) {
 		super(server);
 		Random random = new Random();
+
+		this.tracker = tracker;
 
 		this.biomeSource = new FakeBiomeSource(server.getRegistryManager().get(Registry.BIOME_KEY), random.nextLong(), config.biomeGenerator);
 		this.biomeGenerator = config.biomeGenerator;
@@ -282,6 +287,10 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 
 							LootHelper.placeProviderChest(world, mutable.set(ax, ay, az).toImmutable(), structure.getLootProvider());
 						}
+
+						if (structure instanceof GameTrackable trackable) {
+							trackable.getTracker().track(this.tracker, mutable.set(x, y, z).toImmutable());
+						}
 					}
 
 					y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, x, z);
@@ -301,6 +310,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 							generateBoats(world, random, new BlockPos(x, world.getTopY(Heightmap.Type.WORLD_SURFACE_WG, x, z), z));
 						}
 					}
+
 					if (random.nextInt(64) == 0) {
 						DiskGen.INSTANCE.generate(world, mutable.set(x, y, z).toImmutable(), random);
 					}
