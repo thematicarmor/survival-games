@@ -22,6 +22,11 @@ public class HighlandPlainsGen implements BiomeGen {
     }
 
     @Override
+    public double baseHeight() {
+        return 15;
+    }
+
+    @Override
     public double upperNoiseFactor() {
         return 8;
     }

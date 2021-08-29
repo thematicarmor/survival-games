@@ -25,6 +25,11 @@ public class HighlandPeaksGen implements BiomeGen {
     }
 
     @Override
+    public double baseHeight() {
+        return 90;
+    }
+
+    @Override
     public double upperNoiseFactor() {
         return 6;
     }
@@ -36,22 +41,22 @@ public class HighlandPeaksGen implements BiomeGen {
 
     @Override
     public double upperLerpHigh() {
-        return 42;
+        return 8;
     }
 
     @Override
     public double upperLerpLow() {
-        return 36;
+        return 6;
     }
 
     @Override
     public double lowerLerpHigh() {
-        return 32;
+        return 4;
     }
 
     @Override
     public double lowerLerpLow() {
-        return 28;
+        return 4;
     }
 
     @Override
@@ -68,6 +73,7 @@ public class HighlandPeaksGen implements BiomeGen {
         } else if (random.nextDouble() + 0.1 < GRANITE_NOISE.eval(x / 45.0, z / 45.0) / 12) {
             return Blocks.GRANITE.getDefaultState();
         }
+
         return Blocks.STONE.getDefaultState();
     }
 

@@ -24,8 +24,13 @@ public class HighlandHillsGen implements BiomeGen {
     }
 
     @Override
+    public double baseHeight() {
+        return 32;
+    }
+
+    @Override
     public double upperNoiseFactor() {
-        return 10;
+        return 6;
     }
 
     @Override
@@ -35,22 +40,22 @@ public class HighlandHillsGen implements BiomeGen {
 
     @Override
     public double upperLerpHigh() {
-        return 20;
+        return 6;
     }
 
     @Override
     public double upperLerpLow() {
-        return 16;
+        return 6;
     }
 
     @Override
     public double lowerLerpHigh() {
-        return 16;
+        return 4;
     }
 
     @Override
     public double lowerLerpLow() {
-        return 12;
+        return 4;
     }
 
     @Override

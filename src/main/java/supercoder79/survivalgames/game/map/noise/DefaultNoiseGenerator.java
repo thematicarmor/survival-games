@@ -3,16 +3,25 @@ package supercoder79.survivalgames.game.map.noise;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.gegy.noise.sampler.NoiseSampler2d;
+import net.minecraft.world.biome.Biome;
 import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
+import supercoder79.survivalgames.game.map.biome.blend.CachingBlender;
+import supercoder79.survivalgames.game.map.biome.blend.LinkedBiomeWeightMap;
 import supercoder79.survivalgames.game.map.biome.source.FakeBiomeSource;
 import net.minecraft.util.math.MathHelper;
 import supercoder79.survivalgames.noise.simplex.OpenSimplexNoise;
 
 public class DefaultNoiseGenerator implements NoiseGenerator {
-	public static final Codec<DefaultNoiseGenerator> CODEC = Codec.unit(new DefaultNoiseGenerator());
+	public static final Codec<DefaultNoiseGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	        Codec.BOOL.optionalFieldOf("rivers", true).forGetter(c -> c.rivers)
+	).apply(instance, DefaultNoiseGenerator::new));
+	private final boolean rivers;
+
+	private final CachingBlender blender = new CachingBlender(0.04, 24, 16);
 	private NoiseSampler2d baseNoise;
 	private NoiseSampler2d interpolationNoise;
 	private NoiseSampler2d lowerInterpolatedNoise;
@@ -22,9 +31,15 @@ public class DefaultNoiseGenerator implements NoiseGenerator {
 	private NoiseSampler2d riverNoise;
 	private NoiseSampler2d riverNoise2;
 	private NoiseSampler2d riverDepthNoise;
+	private long seed;
+
+	public DefaultNoiseGenerator(boolean rivers) {
+		this.rivers = rivers;
+	}
 
 	@Override
 	public void initialize(Random random, SurvivalGamesConfig config) {
+		this.seed = random.nextLong();
 		this.baseNoise = compile(random, 256.0);
 		this.interpolationNoise = compile(random, 50.0);
 		this.lowerInterpolatedNoise = compile(random,  60.0);
@@ -42,6 +57,7 @@ public class DefaultNoiseGenerator implements NoiseGenerator {
 
 	@Override
 	public double getHeightAt(FakeBiomeSource biomeSource, int x, int z) {
+		double baseHeight = 0;
 		double upperNoiseFactor = 0;
 		double lowerNoiseFactor = 0;
 		double upperLerpHigh = 0;
@@ -49,30 +65,24 @@ public class DefaultNoiseGenerator implements NoiseGenerator {
 		double lowerLerpHigh = 0;
 		double lowerLerpLow = 0;
 		double detailFactor = 0;
-		double weight = 0;
 
-		for (int aX = -4; aX <= 4; aX++) {
-			for (int aZ = -4; aZ <= 4; aZ++) {
-				BiomeGen biome = biomeSource.getRealBiome(x + aX, z + aZ);
-				upperNoiseFactor += biome.upperNoiseFactor();
-				lowerNoiseFactor += biome.lowerNoiseFactor();
-				upperLerpHigh += biome.upperLerpHigh();
-				upperLerpLow += biome.upperLerpLow();
-				lowerLerpHigh += biome.lowerLerpHigh();
-				lowerLerpLow += biome.lowerLerpLow();
-				detailFactor += biome.detailFactor();
+		LinkedBiomeWeightMap weights = this.blender.blend(this.seed, (x >> 4) << 4, (z >> 4) << 4, (x0, z0) -> biomeSource.getRealBiome((int) x0, (int) z0));
 
-				weight++;
-			}
+		int idx = ((z & 15) * 16) + (x & 15);
+
+		for (LinkedBiomeWeightMap entry = weights; entry != null; entry = entry.getNext()) {
+			double weight = entry.getWeights()[idx];
+			BiomeGen biome = entry.getBiome();
+
+			baseHeight += biome.baseHeight() * weight;
+			upperNoiseFactor += biome.upperNoiseFactor() * weight;
+			lowerNoiseFactor += biome.lowerNoiseFactor() * weight;
+			upperLerpHigh += biome.upperLerpHigh() * weight;
+			upperLerpLow += biome.upperLerpLow() * weight;
+			lowerLerpHigh += biome.lowerLerpHigh() * weight;
+			lowerLerpLow += biome.lowerLerpLow() * weight;
+			detailFactor += biome.detailFactor() * weight;
 		}
-
-		upperNoiseFactor /= weight;
-		lowerNoiseFactor /= weight;
-		upperLerpHigh /= weight;
-		upperLerpLow /= weight;
-		lowerLerpHigh /= weight;
-		lowerLerpLow /= weight;
-		detailFactor /= weight;
 
 		// Create base terrain
 		double noise = baseNoise.get(x, z);
@@ -98,15 +108,19 @@ public class DefaultNoiseGenerator implements NoiseGenerator {
 			noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 		}
 
+		noise += baseHeight;
+
 		// Add small details to make the terrain less rounded
 		noise += detailNoise.get(x, z) * detailFactor;
 
-		// River gen
-		double river = this.riverNoise.get(x, z) + this.riverNoise2.get(x, z) * 0.2;
-		if (river > -0.24 && river < 0.24) {
-			double depth = -10 + this.riverDepthNoise.get(x, z) * 1.75;
+		if (this.rivers) {
+			// River gen
+			double river = this.riverNoise.get(x, z) + this.riverNoise2.get(x, z) * 0.2;
+			if (river > -0.24 && river < 0.24) {
+				double depth = -10 + this.riverDepthNoise.get(x, z) * 1.75;
 
-			noise = MathHelper.lerp(smoothstep(river / 0.24), noise, depth);
+				noise = MathHelper.lerp(smoothstep(river / 0.24), noise, depth);
+			}
 		}
 
 		return noise;

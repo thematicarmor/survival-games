@@ -149,9 +149,7 @@ public final class SurvivalGamesActive {
 	private void close(GameCloseReason gameCloseReason) {
 		// this should hopefully fix players returning as survival mode to the lobby
 		for (ServerPlayerEntity player : this.participants) {
-			var nbt = new NbtCompound();
-			nbt.putInt("playerGameType", GameMode.SURVIVAL.getId());
-			player.setGameMode(nbt);
+			player.interactionManager.changeGameMode(GameMode.SURVIVAL);
 		}
 	}
 	private void addPlayer(ServerPlayerEntity player, ServerWorld world) {
@@ -213,9 +211,10 @@ public final class SurvivalGamesActive {
 	}
 
 	private void tickMobSpawners() {
+		Iterator<BlockPos> iterator = this.tracker.getRedstoneTracked().iterator();
 
-		Set<BlockPos> removed = new HashSet<>();
-		for (BlockPos pos : this.tracker.getRedstoneTracked()) {
+		while (iterator.hasNext()) {
+			BlockPos pos = iterator.next();
 			if (this.world.isReceivingRedstonePower(pos)) {
 				addLogic(new SpawnerLogic(this, pos));
 				TargetPredicate pred = TargetPredicate.DEFAULT;
@@ -228,12 +227,9 @@ public final class SurvivalGamesActive {
 				} else {
 					this.participants.sendMessage(new LiteralText("A spawner has been triggered!").formatted(Formatting.GOLD));
 				}
-				removed.add(pos);
-			}
-		}
 
-		for (BlockPos pos : removed) {
-			this.tracker.removeRedstoneTracked(pos);
+				iterator.remove();
+			}
 		}
 	}
 

@@ -26,6 +26,11 @@ public final class JungleHillsGen implements BiomeGen {
 	}
 
 	@Override
+	public double baseHeight() {
+		return 20;
+	}
+
+	@Override
 	public double upperNoiseFactor() {
 		return 32;
 	}

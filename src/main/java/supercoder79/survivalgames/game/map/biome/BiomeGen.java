@@ -11,6 +11,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
 public interface BiomeGen extends BaseBiomeGen {
+	default double baseHeight() {
+		return 0;
+	}
 	default double upperNoiseFactor() {
 		return 14;
 	}

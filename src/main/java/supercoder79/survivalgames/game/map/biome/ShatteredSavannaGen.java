@@ -27,13 +27,18 @@ public final class ShatteredSavannaGen implements BiomeGen {
 	}
 
 	@Override
+	public double baseHeight() {
+		return 60;
+	}
+
+	@Override
 	public double upperNoiseFactor() {
 		return 32;
 	}
 
 	@Override
 	public double lowerNoiseFactor() {
-		return 8;
+		return 24;
 	}
 
 	@Override
@@ -43,7 +48,7 @@ public final class ShatteredSavannaGen implements BiomeGen {
 
 	@Override
 	public double upperLerpLow() {
-		return 4;
+		return 16;
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public final class ShatteredSavannaGen implements BiomeGen {
 
 	@Override
 	public double lowerLerpLow() {
-		return 4;
+		return 8;
 	}
 
 	@Override

@@ -38,6 +38,7 @@ public class IslandNoiseGenerator implements NoiseGenerator {
 
 	@Override
 	public double getHeightAt(FakeBiomeSource biomeSource, int x, int z) {
+		double baseHeight = 0;
 		double upperNoiseFactor = 0;
 		double lowerNoiseFactor = 0;
 		double upperLerpHigh = 0;
@@ -50,6 +51,7 @@ public class IslandNoiseGenerator implements NoiseGenerator {
 		for (int aX = -4; aX <= 4; aX++) {
 			for (int aZ = -4; aZ <= 4; aZ++) {
 				BiomeGen biome = biomeSource.getRealBiome(x + aX, z + aZ);
+				baseHeight += biome.baseHeight();
 				upperNoiseFactor += biome.upperNoiseFactor();
 				lowerNoiseFactor += biome.lowerNoiseFactor();
 				upperLerpHigh += biome.upperLerpHigh();
@@ -62,6 +64,7 @@ public class IslandNoiseGenerator implements NoiseGenerator {
 			}
 		}
 
+		baseHeight /= weight;
 		upperNoiseFactor /= weight;
 		lowerNoiseFactor /= weight;
 		upperLerpHigh /= weight;
@@ -93,6 +96,8 @@ public class IslandNoiseGenerator implements NoiseGenerator {
 
 			noise += MathHelper.lerp(lerp, lowerNoise, upperNoise);
 		}
+
+		noise += baseHeight;
 
 		// Add small details to make the terrain less rounded
 		noise += detailNoise.get(x, z) * detailFactor;

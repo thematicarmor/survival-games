@@ -45,6 +45,11 @@ public class BadlandsGen implements BiomeGen {
     }
 
     @Override
+    public double baseHeight() {
+        return 50;
+    }
+
+    @Override
     public double upperLerpHigh() {
         return 8;
     }

@@ -17,7 +17,8 @@
     "type": "survivalgames:highland"
   },
   "noise_generator": {
-    "type": "survivalgames:default"
+    "type": "survivalgames:default",
+    "rivers": false
   },
   "kit": [
     {
