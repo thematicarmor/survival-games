@@ -42,7 +42,7 @@ public final class SurvivalGamesWaiting {
 
 		return context.openWithWorld(worldConfig, (game, world) -> {
 			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(game.getGameSpace(), map, context.config(), tracker);
-			GameWaitingLobby.applyTo(game, context.config().playerConfig);
+			GameWaitingLobby.addTo(game, context.config().playerConfig);
 
 			game.allow(SurvivalGames.DISABLE_SPAWNERS);
 			game.listen(GameActivityEvents.REQUEST_START, () -> waiting.requestStart(world));
