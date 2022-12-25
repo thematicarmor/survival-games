@@ -1,14 +1,14 @@
 package supercoder79.survivalgames.game.map.gen;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.tag.FluidTags;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.ServerWorldAccess;
 import xyz.nucleoid.substrate.gen.MapGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class SpringGen implements MapGen {
     public static MapGen INSTANCE = new SpringGen();
@@ -47,7 +47,7 @@ public class SpringGen implements MapGen {
 
             if (canSpawn) {
                 world.setBlockState(mutable.set(origin), Blocks.WATER.getDefaultState(), 3);
-                world.getFluidTickScheduler().schedule(mutable, world.getFluidState(mutable).getFluid(), 0);
+                world.scheduleFluidTick(mutable, world.getFluidState(mutable).getFluid(), 0);
             }
         }
     }

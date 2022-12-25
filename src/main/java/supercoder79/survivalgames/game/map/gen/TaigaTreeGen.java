@@ -1,6 +1,6 @@
 package supercoder79.survivalgames.game.map.gen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import xyz.nucleoid.substrate.gen.GenHelper;
 import xyz.nucleoid.substrate.gen.MapGen;

@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ServerWorldAccess;
 import xyz.nucleoid.substrate.gen.MapGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class IceSpikesMapGen implements MapGen {
 

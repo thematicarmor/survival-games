@@ -2,8 +2,8 @@ package supercoder79.survivalgames.game.map.gen.processor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.processor.StructureProcessor;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +32,7 @@ public class LootChestProcessor extends StructureProcessor {
 	}
 
 	@Override
-	public Structure.StructureBlockInfo process(WorldView world, BlockPos worldPos, BlockPos localPos, Structure.StructureBlockInfo localInfo, Structure.StructureBlockInfo worldInfo, StructurePlacementData structurePlacementData) {
+	public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos worldPos, BlockPos localPos, StructureTemplate.StructureBlockInfo localInfo, StructureTemplate.StructureBlockInfo worldInfo, StructurePlacementData structurePlacementData) {
 		BlockPos pos = localInfo.pos;
 		if (pos.asLong() == this.chestPos.asLong()) {
 			// TODO: rotation

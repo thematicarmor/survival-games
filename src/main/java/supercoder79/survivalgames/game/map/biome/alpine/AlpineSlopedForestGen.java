@@ -1,7 +1,7 @@
 package supercoder79.survivalgames.game.map.biome.alpine;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
@@ -9,14 +9,14 @@ import supercoder79.survivalgames.game.map.gen.GroundCoverGen;
 import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
 import xyz.nucleoid.substrate.gen.MapGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class AlpineSlopedForestGen implements BiomeGen {
     public static BiomeGen INSTANCE = new AlpineSlopedForestGen();
 
     @Override
     public RegistryKey<Biome> getFakingBiome() {
-        return BiomeKeys.SNOWY_TAIGA_HILLS;
+        return BiomeKeys.SNOWY_TAIGA;
     }
 
     @Override

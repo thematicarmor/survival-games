@@ -3,10 +3,10 @@ package supercoder79.survivalgames.game.map.loot;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.*;
+import net.minecraft.util.math.random.Random;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class WeightedList<U> {
@@ -18,7 +18,7 @@ public class WeightedList<U> {
     }
 
     private WeightedList(List<WeightedList.Entry<U>> entries) {
-        this.random = new Random();
+        this.random = Random.create();
         this.entries = Lists.newArrayList(entries);
     }
 

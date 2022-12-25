@@ -2,18 +2,15 @@ package supercoder79.survivalgames.game.map.gen.processor;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import supercoder79.survivalgames.game.map.loot.LootHelper;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.state.property.Properties;
-import net.minecraft.structure.Structure;
 import net.minecraft.structure.StructurePlacementData;
+import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.processor.StructureProcessor;
 import net.minecraft.structure.processor.StructureProcessorType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
 public class ChanceAtProcessor extends StructureProcessor {
@@ -37,7 +34,7 @@ public class ChanceAtProcessor extends StructureProcessor {
 	}
 
 	@Override
-	public Structure.StructureBlockInfo process(WorldView world, BlockPos worldPos, BlockPos localPos, Structure.StructureBlockInfo localInfo, Structure.StructureBlockInfo worldInfo, StructurePlacementData structurePlacementData) {
+	public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos worldPos, BlockPos localPos, StructureTemplate.StructureBlockInfo localInfo, StructureTemplate.StructureBlockInfo worldInfo, StructurePlacementData structurePlacementData) {
 		if (structurePlacementData.getRandom(worldInfo.pos).nextDouble() < this.chance) {
 			if (localInfo.pos.asLong() == this.pos.asLong()) {
 
@@ -52,10 +49,10 @@ public class ChanceAtProcessor extends StructureProcessor {
 					int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, worldInfo.pos.getX(), worldInfo.pos.getZ());
 
 					BlockPos topPos = new BlockPos(worldInfo.pos.getX(), y, worldInfo.pos.getZ());
-					return new Structure.StructureBlockInfo(topPos, state, null);
+					return new StructureTemplate.StructureBlockInfo(topPos, state, null);
 				}
 
-				return new Structure.StructureBlockInfo(worldInfo.pos, state, null);
+				return new StructureTemplate.StructureBlockInfo(worldInfo.pos, state, null);
 			}
 		}
 

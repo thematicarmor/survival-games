@@ -3,14 +3,14 @@ package supercoder79.survivalgames.game.map.biome;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import xyz.nucleoid.substrate.gen.CactusGen;
 import xyz.nucleoid.substrate.gen.MapGen;
 import xyz.nucleoid.substrate.gen.tree.DeadTreeGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public final class DesertGen implements BiomeGen {
 	public static final DesertGen INSTANCE = new DesertGen();

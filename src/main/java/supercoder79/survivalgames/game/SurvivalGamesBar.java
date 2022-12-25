@@ -1,7 +1,7 @@
 package supercoder79.survivalgames.game;
 
 import net.minecraft.entity.boss.BossBar;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import xyz.nucleoid.plasmid.game.common.GlobalWidgets;
 import xyz.nucleoid.plasmid.game.common.widget.BossBarWidget;
 
@@ -13,26 +13,26 @@ public final class SurvivalGamesBar {
 	}
 
 	public static SurvivalGamesBar create(GlobalWidgets widgets) {
-		return new SurvivalGamesBar(widgets.addBossBar(new LiteralText("Worldborder safe! Shrinking in ..."), BossBar.Color.BLUE, BossBar.Style.PROGRESS));
+		return new SurvivalGamesBar(widgets.addBossBar(Text.literal("Worldborder safe! Shrinking in ..."), BossBar.Color.BLUE, BossBar.Style.PROGRESS));
 	}
 
 	public void tickSafe(long ticks, long totalTicks) {
 		String time = formatTime(ticks);
 
-		this.widget.setTitle(new LiteralText("Worldborder safe! Shrinking in " + time));
+		this.widget.setTitle(Text.literal("Worldborder safe! Shrinking in " + time));
 		this.widget.setProgress((float) ticks / totalTicks);
 	}
 
 	public void tickActive(long ticks, long totalTicks) {
 		String time = formatTime(ticks);
 
-		this.widget.setTitle(new LiteralText("Worldborder shrinking! Finished in " + time));
+		this.widget.setTitle(Text.literal("Worldborder shrinking! Finished in " + time));
 		this.widget.setProgress((float) ticks / totalTicks);
 	}
 
 	public void setFinished() {
 		this.widget.setStyle(BossBar.Color.GREEN, BossBar.Style.PROGRESS);
-		this.widget.setTitle(new LiteralText("Worldborder finished. Fight!"));
+		this.widget.setTitle(Text.literal("Worldborder finished. Fight!"));
 		this.widget.setProgress(1.0f);
 	}
 

@@ -1,10 +1,11 @@
 package supercoder79.survivalgames.game;
 
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.Heightmap;
 import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.config.SurvivalGamesConfig;
 import supercoder79.survivalgames.game.map.SurvivalGamesMap;
@@ -37,17 +38,18 @@ public final class SurvivalGamesWaiting {
 				.setTimeOfDay(context.config().time)
 				.setGenerator(map.chunkGenerator(context.server(), context.config(), tracker))
 				//.setSpawner(BubbleWorldSpawner.atSurface(0, 0))
-				.setDimensionType(RegistryKey.of(Registry.DIMENSION_TYPE_KEY, context.config().dimension));
+				.setDimensionType(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, context.config().dimension));
 
 
 		return context.openWithWorld(worldConfig, (game, world) -> {
 			SurvivalGamesWaiting waiting = new SurvivalGamesWaiting(game.getGameSpace(), map, context.config(), tracker);
 			GameWaitingLobby.addTo(game, context.config().playerConfig);
+			var height = world.getChunk(0, 0).getHeightmap(Heightmap.Type.MOTION_BLOCKING).get(0, 0);
 
 			game.allow(SurvivalGames.DISABLE_SPAWNERS);
 			game.listen(GameActivityEvents.REQUEST_START, () -> waiting.requestStart(world));
 			game.listen(GamePlayerEvents.REMOVE, waiting::onPlayerDeath);
-			game.listen(GamePlayerEvents.OFFER, offer -> offer.accept(world, new Vec3d(0, 70, 0)));
+			game.listen(GamePlayerEvents.OFFER, offer -> offer.accept(world, new Vec3d(0, height, 0)));
 		});
 	}
 

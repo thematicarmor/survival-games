@@ -10,7 +10,7 @@ import xyz.nucleoid.substrate.gen.MapGen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class BranchingTreeGen implements MapGen {
     public static final MapGen DARK_OAK = new BranchingTreeGen(Blocks.DARK_OAK_LOG.getDefaultState(), Blocks.DARK_OAK_LEAVES.getDefaultState().with(Properties.DISTANCE_1_7, 1), Blocks.GRASS_BLOCK.getDefaultState(), 8, 1);

@@ -3,7 +3,7 @@ package supercoder79.survivalgames.game.map.biome.alpine;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
@@ -12,7 +12,7 @@ import supercoder79.survivalgames.game.map.gen.TaigaTreeGen;
 import xyz.nucleoid.substrate.gen.GrassGen;
 import xyz.nucleoid.substrate.gen.MapGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class AlpineCliffsGen implements BiomeGen {
     public static final BiomeGen INSTANCE = new AlpineCliffsGen();
@@ -93,6 +93,6 @@ public class AlpineCliffsGen implements BiomeGen {
 
     @Override
     public RegistryKey<Biome> getFakingBiome() {
-        return BiomeKeys.SNOWY_MOUNTAINS;
+        return BiomeKeys.SNOWY_SLOPES;
     }
 }

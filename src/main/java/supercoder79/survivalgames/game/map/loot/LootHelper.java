@@ -5,15 +5,15 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.WorldAccess;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public final class LootHelper {
 	public static List<ItemStack> get(List<LootProviderEntry> entries) {
-		Random random = new Random();
+		Random random = Random.create();
 		WeightedList<WeightedList<ItemStack>> weights = new WeightedList<>();
 		int maxCount = 0;
 		int minCount = 0;
@@ -42,7 +42,7 @@ public final class LootHelper {
 	}
 
 	public static void placeProviderChest(WorldAccess world, BlockPos pos, LootProvider provider) {
-		Random random = new Random();
+		Random random = Random.create();
 
 		List<ItemStack> stacks = LootHelper.get(ImmutableList.of(new LootProviderEntry(provider, 96 * 96)));
 		world.setBlockState(pos, Blocks.CHEST.getDefaultState(), 3);

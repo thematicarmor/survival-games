@@ -8,6 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.dimension.DimensionTypes;
 import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
 import supercoder79.survivalgames.game.map.noise.NoiseGenerator;
 import xyz.nucleoid.plasmid.game.common.config.PlayerConfig;
@@ -24,7 +25,7 @@ public class SurvivalGamesConfig {
 			BiomeGenerator.CODEC.fieldOf("biome_generator").forGetter(config -> config.biomeGenerator),
 			NoiseGenerator.CODEC.fieldOf("noise_generator").forGetter(config -> config.noiseGenerator),
 			ItemStack.CODEC.listOf().fieldOf("kit").forGetter(config -> config.kit),
-			Identifier.CODEC.optionalFieldOf("dimension", DimensionType.OVERWORLD_ID).forGetter(config -> config.dimension),
+			Identifier.CODEC.optionalFieldOf("dimension", DimensionTypes.OVERWORLD_ID).forGetter(config -> config.dimension),
 			Identifier.CODEC.optionalFieldOf("outskirts_pool", new Identifier("survivalgames", "outskirts_buildings")).forGetter(config -> config.outskirtsPool),
 			BlockState.CODEC.optionalFieldOf("default_state", Blocks.STONE.getDefaultState()).forGetter(config -> config.defaultState),
 			BlockState.CODEC.optionalFieldOf("default_fluid", Blocks.WATER.getDefaultState()).forGetter(config -> config.defaultFluid),

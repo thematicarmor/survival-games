@@ -3,15 +3,15 @@ package supercoder79.survivalgames.game.map.biome.highland;
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
 import supercoder79.survivalgames.game.map.gen.SpringGen;
 import xyz.nucleoid.substrate.gen.MapGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class HighlandSpringGen implements BiomeGen {
     public static final BiomeGen INSTANCE = new HighlandSpringGen();
@@ -20,7 +20,7 @@ public class HighlandSpringGen implements BiomeGen {
 
     @Override
     public RegistryKey<Biome> getFakingBiome() {
-        return RegistryKey.of(Registry.BIOME_KEY, new Identifier("survivalgames", "highland"));
+        return RegistryKey.of(RegistryKeys.BIOME, new Identifier("survivalgames", "highland"));
     }
 
     @Override

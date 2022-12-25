@@ -1,12 +1,12 @@
 package supercoder79.survivalgames.game.map.biome;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import xyz.nucleoid.substrate.gen.MapGen;
 import xyz.nucleoid.substrate.gen.tree.AspenTreeGen;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public final class AspenForestGen implements BiomeGen {
 	public static final AspenForestGen INSTANCE = new AspenForestGen();

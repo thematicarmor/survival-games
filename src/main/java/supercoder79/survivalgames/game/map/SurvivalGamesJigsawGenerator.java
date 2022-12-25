@@ -1,15 +1,15 @@
 package supercoder79.survivalgames.game.map;
 
-import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.registry.DynamicRegistryManager;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.structure.PoolStructurePiece;
+import net.minecraft.structure.StructureTemplateManager;
 import supercoder79.survivalgames.game.config.Y256Height;
 import supercoder79.survivalgames.game.map.gen.structure.ChunkBox;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.structure.PoolStructurePiece;
-import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolBasedGenerator;
 import net.minecraft.structure.pool.StructurePoolElement;
@@ -18,8 +18,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.StructureAccessor;
@@ -27,12 +25,12 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public final class SurvivalGamesJigsawGenerator {
-    private final Random random = new Random();
+    private final Random random = Random.create();
     private final DynamicRegistryManager registryManager;
-    private final StructureManager structureManager;
+    private final StructureTemplateManager structureManager;
     private final ChunkGenerator generator;
 
     private BlockPos origin = BlockPos.ORIGIN;
@@ -41,7 +39,7 @@ public final class SurvivalGamesJigsawGenerator {
 
     public SurvivalGamesJigsawGenerator(MinecraftServer server, ChunkGenerator generator, Long2ObjectMap<List<PoolStructurePiece>> piecesByChunk) {
         this.registryManager = server.getRegistryManager();
-        this.structureManager = server.getStructureManager();
+        this.structureManager = server.getStructureTemplateManager();
         this.generator = generator;
         this.piecesByChunk = piecesByChunk;
         this.box = new ChunkBox();
@@ -68,14 +66,16 @@ public final class SurvivalGamesJigsawGenerator {
 
         pieces.add(startPiece);
 
+        // [Patbox]: I wasn't sure how to get to correctly update this, but looking that this class doesn't seem to be actually used, I commented it out
+
         // invoke vanilla code to handle the actual arrangement logic
-        StructurePoolBasedGenerator.method_27230(this.registryManager, startPiece, depth, PoolStructurePiece::new, this.generator, this.structureManager, pieces, this.random, Y256Height.INSTANCE);
+        //StructurePoolBasedGenerator.method_27230(this.registryManager, startPiece, depth, PoolStructurePiece::new, this.generator, this.structureManager, pieces, this.random, Y256Height.INSTANCE);
 
         return pieces;
     }
 
     private PoolStructurePiece createStartPiece(BlockPos origin, Identifier startPoolId) {
-        StructurePool pool = this.registryManager.get(Registry.STRUCTURE_POOL_KEY).get(startPoolId);
+        StructurePool pool = this.registryManager.get(RegistryKeys.TEMPLATE_POOL).get(startPoolId);
         if (pool == null) {
             //throw new IllegalStateException("missing start pool: '" + startPoolId + "'");
         }
@@ -94,7 +94,7 @@ public final class SurvivalGamesJigsawGenerator {
         BlockBox box = piece.getBoundingBox();
         int centerX = (box.getMaxX() + box.getMaxX()) / 2;
         int centerZ = (box.getMaxZ() + box.getMinZ()) / 2;
-        int centerY = origin.getY() + this.generator.getHeightOnGround(centerX, centerZ, Heightmap.Type.WORLD_SURFACE_WG, Y256Height.INSTANCE);
+        int centerY = origin.getY() + this.generator.getHeightOnGround(centerX, centerZ, Heightmap.Type.WORLD_SURFACE_WG, Y256Height.INSTANCE, null);
 
         // offset the piece to be level with the ground at its center
         int targetY = box.getMinY() + piece.getGroundLevelDelta();

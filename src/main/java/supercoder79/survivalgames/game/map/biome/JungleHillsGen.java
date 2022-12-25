@@ -1,6 +1,6 @@
 package supercoder79.survivalgames.game.map.biome;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.substrate.gen.MapGen;
@@ -8,7 +8,7 @@ import xyz.nucleoid.substrate.gen.ShrubGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -81,7 +81,7 @@ public final class JungleHillsGen implements BiomeGen {
 
 	@Override
 	public RegistryKey<Biome> getFakingBiome() {
-		return BiomeKeys.JUNGLE_HILLS;
+		return BiomeKeys.JUNGLE;
 	}
 
 	@Override

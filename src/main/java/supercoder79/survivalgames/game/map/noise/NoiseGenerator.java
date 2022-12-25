@@ -1,6 +1,6 @@
 package supercoder79.survivalgames.game.map.noise;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 import java.util.function.Function;
 
 import com.mojang.serialization.Codec;

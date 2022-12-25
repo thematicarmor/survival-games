@@ -16,7 +16,7 @@ import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import xyz.nucleoid.substrate.gen.GenHelper;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public final class SpawnerStructure implements StructureGen, GameTrackable {
     public static final SpawnerStructure INSTANCE = new SpawnerStructure();
@@ -79,7 +79,7 @@ public final class SpawnerStructure implements StructureGen, GameTrackable {
         world.setBlockState(pos, Blocks.SPAWNER.getDefaultState(), 3);
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof MobSpawnerBlockEntity) {
-            ((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.ZOMBIE);
+            ((MobSpawnerBlockEntity)blockEntity).getLogic().setEntityId(EntityType.ZOMBIE, null, Random.create(), pos);
         }
     }
 

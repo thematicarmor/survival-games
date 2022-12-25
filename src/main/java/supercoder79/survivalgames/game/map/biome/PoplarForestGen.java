@@ -1,6 +1,6 @@
 package supercoder79.survivalgames.game.map.biome;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 

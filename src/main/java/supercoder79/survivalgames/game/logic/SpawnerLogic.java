@@ -8,11 +8,11 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import supercoder79.survivalgames.entity.SpawnerZombieEntity;
 import supercoder79.survivalgames.game.SurvivalGamesActive;
@@ -20,7 +20,6 @@ import supercoder79.survivalgames.game.map.loot.LootProviders;
 import xyz.nucleoid.plasmid.util.ItemStackBuilder;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 public final class SpawnerLogic implements ActiveLogic {
@@ -30,7 +29,7 @@ public final class SpawnerLogic implements ActiveLogic {
     private int placedMonsters = 0;
     private int lootRemaining = 10;
     private final Set<SpawnerZombieEntity> zombies = new HashSet<>();
-    private final Random random = new Random();
+    private final Random random = Random.create();
     private final int targetMonsters = 8 + this.random.nextInt(4);
 
     public SpawnerLogic(SurvivalGamesActive active, BlockPos pos) {

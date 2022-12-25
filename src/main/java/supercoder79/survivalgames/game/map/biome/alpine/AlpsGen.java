@@ -1,6 +1,6 @@
 package supercoder79.survivalgames.game.map.biome.alpine;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import kdotjpg.opensimplex.OpenSimplexNoise;
 import supercoder79.survivalgames.game.map.biome.BiomeGen;
@@ -9,7 +9,7 @@ import xyz.nucleoid.substrate.gen.MapGen;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 
@@ -78,6 +78,6 @@ public final class AlpsGen implements BiomeGen {
 
 	@Override
 	public RegistryKey<Biome> getFakingBiome() {
-		return BiomeKeys.SNOWY_TUNDRA;
+		return BiomeKeys.SNOWY_PLAINS;
 	}
 }

@@ -1,12 +1,12 @@
 package supercoder79.survivalgames.game.map.biome;
 
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 import supercoder79.survivalgames.game.map.gen.BranchingTreeGen;
 import xyz.nucleoid.substrate.gen.MapGen;
 import xyz.nucleoid.substrate.gen.ShrubGen;
 
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 

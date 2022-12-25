@@ -4,14 +4,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.noise.DoublePerlinNoiseSampler;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.ServerWorldAccess;
-import net.minecraft.world.gen.SimpleRandom;
 import supercoder79.survivalgames.game.map.loot.LootProvider;
 import supercoder79.survivalgames.game.map.loot.LootProviders;
 import supercoder79.survivalgames.game.map.loot.WeightedList;
-
-import java.util.Random;
 
 public final class MeteorStructure implements StructureGen {
     public static final MeteorStructure INSTANCE = new MeteorStructure();
@@ -41,7 +39,7 @@ public final class MeteorStructure implements StructureGen {
     public void generateNetherrack(ServerWorldAccess world, BlockPos pos, Random random) {
         int radius = 5 + random.nextInt(3);
         double dRadius = radius;
-        DoublePerlinNoiseSampler noise = DoublePerlinNoiseSampler.create(new SimpleRandom(random.nextLong()), -3, 0.1);
+        DoublePerlinNoiseSampler noise = DoublePerlinNoiseSampler.create(Random.create(random.nextLong()), -3, 0.1);
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {
@@ -65,7 +63,7 @@ public final class MeteorStructure implements StructureGen {
     public void generateMeteor(ServerWorldAccess world, BlockPos pos, Random random) {
         int radius = 2 + random.nextInt(2);
         double dRadius = radius;
-        DoublePerlinNoiseSampler noise = DoublePerlinNoiseSampler.create(new SimpleRandom(random.nextLong()), -3, 0.1);
+        DoublePerlinNoiseSampler noise = DoublePerlinNoiseSampler.create(Random.create(random.nextLong()), -3, 0.1);
 
         for (int x = -radius; x <= radius; x++) {
             for (int z = -radius; z <= radius; z++) {

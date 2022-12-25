@@ -9,28 +9,28 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.vehicle.BoatEntity;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.state.property.Properties;
 import net.minecraft.structure.PoolStructurePiece;
 import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.source.BiomeAccess;
-import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
+import net.minecraft.world.gen.chunk.Blender;
+import net.minecraft.world.gen.noise.NoiseConfig;
 import supercoder79.survivalgames.SurvivalGames;
 import supercoder79.survivalgames.game.GameTrackable;
 import supercoder79.survivalgames.game.GenerationTracker;
@@ -52,7 +52,7 @@ import xyz.nucleoid.plasmid.game.world.generator.GameChunkGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -77,14 +77,13 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	private final GenerationTracker tracker;
 
 	public SurvivalGamesChunkGenerator(MinecraftServer server, SurvivalGamesConfig config, GenerationTracker tracker) {
-		super(server);
-		Random random = new Random();
-
+		super(new FakeBiomeSource(server.getRegistryManager().get(RegistryKeys.BIOME), Random.create().nextLong(), config.biomeGenerator));
+		Random random = Random.create();
 		this.tracker = tracker;
 
-		this.biomeSource = new FakeBiomeSource(server.getRegistryManager().get(Registry.BIOME_KEY), random.nextLong(), config.biomeGenerator);
 		this.biomeGenerator = config.biomeGenerator;
 		this.noiseGenerator = config.noiseGenerator;
+		this.biomeSource = (FakeBiomeSource) this.getBiomeSource();
 
 		this.treeDensityNoise = compile(random, 180.0);
 
@@ -147,9 +146,8 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(Executor executor, StructureAccessor accessor, Chunk chunk) {
-		populateNoise(accessor, chunk);
-
+	public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig noiseConfig, StructureAccessor structureAccessor, Chunk chunk) {
+		populateNoise(structureAccessor, chunk);
 		return CompletableFuture.completedFuture(chunk);
 	}
 
@@ -166,7 +164,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		}
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		Random random = new Random();
+		Random random = Random.create();
 
 		for (int x = chunkX; x < chunkX + 16; x++) {
 			for (int z = chunkZ; z < chunkZ + 16; z++) {
@@ -234,31 +232,31 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	}
 
 	@Override
-	public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world) {
+	public int getHeight(int x, int z, Heightmap.Type heightmap, HeightLimitView world, NoiseConfig noiseConfig) {
 		int height = (int) (56 + getNoise(x, z));
 		return Math.max(height, 50);
 	}
 
-	public void generateJigsaws(ChunkRegion region, StructureAccessor structures) {
-		ChunkPos chunkPos = new ChunkPos(region.getCenterPos().x, region.getCenterPos().z);
+	public void generateJigsaws(StructureWorldAccess region, Chunk chunk, StructureAccessor structures) {
+		ChunkPos chunkPos = chunk.getPos();
 		List<PoolStructurePiece> pieces = this.piecesByChunk.get(chunkPos.toLong());
 
 		if (pieces != null) {
 			// generate all intersecting pieces with the mask of this chunk
 			BlockBox chunkMask = new BlockBox(chunkPos.getStartX(), 0, chunkPos.getStartZ(), chunkPos.getEndX(), 255, chunkPos.getEndZ());
 			for (PoolStructurePiece piece : pieces) {
-				piece.generate(region, structures, this, new Random(), chunkMask, BlockPos.ORIGIN, false);
+				piece.generate(region, structures, this, Random.create(), chunkMask, BlockPos.ORIGIN, false);
 			}
 		}
 	}
 
 	@Override
-	public void generateFeatures(ChunkRegion world, StructureAccessor structures) {
-		generateJigsaws(world, structures);
+	public void generateFeatures(StructureWorldAccess world, Chunk chunk, StructureAccessor structures) {
+		generateJigsaws(world, chunk, structures);
 
-		int chunkX = world.getCenterPos().x * 16;
-		int chunkZ = world.getCenterPos().z * 16;
-		Random random = new Random();
+		int chunkX = chunk.getPos().x * 16;
+		int chunkZ = chunk.getPos().z * 16;
+		Random random = Random.create();
 
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		boolean spawnedStructure = false;
@@ -342,7 +340,7 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 		}
 	}
 
-	private static void generateBoats(ChunkRegion world, Random random, BlockPos pos) {
+	private static void generateBoats(StructureWorldAccess world, Random random, BlockPos pos) {
 		int count = 0;
 
 		for (int x = -3; x <= 3; x++) {
@@ -388,14 +386,11 @@ public class SurvivalGamesChunkGenerator extends GameChunkGenerator {
 	}
 
 	@Override
-	public void populateBiomes(Registry<Biome> registry, Chunk chunk) {
-		ChunkPos chunkPos = chunk.getPos();
-		((ProtoChunk) chunk).setBiomes(new BiomeArray(registry, chunk, chunkPos, this.biomeSource));
+	public CompletableFuture<Chunk> populateBiomes(Executor executor, NoiseConfig noiseConfig, Blender blender, StructureAccessor structureAccessor, Chunk chunk) {
+		return super.populateBiomes(executor, noiseConfig, blender, structureAccessor, chunk);
 	}
 
 	@Override
-	public void carve(long seed, BiomeAccess access, Chunk chunk, GenerationStep.Carver carver) {
+	public void carve(ChunkRegion chunkRegion, long seed, NoiseConfig noiseConfig, BiomeAccess world, StructureAccessor structureAccessor, Chunk chunk, GenerationStep.Carver carverStep) {
 	}
-
-
 }
