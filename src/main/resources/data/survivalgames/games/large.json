@@ -1,6 +1,7 @@
 {
   "type": "survivalgames:survivalgames",
   "name": "Survival Games (Large)",
+  "icon": "moss_block",
   "border": {
     "start_size": 768,
     "end_size": 16,

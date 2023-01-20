@@ -1,6 +1,7 @@
 {
   "type": "survivalgames:survivalgames",
   "name": "Survival Games (Standard)",
+  "icon": "stone_sword",
   "border": {
     "start_size": 512,
     "end_size": 16,

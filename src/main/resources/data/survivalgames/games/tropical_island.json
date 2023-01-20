@@ -1,6 +1,7 @@
 {
     "type": "survivalgames:survivalgames",
     "name": "Survival Games (Tropical Island)",
+    "icon": "tropical_fish_bucket",
     "border": {
       "start_size": 512,
       "end_size": 16,

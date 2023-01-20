@@ -1,6 +1,7 @@
 {
   "type": "survivalgames:survivalgames",
   "name": "Survival Games (Winter Island)",
+  "icon": "powder_snow_bucket",
   "border": {
     "start_size": 512,
     "end_size": 16,
