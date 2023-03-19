@@ -17,6 +17,8 @@ import supercoder79.survivalgames.game.map.biome.generator.BiomeGenerator;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 
+import java.util.stream.Stream;
+
 public final class FakeBiomeSource extends BiomeSource {
 	private final Registry<Biome> biomeRegistry;
 	private final long seed;
@@ -27,7 +29,7 @@ public final class FakeBiomeSource extends BiomeSource {
 	private final NoiseSampler2d roughnessNoise;
 
 	public FakeBiomeSource(Registry<Biome> biomeRegistry, long seed, BiomeGenerator biomeGenerator) {
-		super(ImmutableList.of());
+		super();
 		this.biomeRegistry = biomeRegistry;
 		this.seed = seed;
 		this.biomeGenerator = biomeGenerator;
@@ -44,6 +46,11 @@ public final class FakeBiomeSource extends BiomeSource {
 	@Override
 	protected Codec<? extends BiomeSource> getCodec() {
 		return Codec.unit(this);
+	}
+
+	@Override
+	protected Stream<RegistryEntry<Biome>> biomeStream() {
+		return this.biomeRegistry.stream().map(x -> this.biomeRegistry.getEntry(x));
 	}
 
 	@Override
