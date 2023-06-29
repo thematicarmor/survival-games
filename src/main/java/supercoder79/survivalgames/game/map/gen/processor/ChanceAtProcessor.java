@@ -35,8 +35,8 @@ public class ChanceAtProcessor extends StructureProcessor {
 
 	@Override
 	public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos worldPos, BlockPos localPos, StructureTemplate.StructureBlockInfo localInfo, StructureTemplate.StructureBlockInfo worldInfo, StructurePlacementData structurePlacementData) {
-		if (structurePlacementData.getRandom(worldInfo.pos).nextDouble() < this.chance) {
-			if (localInfo.pos.asLong() == this.pos.asLong()) {
+		if (structurePlacementData.getRandom(worldInfo.pos()).nextDouble() < this.chance) {
+			if (localInfo.pos().asLong() == this.pos.asLong()) {
 
 				BlockState state = this.state;
 				if (state.contains(Properties.FACING)) {
@@ -46,13 +46,13 @@ public class ChanceAtProcessor extends StructureProcessor {
 				}
 
 				if (this.matchTerrain) {
-					int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, worldInfo.pos.getX(), worldInfo.pos.getZ());
+					int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, worldInfo.pos().getX(), worldInfo.pos().getZ());
 
-					BlockPos topPos = new BlockPos(worldInfo.pos.getX(), y, worldInfo.pos.getZ());
+					BlockPos topPos = new BlockPos(worldInfo.pos().getX(), y, worldInfo.pos().getZ());
 					return new StructureTemplate.StructureBlockInfo(topPos, state, null);
 				}
 
-				return new StructureTemplate.StructureBlockInfo(worldInfo.pos, state, null);
+				return new StructureTemplate.StructureBlockInfo(worldInfo.pos(), state, null);
 			}
 		}
 

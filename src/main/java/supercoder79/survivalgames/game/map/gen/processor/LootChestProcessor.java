@@ -33,17 +33,17 @@ public class LootChestProcessor extends StructureProcessor {
 
 	@Override
 	public StructureTemplate.StructureBlockInfo process(WorldView world, BlockPos worldPos, BlockPos localPos, StructureTemplate.StructureBlockInfo localInfo, StructureTemplate.StructureBlockInfo worldInfo, StructurePlacementData structurePlacementData) {
-		BlockPos pos = localInfo.pos;
+		BlockPos pos = localInfo.pos();
 		if (pos.asLong() == this.chestPos.asLong()) {
 			// TODO: rotation
 
 			if (this.matchTerrain) {
-				int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, worldInfo.pos.getX(), worldInfo.pos.getZ());
+				int y = world.getTopY(Heightmap.Type.OCEAN_FLOOR_WG, worldInfo.pos().getX(), worldInfo.pos().getZ());
 
-				BlockPos topPos = new BlockPos(worldInfo.pos.getX(), y, worldInfo.pos.getZ());
+				BlockPos topPos = new BlockPos(worldInfo.pos().getX(), y, worldInfo.pos().getZ());
 				LootHelper.placeProviderChest((WorldAccess) world, topPos, getLootProvider(this.lootType));
 			} else {
-				LootHelper.placeProviderChest((WorldAccess) world, worldInfo.pos, getLootProvider(this.lootType));
+				LootHelper.placeProviderChest((WorldAccess) world, worldInfo.pos(), getLootProvider(this.lootType));
 			}
 
 			// Place air here

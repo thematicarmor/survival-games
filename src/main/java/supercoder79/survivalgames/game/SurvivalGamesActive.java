@@ -135,7 +135,7 @@ public final class SurvivalGamesActive {
             int z = MathHelper.floor(Math.sin(theta) * spawnDistance);
 
             this.spawnLogic.resetPlayer(player, GameMode.SURVIVAL);
-            this.spawnLogic.spawnPlayerAt(player, x, z, player.getWorld());
+            this.spawnLogic.spawnPlayerAt(player, x, z, player.getServerWorld());
 
             for (ItemStack stack : config.kit) {
                 player.getInventory().insertStack(stack.copy());
@@ -253,7 +253,7 @@ public final class SurvivalGamesActive {
         players.sendMessage(message);
         players.forEach(p -> p.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1));
 
-        ItemScatterer.spawn(player.world, player.getBlockPos(), player.getInventory());
+        ItemScatterer.spawn(player.getWorld(), player.getBlockPos(), player.getInventory());
 
         this.spawnLogic.resetPlayer(player, GameMode.SPECTATOR);
 
