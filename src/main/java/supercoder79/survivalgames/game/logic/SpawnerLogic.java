@@ -1,5 +1,6 @@
 package supercoder79.survivalgames.game.logic;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
@@ -8,6 +9,9 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.FireworkRocketEntity;
 import net.minecraft.item.FireworkRocketItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextParameterSet;
+import net.minecraft.loot.context.LootContextType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
@@ -96,7 +100,11 @@ public final class SpawnerLogic implements ActiveLogic {
                     int z = this.pos.getZ() + (this.random.nextInt(8) - this.random.nextInt(8));
                     int y = this.active.getWorld().getTopY(Heightmap.Type.MOTION_BLOCKING, x, z);
 
-                    ItemStack stack = LootProviders.SPAWNER_LOOT.stacks.pickRandom(this.random);
+
+                    LootTable lootTable = active.getWorld().getServer().getLootManager().getLootTable(LootProviders.SPAWNER_LOOT.identifier);
+                    ObjectArrayList<ItemStack> items = lootTable.generateLoot(new LootContextParameterSet.Builder(active.getWorld()).build(LootContextType.create().build()));
+
+                    ItemStack stack = items.get(random.nextBetween(0, items.size() - 1));
                     tryEnchant(stack);
 
                     ItemEntity item = new ItemEntity(this.active.getWorld(), x, y + 6, z, stack);
